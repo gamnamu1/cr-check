@@ -5,6 +5,7 @@ WeasyPrint를 사용하여 분석 결과를 PDF로 변환
 
 from weasyprint import HTML, CSS
 from datetime import datetime
+from urllib.parse import quote
 import io
 
 
@@ -220,12 +221,16 @@ def generate_pdf_response(analysis_result: dict, article_title: str):
 
     # 파일명 생성 (한글 제목은 URL 인코딩)
     safe_title = article_title[:50]  # 최대 50자
-    filename = f"CR-Check_{safe_title}_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf"
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M')
+    filename = f"CR-Check_{safe_title}_{timestamp}.pdf"
+
+    # URL 인코딩 (한글 지원)
+    encoded_filename = quote(filename.encode('utf-8'))
 
     return StreamingResponse(
         io.BytesIO(pdf_bytes),
         media_type="application/pdf",
         headers={
-            "Content-Disposition": f"attachment; filename*=UTF-8''{filename}"
+            "Content-Disposition": f"attachment; filename*=UTF-8''{encoded_filename}"
         }
     )
