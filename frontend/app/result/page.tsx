@@ -111,7 +111,7 @@ export default function ResultPage() {
     setIsExporting(true);
 
     try {
-      const response = await fetch("http://localhost:8000/export-pdf", {
+      const response = await fetch("https://cr-check-production.up.railway.app/export-pdf", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

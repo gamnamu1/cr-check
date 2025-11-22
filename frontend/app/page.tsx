@@ -68,7 +68,7 @@ export default function Home() {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 120000); // 120초 타임아웃
 
-      const response = await fetch("http://localhost:8000/analyze", {
+      const response = await fetch("https://cr-check-production.up.railway.app/analyze", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
