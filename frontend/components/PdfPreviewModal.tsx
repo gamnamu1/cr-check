@@ -10,7 +10,8 @@ interface PdfPreviewModalProps {
 export function PdfPreviewModal({ result, onClose }: PdfPreviewModalProps) {
   const handleDownload = async () => {
     try {
-      const response = await fetch("/api/export-pdf", {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const response = await fetch(`${apiUrl}/export-pdf`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
