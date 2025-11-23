@@ -88,6 +88,7 @@ async def health_check():
 
 @app.post("/analyze", response_model=AnalyzeResponse)
 async def analyze_article(request: AnalyzeRequest):
+    print(f"📥 [Backend] Analysis request received for URL: {request.url}")
     """
     기사 URL을 분석하여 3가지 평가 리포트 생성
 
@@ -125,6 +126,17 @@ async def analyze_article(request: AnalyzeRequest):
 
     except Exception as e:
         # 예상치 못한 에러
+        import traceback
+        from datetime import datetime
+        
+        error_msg = f"[{datetime.now()}] Error processing {request.url}: {str(e)}\n{traceback.format_exc()}\n{'='*50}\n"
+        
+        try:
+            with open("backend_error.log", "a", encoding="utf-8") as f:
+                f.write(error_msg)
+        except Exception as log_err:
+            print(f"Failed to write log: {log_err}")
+
         print(f"❌ 오류 발생: {str(e)}")
         raise HTTPException(
             status_code=500,

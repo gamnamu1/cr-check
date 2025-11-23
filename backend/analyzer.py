@@ -30,17 +30,12 @@ class ArticleAnalyzer:
 
     def __init__(self):
         """분석기 초기화"""
-        api_key = os.environ.get("ANTHROPIC_API_KEY")
-        if not api_key:
-            raise ValueError(
-                "ANTHROPIC_API_KEY 환경 변수가 설정되지 않았습니다.\n\n"
-                "설정 방법:\n"
-                "  1. https://console.anthropic.com/account/keys 에서 API 키 발급\n"
-                "  2. 터미널에서 실행: export ANTHROPIC_API_KEY='your-key-here'\n"
-                "  3. 또는 backend/.env 파일에 저장"
-            )
-
-        self.client = AsyncAnthropic(api_key=api_key)
+        self.api_key = os.environ.get("ANTHROPIC_API_KEY")
+        if self.api_key:
+            self.client = AsyncAnthropic(api_key=self.api_key)
+        else:
+            self.client = None
+            print("⚠️  ArticleAnalyzer: ANTHROPIC_API_KEY가 설정되지 않았습니다. 분석 요청 시 에러가 발생합니다.")
 
         # 하이브리드 모델 전략
         self.phase1_model = "claude-haiku-4-5-20251001"
@@ -71,6 +66,11 @@ class ArticleAnalyzer:
             }
         """
         start_time = time.time()
+
+        if not self.client:
+            raise ValueError(
+                "ANTHROPIC_API_KEY가 설정되지 않았습니다. 서버 로그를 확인하거나 .env 파일을 구성해주세요."
+            )
 
         # Phase 1: 문제 카테고리 식별 (Haiku)
         print(f"📊 Phase 1 (Haiku): 문제 카테고리 식별 중...")
