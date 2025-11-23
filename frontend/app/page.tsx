@@ -44,7 +44,9 @@ export default function Home() {
 
       // Bypass Next.js proxy to avoid 30s timeout
       // Backend has CORS enabled for *
-      const response = await fetch("http://localhost:8000/analyze", {
+      // Use environment variable for backend URL, fallback to localhost for development
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const response = await fetch(`${apiUrl}/analyze`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
