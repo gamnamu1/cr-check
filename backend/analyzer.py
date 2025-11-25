@@ -72,39 +72,54 @@ class ArticleAnalyzer:
                 "ANTHROPIC_API_KEY가 설정되지 않았습니다. 서버 로그를 확인하거나 .env 파일을 구성해주세요."
             )
 
-        # Phase 1: 문제 카테고리 식별 (Haiku)
-        print(f"📊 Phase 1 (Haiku): 문제 카테고리 식별 중...")
-        identified_categories = await self._identify_categories(article_content)
+        # Phase 1: 문제 카테고리 식별 및 평가 대상 여부 확인 (Haiku)
+        print(f"📊 Phase 1 (Haiku): 평가 대상 여부 확인 및 문제 카테고리 식별 중...")
+        phase1_result = await self._identify_categories(article_content)
+        
+        # 평가 대상이 아닌 경우 즉시 중단
+        if not phase1_result.get("is_evaluable", True):
+            reason = phase1_result.get("non_evaluable_reason", "평가 대상이 아닙니다.")
+            print(f"⛔ 평가 중단: {reason}")
+            raise ValueError(reason)
+
+        identified_categories = phase1_result.get("categories", [])
         phase1_time = time.time() - start_time
         print(f"✅ Phase 1 완료 ({phase1_time:.1f}초): {len(identified_categories)}개 카테고리 발견")
 
         # Phase 2: 상세 분석 및 3개 리포트 생성 (Sonnet)
         print(f"📝 Phase 2 (Sonnet): 3가지 리포트 생성 중...")
-        reports = await self._generate_detailed_reports(article_content, identified_categories)
+        detailed_result = await self._generate_detailed_reports(article_content, identified_categories)
+        reports = detailed_result["reports"]
+        article_analysis = detailed_result.get("article_analysis", {})
+        
         phase2_time = time.time() - start_time - phase1_time
         print(f"✅ Phase 2 완료 ({phase2_time:.1f}초)")
 
         total_time = time.time() - start_time
         print(f"🎉 전체 분석 완료 (총 {total_time:.1f}초)")
 
+        # 기본 정보와 분석된 상세 정보 병합
+        final_article_info = {
+            "title": article_content["title"],
+            "url": article_content["url"],
+            **article_analysis  # AI가 분석한 메타데이터 병합
+        }
+
         return {
-            "article_info": {
-                "title": article_content["title"],
-                "url": article_content["url"]
-            },
+            "article_info": final_article_info,
             "reports": reports
         }
 
-    async def _identify_categories(self, article_content: dict) -> List[str]:
+    async def _identify_categories(self, article_content: dict) -> Dict:
         """
-        Phase 1: 기사에서 문제가 될 만한 카테고리 식별 (Haiku 사용)
+        Phase 1: 기사 평가 적합성 확인 및 카테고리 식별 (Haiku 사용)
         프롬프트 크기: 120KB → 2KB (카테고리 목록만)
         """
         # 카테고리 목록만 가져오기
         categories_list = self.criteria.get_phase1_prompt()
 
         prompt = f"""당신은 한국신문윤리위원회의 1차 심사 담당자입니다.
-아래 기사를 빠르게 스캔하여 문제가 될 만한 카테고리를 식별하세요.
+아래 글을 분석하여 '평가 대상 여부'를 먼저 판단하고, 평가 대상일 경우에만 문제가 될 만한 카테고리를 식별하세요.
 
 ## 평가 카테고리 (8개)
 {categories_list}
@@ -114,23 +129,52 @@ class ArticleAnalyzer:
 본문: {article_content['content']}
 
 ## 작업 지시
-1. 기사를 읽고 위 8개 카테고리 중 **문제가 발견되는 카테고리만** 식별
-2. 카테고리 전체 이름으로 응답 (예: "1. 진실성과 정확성")
-3. 문제가 없으면 빈 배열 반환
+
+1. **평가 대상 여부 판단 (Eligibility Check)**:
+   - 이 글이 객관적 사실을 다루는 **'뉴스 보도(News Report)'**인지 확인하세요.
+   - **평가 제외 대상**:
+     - 사설 (Editorial)
+     - 칼럼 (Column) / 오피니언 (Opinion)
+     - 서평 / 영화 리뷰 / 제품 리뷰
+     - 에세이 / 수필 / 소설
+     - 단순 공지사항 / 인사 / 부고
+   - 위 제외 대상에 해당하면 `is_evaluable: false`로 설정하고 이유를 적으세요.
+
+2. **문제 카테고리 식별 (평가 대상인 경우)**:
+   - 기사를 읽고 위 8개 카테고리 중 **문제가 발견되는 카테고리만** 식별하세요.
+   - 카테고리 전체 이름으로 응답 (예: "1. 진실성과 정확성")
+   - 문제가 없으면 빈 배열 반환
 
 ## 응답 형식 (JSON만 출력)
+
+**Case 1: 평가 대상이 아닌 경우**
 {{
+  "is_evaluable": false,
+  "non_evaluable_reason": "사설/칼럼과 같은 오피니언 글, 서평이나 제품 평가와 같은 각종 리뷰 기사는 평가 대상이 아닙니다.",
+  "categories": []
+}}
+
+**Case 2: 평가 대상인 경우 (문제 있음)**
+{{
+  "is_evaluable": true,
+  "non_evaluable_reason": null,
   "categories": [
     "1. 진실성과 정확성",
     "2. 투명성과 책임성"
   ]
 }}
 
+**Case 3: 평가 대상인 경우 (문제 없음)**
+{{
+  "is_evaluable": true,
+  "non_evaluable_reason": null,
+  "categories": []
+}}
+
 **필수 사항**:
 - 반드시 JSON 형식으로만 응답하세요
 - 마크다운 코드 블록(```) 사용 금지
 - JSON 외 설명 문구 금지
-- 문제가 없다면: {{"categories": []}}
 """
 
         try:
@@ -145,12 +189,16 @@ class ArticleAnalyzer:
             # 강화된 JSON 파싱
             result = robust_json_parse(response_text)
 
-            return result.get("categories", [])
+            return result
 
         except Exception as e:
             print(f"⚠️ Phase 1 오류: {e}")
-            # Phase 1 실패 시에도 Phase 2 진행 (전체 분석)
-            return ["전체 카테고리 분석 필요"]
+            # 오류 발생 시 안전하게 진행 (평가 가능한 것으로 간주하되 카테고리는 전체 분석)
+            return {
+                "is_evaluable": True,
+                "non_evaluable_reason": None,
+                "categories": ["전체 카테고리 분석 필요"]
+            }
 
     async def _generate_detailed_reports(
         self,
@@ -174,7 +222,7 @@ class ArticleAnalyzer:
         categories_text = '\n'.join(f"- {cat}" for cat in identified_categories) if identified_categories else "특이사항 없음"
 
         prompt = f"""당신은 한국신문윤리위원회의 심의 위원입니다.
-1차 심사에서 식별된 문제 카테고리를 바탕으로 3가지 버전의 상세한 서술형 리포트를 작성하세요.
+1차 심사에서 식별된 문제 카테고리를 바탕으로 기사를 분석하고 3가지 버전의 상세한 서술형 리포트를 작성하세요.
 
 ## 1차 심사 결과
 {categories_text}
@@ -206,33 +254,18 @@ class ArticleAnalyzer:
 
 ## 3가지 리포트 버전
 
-### 1. comprehensive (일반 시민용 종합 리포트, 1200-1800자)
+### 1. comprehensive (일반 시민용 종합 리포트, 1000-1500자)
 **톤**: 객관적, 체계적, 교육적
 **어투**: "~입니다", "~있습니다" (격식체), "독자", "시민" (3인칭)
 **구조**:
-1. **기사 개요** (200-300자):
-   제목: [기사 제목]
-   매체명, 게재일시, 기자명: [기사에서 확인 가능한 정보, 없으면 "미확인"으로 표기]
-   기사 유형: [예: 스트레이트 뉴스, 해설 기사, 인터뷰, 칼럼 등]
-   기사 요소: [예: 5W1H 구성, 인용문 사용, 통계 자료 등]
-   편집 구조: [예: 역피라미드, 시간순, 주제별 등]
-   취재 방식: [예: 단독 취재, 보도자료 기반, 복수 취재원 등]
-   내용 흐름: [기사의 전개 방식을 한 문장으로]
-
-2. **문제점 분석** (700-1000자):
+1. **문제점 분석** (700-1000자):
    - 주요 문제점 2-3가지를 윤리규범 근거와 함께 제시
    - 각 문제점마다 "언론윤리헌장 제X조는..." 형식으로 윤리규범 인용
    - 기사에서 문제가 되는 부분을 직접 인용
 
-3. **종합 평가** (200-300자):
+2. **종합 평가** (200-300자):
    - "이러한 보도는... 우려가 있습니다"
    - 개선 방향 간략히 제시
-
-**예시 시작**:
-"제목: [기사 제목]
-매체명, 게재일시, 기자명: [정보]
-기사 유형: [유형]
-..."
 
 ### 2. journalist (기사 작성자를 위한 리포트, 1000-1500자)
 **톤**: 직접적, 건설적 비판, 전문가 대 전문가
@@ -242,7 +275,6 @@ class ArticleAnalyzer:
 - 본론: "당신의 기사는 [문제점]입니다. 이는 [윤리규범]을 위반하는 것입니다."
 - 개선안: "예를 들어, '[구체적 예시]'와 같은 방식으로 표현할 수 있습니다"
 - 결론: "이러한 개선은... 언론의 본질적 역할을 수행하기 위해 필요합니다. 이 평가가 더 나은 저널리즘을 위한 소중한 참고 자료가 되기를 바랍니다."
-**예시 시작**: "당신의 기사는 [주제]를 다루면서 저널리즘의 핵심 원칙인 [원칙]을 현저히 위반했습니다. 전문 기자로서 반드시 개선해야 할 지점들을 구체적으로 짚어보겠습니다."
 
 ### 3. student (학생을 위한 교육용 리포트, 1000-1500자)
 **톤**: 친근하고 대화적, 비유와 예시 풍부
@@ -252,26 +284,38 @@ class ArticleAnalyzer:
 - 본론: 각 문제점마다 생활 속 비유 사용 ("마치 교실에서 두 친구가 다퉜는데...", "여러분이 친구에게 험담을 전할 때...")
 - 질문형 대화: "왜 이것이 문제일까요?", "공정하지 않겠죠?"
 - 결론: "여러분의 비판적 읽기 능력이 바로 더 나은 언론과 사회를 만드는 첫걸음입니다!"
-**예시 시작**: "여러분, 이 기사를 함께 읽어볼까요? 언론의 역할은 무엇일까요? 단순히 누군가의 말을 전달하는 것이 아니라 국민이 현명한 판단을 내릴 수 있도록 균형 잡힌 정보를 제공하는 것입니다."
-**비유 예시**: "이것은 마치 [일상 비유]와 같아요", "만약 여러분이 [상황]이라면..."
 
 ## 작성 지침
 
 - 일반 문자열로만 작성 (HTML 태그, 마크다운 문법 금지)
-- **분량**: comprehensive(1200-1800자), journalist(1000-1500자), student(1000-1500자)
-- **comprehensive 리포트는 반드시 기사 개요 섹션으로 시작** (제목, 매체명, 게재일시, 기자명, 기사 유형, 기사 요소, 편집 구조, 취재 방식, 내용 흐름)
+- **분량**: 각 리포트 1000-1500자 내외
 - 문단 구분은 개행(\\n\\n) 두 번으로
 - 구체적 인용구는 큰따옴표("")로 표시
 - **톤과 어투를 철저히 구분**: comprehensive(격식체), journalist(2인칭 직접), student(친근체)
 
 ## JSON 형식 (이것만 출력)
-{{"comprehensive": "...", "journalist": "...", "student": "..."}}
+{{
+  "article_analysis": {{
+    "publisher": "매체명 (기사에서 확인 불가시 '미확인')",
+    "publishDate": "게재일시 (기사에서 확인 불가시 '미확인')",
+    "journalist": "기자명 (기사에서 확인 불가시 '미확인')",
+    "articleType": "기사 유형 (예: 스트레이트, 해설, 인터뷰 등)",
+    "articleElements": "기사 요소 (예: 5W1H, 인용문, 통계 등)",
+    "editStructure": "편집 구조 (예: 역피라미드, 시간순 등)",
+    "reportingMethod": "취재 방식 (예: 단독, 보도자료 등)",
+    "contentFlow": "내용 흐름 (한 문장 요약)"
+  }},
+  "reports": {{
+    "comprehensive": "...",
+    "journalist": "...",
+    "student": "..."
+  }}
+}}
 
 **필수**:
 - JSON만 출력하세요
 - 마크다운 코드 블록(```) 사용 금지
 - JSON 외 설명 문구 금지
-- JSON 내부에 마크다운 문법 (#, *, _, - 등) 사용 금지
 """
 
         max_retries = 3
@@ -286,7 +330,16 @@ class ArticleAnalyzer:
                 response_text = message.content[0].text.strip()
 
                 # 강화된 JSON 파싱
-                reports = robust_json_parse(response_text)
+                result_json = robust_json_parse(response_text)
+
+                # 구조 검증 및 데이터 추출
+                if "reports" in result_json:
+                    reports = result_json["reports"]
+                    article_analysis = result_json.get("article_analysis", {})
+                else:
+                    # 구버전 호환성 (혹시 모를 경우)
+                    reports = result_json
+                    article_analysis = {}
 
                 # 필수 필드 검증
                 required_fields = ["comprehensive", "journalist", "student"]
@@ -297,7 +350,10 @@ class ArticleAnalyzer:
                 # 서술형 평가 원칙 검증 (점수화 패턴 감지)
                 self.validate_descriptive_evaluation(reports)
 
-                return reports
+                return {
+                    "reports": reports,
+                    "article_analysis": article_analysis
+                }
 
             except Exception as e:
                 print(f"⚠️ Phase 2 시도 {attempt + 1}/{max_retries} 실패: {e}")

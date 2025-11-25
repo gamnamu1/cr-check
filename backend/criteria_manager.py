@@ -7,9 +7,20 @@ class CriteriaManager:
     """
     통합 평가 기준 관리 및 프롬프트 최적화
     147KB → 120KB 통합 후 → Phase별 최적화
+    Singleton 패턴 적용: 파일 로딩 반복 방지
     """
+    _instance = None
+
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super(CriteriaManager, cls).__new__(cls)
+            cls._instance._initialized = False
+        return cls._instance
 
     def __init__(self):
+        if getattr(self, '_initialized', False):
+            return
+            
         references_dir = Path(__file__).parent / 'references'
 
         # 통합 평가 기준 로드
@@ -18,6 +29,7 @@ class CriteriaManager:
 
         # 카테고리 인덱스 구축
         self.category_index = self._build_category_index()
+        self._initialized = True
 
     def _build_category_index(self) -> Dict[str, int]:
         """

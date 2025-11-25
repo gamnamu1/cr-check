@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { ExternalLink, FileDown, ArrowLeft, Users, NotebookPen, BookOpenCheck, Newspaper } from 'lucide-react';
 import type { AnalysisResult } from '../types';
-import { PdfPreviewModal } from './PdfPreviewModal';
+import { TxtPreviewModal } from './TxtPreviewModal';
 
 interface ResultViewerProps {
   result: AnalysisResult;
@@ -13,7 +13,7 @@ type ReportTab = 'comprehensive' | 'journalist' | 'student';
 
 export function ResultViewer({ result, onReset }: ResultViewerProps) {
   const [activeTab, setActiveTab] = useState<ReportTab>('comprehensive');
-  const [showPdfModal, setShowPdfModal] = useState(false);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
 
   const tabs = [
     { id: 'comprehensive' as ReportTab, label: '시민을 위한 종합 리포트', shortLabel: '시민', icon: Users, color: 'navy' },
@@ -27,13 +27,49 @@ export function ResultViewer({ result, onReset }: ResultViewerProps) {
     const elements: JSX.Element[] = [];
     let key = 0;
 
+    // Helper to highlight ethics codes
+    const highlightEthics = (text: string) => {
+      // Regex to match various ethics codes followed by optional quote
+      // Includes: 언론윤리헌장, 한국기자협회 강령, 언론윤리강령/실천요강, 신문윤리강령/실천요강, etc.
+      const ethicsPattern = /(?:언론윤리헌장|한국기자협회\s*강령|언론윤리(?:강령|실천요강)|신문윤리(?:강령|실천요강)|자살보도\s*윤리강령|인권보도준칙|자살예방\s*보도준칙|재난보도준칙|선거여론조사\s*보도준칙)/;
+
+      // Split by the pattern, capturing the code name and following content up to the end of the quote if present
+      // We look for the pattern, followed by non-newline characters, optionally ending with a quote
+      const parts = text.split(/((?:언론윤리헌장|한국기자협회\s*강령|언론윤리(?:강령|실천요강)|신문윤리(?:강령|실천요강)|자살보도\s*윤리강령|인권보도준칙|자살예방\s*보도준칙|재난보도준칙|선거여론조사\s*보도준칙)[^"\n]*(?:"[^"]*")?)/g);
+
+      return parts.map((part, idx) => {
+        if (ethicsPattern.test(part)) {
+          return (
+            <span key={idx} className="text-[#4682b4] font-sans font-normal">
+              {part}
+            </span>
+          );
+        }
+        // Handle bold text within normal text
+        if (part.includes('**')) {
+          const boldParts = part.split(/(\*\*.*?\*\*)/g);
+          return (
+            <span key={idx}>
+              {boldParts.map((bp, bIdx) => {
+                if (bp.startsWith('**') && bp.endsWith('**')) {
+                  return <strong key={bIdx} className="text-navy-900 font-bold">{bp.slice(2, -2)}</strong>;
+                }
+                return <span key={bIdx}>{bp}</span>;
+              })}
+            </span>
+          );
+        }
+        return <span key={idx}>{part}</span>;
+      });
+    };
+
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
 
       // H1
       if (line.startsWith('# ')) {
         elements.push(
-          <h2 key={key++} className="text-navy-900 mt-8 mb-4 first:mt-0">
+          <h2 key={key++} className="text-navy-900 mt-8 mb-4 first:mt-0 font-sans font-bold text-2xl">
             {line.replace('# ', '')}
           </h2>
         );
@@ -41,7 +77,7 @@ export function ResultViewer({ result, onReset }: ResultViewerProps) {
       // H2
       else if (line.startsWith('## ')) {
         elements.push(
-          <h3 key={key++} className="text-navy-800 mt-6 mb-3">
+          <h3 key={key++} className="text-navy-800 mt-6 mb-3 font-sans font-bold text-xl">
             {line.replace('## ', '')}
           </h3>
         );
@@ -49,7 +85,7 @@ export function ResultViewer({ result, onReset }: ResultViewerProps) {
       // H3
       else if (line.startsWith('### ')) {
         elements.push(
-          <h4 key={key++} className="text-navy-700 mt-4 mb-2">
+          <h4 key={key++} className="text-navy-700 mt-4 mb-2 font-sans font-semibold text-lg">
             {line.replace('### ', '')}
           </h4>
         );
@@ -63,7 +99,7 @@ export function ResultViewer({ result, onReset }: ResultViewerProps) {
           i++;
         }
         elements.push(
-          <pre key={key++} className="bg-navy-900 text-white p-4 rounded-lg my-4 overflow-x-auto">
+          <pre key={key++} className="bg-navy-900 text-white p-4 rounded-lg my-4 overflow-x-auto font-mono text-sm">
             <code>{codeLines.join('\n')}</code>
           </pre>
         );
@@ -76,32 +112,18 @@ export function ResultViewer({ result, onReset }: ResultViewerProps) {
           listItems.push(lines[i]);
         }
         elements.push(
-          <ul key={key++} className="list-disc list-inside space-y-2 my-4 text-navy-700">
+          <ul key={key++} className="list-disc list-inside space-y-2 my-4 text-navy-700 font-serif leading-loose">
             {listItems.map((item, idx) => (
-              <li key={idx}>{item.replace(/^[*-] /, '')}</li>
+              <li key={idx}>{highlightEthics(item.replace(/^[*-] /, ''))}</li>
             ))}
           </ul>
         );
       }
-      // Bold text processing
-      else if (line.includes('**')) {
-        const parts = line.split(/(\*\*.*?\*\*)/g);
-        elements.push(
-          <p key={key++} className="text-navy-700 leading-relaxed my-3">
-            {parts.map((part, idx) => {
-              if (part.startsWith('**') && part.endsWith('**')) {
-                return <strong key={idx} className="text-navy-900">{part.slice(2, -2)}</strong>;
-              }
-              return <span key={idx}>{part}</span>;
-            })}
-          </p>
-        );
-      }
-      // Regular paragraph
+      // Regular paragraph (including bold text lines)
       else if (line.trim()) {
         elements.push(
-          <p key={key++} className="text-navy-700 leading-relaxed my-3">
-            {line}
+          <p key={key++} className="text-navy-700 leading-loose my-3 font-serif text-lg">
+            {highlightEthics(line)}
           </p>
         );
       }
@@ -261,11 +283,11 @@ export function ResultViewer({ result, onReset }: ResultViewerProps) {
           className="flex flex-col sm:flex-row gap-4 justify-center"
         >
           <button
-            onClick={() => setShowPdfModal(true)}
+            onClick={() => setShowPreviewModal(true)}
             className="flex items-center justify-center gap-2 px-8 py-4 bg-amber-500 hover:bg-amber-600 text-white rounded-xl transition-all transform hover:scale-[1.02]"
           >
             <FileDown className="w-5 h-5" />
-            <span>리포트 문서 저장</span>
+            <span>리포트 문서 저장 (TXT)</span>
           </button>
           <button
             onClick={onReset}
@@ -277,11 +299,11 @@ export function ResultViewer({ result, onReset }: ResultViewerProps) {
         </motion.div>
       </main>
 
-      {/* PDF Modal */}
-      {showPdfModal && (
-        <PdfPreviewModal
+      {/* Preview Modal */}
+      {showPreviewModal && (
+        <TxtPreviewModal
           result={result}
-          onClose={() => setShowPdfModal(false)}
+          onClose={() => setShowPreviewModal(false)}
         />
       )}
     </div>

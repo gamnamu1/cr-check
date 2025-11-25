@@ -2,100 +2,46 @@
 
 import json
 import re
-from typing import Optional
+from typing import Optional, Any, Dict, List, Union
+import json_repair
 
-def extract_balanced_json(text: str) -> Optional[str]:
+def robust_json_parse(text: str) -> Union[Dict, List]:
     """
-    중첩된 괄호와 문자열 이스케이프를 고려한 완전한 JSON 객체 추출
+    안전한 JSON 파싱 - json_repair 라이브러리 활용
+    
+    LLM이 생성한 불완전한 JSON(쉼표 누락, 따옴표 오류 등)을 자동으로 복구하여 파싱합니다.
+    """
+    # 1. 마크다운 코드 블록 제거 (```json ... ```)
+    cleaned_text = re.sub(r'```(?:json)?', '', text).strip()
+    
+    # 2. json_repair를 사용하여 파싱 시도
+    try:
+        # json_repair.loads는 불완전한 JSON을 복구하여 파싱함
+        parsed = json_repair.loads(cleaned_text)
+        return parsed
+    except Exception as e:
+        print(f"❌ json_repair 파싱 실패: {e}")
+        print(f"원본 텍스트 (처음 500자): {text[:500]}")
+        
+        # 3. 최후의 수단: 기존의 재귀적 추출 방식 시도 (혹시 모를 경우 대비)
+        # 하지만 json_repair가 대부분 처리하므로 이 단계까지 올 확률은 낮음
+        try:
+            return _fallback_extraction(cleaned_text)
+        except Exception as fallback_error:
+            raise ValueError(f"JSON 파싱 최종 실패: {str(e)}") from e
 
-    기존 정규식 r'\{[^{}]*\}' 의 한계:
-    - 중첩 객체 미지원: {"a": {"b": "c"}} → 실패
-    - 문자열 내 괄호 오인: {"text": "a{b}c"} → 오작동
-
-    개선점:
-    - 재귀적 괄호 매칭으로 중첩 구조 지원
-    - 문자열 경계 추적으로 괄호 오인 방지
-    - 이스케이프 시퀀스 올바른 처리
+def _fallback_extraction(text: str) -> Union[Dict, List]:
+    """
+    json_repair도 실패했을 때를 대비한 수동 추출 로직
     """
     start_idx = text.find('{')
     if start_idx == -1:
-        return None
-
-    stack = []
-    in_string = False
-    escape_next = False
-
-    for i in range(start_idx, len(text)):
-        char = text[i]
-
-        # 이스케이프 처리
-        if escape_next:
-            escape_next = False
-            continue
-
-        if char == '\\':
-            escape_next = True
-            continue
-
-        # 문자열 경계 추적
-        if char == '"':
-            in_string = not in_string
-            continue
-
-        # 문자열 내부의 괄호는 무시
-        if in_string:
-            continue
-
-        # 괄호 균형 추적
-        if char == '{':
-            stack.append(i)
-        elif char == '}':
-            if stack:
-                stack.pop()
-                if not stack:  # 완전히 균형 잡힌 JSON 발견
-                    return text[start_idx:i+1]
-
-    return None
-
-
-def robust_json_parse(text: str) -> dict:
-    """
-    안전한 JSON 파싱 - 3단계 fallback 전략
-
-    1차 시도: 원본 텍스트 그대로 파싱
-    2차 시도: 마크다운 코드 블록 제거 후 파싱
-    3차 시도: 재귀적 괄호 매칭으로 JSON 추출 후 파싱
-    """
-    # 1차: 원본 그대로
+        raise ValueError("JSON 객체 시작('{')을 찾을 수 없습니다.")
+        
+    # 단순 추출 시도
     try:
-        return json.loads(text.strip())
-    except json.JSONDecodeError:
+        return json.loads(text[start_idx:])
+    except:
         pass
-
-    # 2차: 마크다운 코드 블록 제거
-    cleaned = re.sub(r'```(?:json)?', '', text)
-    cleaned = cleaned.strip()
-
-    try:
-        return json.loads(cleaned)
-    except json.JSONDecodeError:
-        pass
-
-    # 3차: 재귀적 괄호 매칭
-    json_str = extract_balanced_json(cleaned)
-
-    if json_str:
-        try:
-            # 문자열 외부의 제어 문자만 정리
-            # (?<!\\)\n: 이스케이프되지 않은 개행만 매칭
-            json_str = re.sub(r'(?<!\\)\n', ' ', json_str)
-            json_str = re.sub(r'\s+', ' ', json_str)
-
-            return json.loads(json_str)
-        except json.JSONDecodeError as e:
-            # 디버깅 정보 출력
-            print(f"❌ JSON 파싱 최종 실패: {e}")
-            print(f"추출된 JSON (처음 500자): {json_str[:500]}")
-            raise ValueError(f"JSON 파싱 실패: {str(e)}")
-    else:
-        raise ValueError("텍스트에서 유효한 JSON 객체를 찾을 수 없습니다")
+        
+    raise ValueError("Fallback 추출 실패")

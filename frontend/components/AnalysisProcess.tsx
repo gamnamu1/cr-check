@@ -1,5 +1,7 @@
+"use client";
+
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { FileSearch, ClipboardCheck, CheckCircle2 } from 'lucide-react';
 import type { AnalysisPhase } from '../types';
 
@@ -11,10 +13,18 @@ interface AnalysisProcessProps {
 const ethicsTips = [
   "익명 취재원은 불가피한 경우에만 제한적으로 사용해야 합니다.",
   "기사 제목은 내용을 과장하거나 왜곡해서는 안 됩니다.",
+  "\"언론은 시민을 위해 존재하며, 시민의 신뢰는 언론의 가장 소중한 자산\"입니다.",
   "사진과 영상은 조작하거나 맥락을 왜곡해서는 안 됩니다.",
+  "통계 인용 시 출처와 조사 방법을 반드시 명시해야 합니다.",
   "보도자료를 그대로 옮겨 쓰는 것은 좋은 저널리즘이 아닙니다.",
+  "따옴표 안에 넣었다고 다 진실은 아닙니다. 인용도 검증이 필요합니다.",
   "범죄 혐의자는 유죄 확정 전까지 '혐의자' 또는 '피의자'로 표현해야 합니다.",
-  "성범죄 피해자의 신원은 철저히 보호되어야 합니다.",
+  "\"~라는 비판이 나온다\"에서 비판 주체가 없다면, 그건 기자의 생각일 수 있습니다.",
+  "온라인 커뮤니티 글을 인용할 때는 대표성을 확인해야 합니다.",
+  "\"~라는 지적이다\", \"~라는 우려가 나온다\"에서 지적·우려 주체를 찾아보세요.",
+  "\"왜 이 시점에, 왜 이 매체에서 이 기사가 나왔을까?\" 배경을 생각해보세요.",
+  "선택적 사실 보도: 일부 사실만 보도하여 전체 맥락을 왜곡해서는 안 됩니다.",
+  "'네티즌 반응'이라며 댓글 몇 개만 인용한 기사는 여론을 왜곡할 수 있습니다.",
 ];
 
 export function AnalysisProcess({ isLoading, onComplete }: AnalysisProcessProps) {
@@ -26,7 +36,7 @@ export function AnalysisProcess({ isLoading, onComplete }: AnalysisProcessProps)
     // Initial scanning phase
     const scanningTimer = setTimeout(() => {
       setPhase('analyzing');
-    }, 3000);
+    }, 2000);
 
     return () => clearTimeout(scanningTimer);
   }, []);
@@ -41,30 +51,39 @@ export function AnalysisProcess({ isLoading, onComplete }: AnalysisProcessProps)
   }, [phase, isLoading, onComplete]);
 
   useEffect(() => {
+    // Initial random tip
+    setCurrentTip(Math.floor(Math.random() * ethicsTips.length));
+
     // Progress bar simulation
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
         if (phase === 'complete') return 100;
         if (phase === 'scanning') {
-          // 0 -> 30% in 3s
-          return Math.min(prev + 1, 30);
+          // 0 -> 30% in 2s (20 steps of 100ms)
+          return Math.min(prev + 1.5, 30);
         }
         if (phase === 'analyzing') {
-          // 30 -> 90% slowly
-          if (prev < 90) {
-            return prev + 0.2;
-          } else {
-            // Loop around 90-95% to show activity
-            return 90 + Math.sin(Date.now() / 500) * 2;
+          // 30 -> 98% linear approach (steady pace)
+          // Increment 0.07 per 100ms => ~0.7% per second
+          // Takes about 97 seconds to go from 30% to 98%
+          if (prev < 98) {
+            return prev + 0.07;
           }
+          return prev;
         }
         return prev;
       });
     }, 100);
 
-    // Tips rotation
+    // Tips rotation (Random)
     const tipInterval = setInterval(() => {
-      setCurrentTip((prev) => (prev + 1) % ethicsTips.length);
+      setCurrentTip((prev) => {
+        let next;
+        do {
+          next = Math.floor(Math.random() * ethicsTips.length);
+        } while (next === prev && ethicsTips.length > 1);
+        return next;
+      });
     }, 6000);
 
     return () => {

@@ -62,6 +62,10 @@ export default function Home() {
         const errorText = await response.text();
         console.error(`API Error (${status}):`, errorText);
 
+        if (status === 422) {
+          throw new Error("잘못된 URL 형식입니다. 정확한 주소를 입력해 주세요.");
+        }
+
         let errorMessage = "서버 오류가 발생했습니다.";
         try {
           const errorJson = JSON.parse(errorText);

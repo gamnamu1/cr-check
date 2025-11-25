@@ -7,3 +7,4 @@ weasyprint>=60.0.0
 python-multipart>=0.0.6
 uvicorn>=0.24.0
 python-dotenv>=1.0.0
+json_repair>=0.25.0
