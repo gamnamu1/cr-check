@@ -11,9 +11,20 @@ export function MainAnalysisCenter({ onAnalyze }: MainAnalysisCenterProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (content.trim()) {
-      onAnalyze({ type: 'url', content: content.trim() });
+
+    if (!content.trim()) {
+      return;
     }
+
+    // Robust URL validation regex from feedback
+    const urlPattern = /^https?:\/\/([\w\-]+\.)+[\w\-]+(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/;
+
+    if (!urlPattern.test(content.trim())) {
+      alert("정확한 뉴스 기사의 URL을 입력해 주세요. (http:// 또는 https:// 포함)");
+      return;
+    }
+
+    onAnalyze({ type: 'url', content: content.trim() });
   };
 
   return (
@@ -30,7 +41,7 @@ export function MainAnalysisCenter({ onAnalyze }: MainAnalysisCenterProps) {
       {/* Main Section */}
       <main className="mx-auto max-w-4xl px-6 py-16">
         <div className="text-center mb-12">
-          <p className="text-navy-600 text-lg text-[24px]">
+          <p className="text-navy-600 text-3xl md:text-4xl font-semibold tracking-tight">
             언론윤리 체크 도구 <span style={{ fontSize: '0.8em', opacity: 0.8 }}><span style={{ fontSize: '0.6em' }}>_</span>CR</span>
           </p>
         </div>
