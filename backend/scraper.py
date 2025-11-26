@@ -83,8 +83,24 @@ class ArticleScraper:
         # 텍스트 정제
         title = self._clean_text(title_elem.get_text())
 
+        # 메타데이터 추출 (Publisher, Date, Journalist)
+        publisher = "미확인"
+        publisher_elem = soup.select_one('.media_end_head_top_logo img')
+        if publisher_elem and publisher_elem.get('alt'):
+            publisher = publisher_elem.get('alt')
+        
+        publish_date = "미확인"
+        date_elem = soup.select_one('.media_end_head_info_datestamp_time')
+        if date_elem:
+            publish_date = self._clean_text(date_elem.get_text())
+
+        journalist = "미확인"
+        journalist_elem = soup.select_one('.media_end_head_journalist_name') or soup.select_one('.media_end_head_journalist_box em')
+        if journalist_elem:
+            journalist = self._clean_text(journalist_elem.get_text())
+
         # 불필요한 요소 제거
-        for tag in content_elem.select('script, style, .ad, .copyright, .reporter'):
+        for tag in content_elem.select('script, style, .ad, .copyright, .reporter, .media_end_head_journalist_box'):
             tag.decompose()
 
         content = self._clean_text(content_elem.get_text())
@@ -92,7 +108,10 @@ class ArticleScraper:
         return {
             "title": title,
             "content": content,
-            "url": url
+            "url": url,
+            "publisher": publisher,
+            "publish_date": publish_date,
+            "journalist": journalist
         }
 
     def _scrape_daum(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
