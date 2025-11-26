@@ -20,7 +20,10 @@ app = FastAPI(
 # CORS 설정 (프론트엔드 연동을 위해)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 프로덕션에서는 특정 도메인으로 제한
+    allow_origins=[
+        "http://localhost:3000",  # 로컬 개발
+        "https://cr-check.com",   # 프로덕션 (예시)
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -24,6 +24,30 @@ export function MainAnalysisCenter({ onAnalyze }: MainAnalysisCenterProps) {
       return;
     }
 
+    // News site validation (Optional but recommended)
+    const newsPatterns = [
+      /news\.naver\.com/,
+      /news\.daum\.net/,
+      /v\.daum\.net/,
+      /\.joins\.com/,
+      /\.chosun\.com/,
+      /\.donga\.com/,
+      /\.hani\.co\.kr/,
+      /\.khan\.co\.kr/,
+      /news\.kbs\.co\.kr/,
+      /imnews\.imbc\.com/,
+      /news\.sbs\.co\.kr/,
+      /yna\.co\.kr/,
+      /newsis\.com/,
+    ];
+
+    const isNewsUrl = newsPatterns.some(pattern => pattern.test(content));
+
+    if (!isNewsUrl) {
+      const proceed = window.confirm('일반적인 뉴스 사이트 URL이 아닌 것 같습니다. 분석이 정확하지 않을 수 있습니다. 계속 진행하시겠습니까?');
+      if (!proceed) return;
+    }
+
     onAnalyze({ type: 'url', content: content.trim() });
   };
 

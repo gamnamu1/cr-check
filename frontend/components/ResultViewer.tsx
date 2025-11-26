@@ -68,25 +68,37 @@ export function ResultViewer({ result, onReset }: ResultViewerProps) {
 
       // H1
       if (line.startsWith('# ')) {
+        const text = line.replace('# ', '');
+        const isTarget = text.includes('문제점 분석') || text.includes('종합 평가');
         elements.push(
-          <h2 key={key++} className="text-navy-900 mt-8 mb-4 first:mt-0 font-sans font-bold text-2xl">
-            {line.replace('# ', '')}
+          <h2 key={key++}
+            className={`text-navy-900 mt-8 mb-4 first:mt-0 font-bold text-2xl ${isTarget ? 'font-sans' : 'font-serif'}`}
+            style={isTarget ? { fontFamily: '"Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif' } : undefined}>
+            {text}
           </h2>
         );
       }
       // H2
       else if (line.startsWith('## ')) {
+        const text = line.replace('## ', '');
+        const isTarget = text.includes('문제점 분석') || text.includes('종합 평가');
         elements.push(
-          <h3 key={key++} className="text-navy-800 mt-6 mb-3 font-sans font-bold text-xl">
-            {line.replace('## ', '')}
+          <h3 key={key++}
+            className={`text-navy-800 mt-6 mb-3 font-bold text-xl ${isTarget ? 'font-sans' : 'font-serif'}`}
+            style={isTarget ? { fontFamily: '"Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif' } : undefined}>
+            {text}
           </h3>
         );
       }
       // H3
       else if (line.startsWith('### ')) {
+        const text = line.replace('### ', '');
+        const isTarget = text.includes('문제점 분석') || text.includes('종합 평가');
         elements.push(
-          <h4 key={key++} className="text-navy-700 mt-4 mb-2 font-sans font-semibold text-lg">
-            {line.replace('### ', '')}
+          <h4 key={key++}
+            className={`text-navy-700 mt-4 mb-2 font-semibold text-lg ${isTarget ? 'font-sans' : 'font-serif'}`}
+            style={isTarget ? { fontFamily: '"Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif' } : undefined}>
+            {text}
           </h4>
         );
       }

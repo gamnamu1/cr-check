@@ -102,8 +102,18 @@ class ArticleAnalyzer:
         final_article_info = {
             "title": article_content["title"],
             "url": article_content["url"],
-            **article_analysis  # AI가 분석한 메타데이터 병합
+            **article_analysis  # AI가 분석한 메타데이터 (기본값)
         }
+
+        # 스크래퍼가 추출한 메타데이터가 있다면 덮어쓰기 (더 정확함)
+        if article_content.get("publisher") and article_content["publisher"] != "미확인":
+            final_article_info["publisher"] = article_content["publisher"]
+            
+        if article_content.get("publish_date") and article_content["publish_date"] != "미확인":
+            final_article_info["publishDate"] = article_content["publish_date"]
+
+        if article_content.get("journalist") and article_content["journalist"] != "미확인":
+            final_article_info["journalist"] = article_content["journalist"]
 
         return {
             "article_info": final_article_info,
@@ -271,7 +281,7 @@ class ArticleAnalyzer:
 **톤**: 직접적, 건설적 비판, 전문가 대 전문가
 **어투**: "당신의 기사는..." (2인칭 직접), "~하세요", "~해야 합니다" (권유/명령형)
 **구조**:
-- 도입: "시민 주도의 CR 프로젝트를 통해 귀하의 기사를 평가했습니다. 이 평가는 함께 더 나은 저널리즘을 만들어가기 위한 목적으로..."
+- 도입: "시민 주도 CR 프로젝트를 통해 귀하의 기사를 평가했습니다. 이 평가는 책임 있는 저널리즘을 만들어가기 위한 목적으로 작성되었으며, 건설적 비판을 통해 언론 신뢰도 향상에 기여하고자 합니다."
 - 본론: "당신의 기사는 [문제점]입니다. 이는 [윤리규범]을 위반하는 것입니다."
 - 개선안: "예를 들어, '[구체적 예시]'와 같은 방식으로 표현할 수 있습니다"
 - 결론: "이러한 개선은... 언론의 본질적 역할을 수행하기 위해 필요합니다. 이 평가가 더 나은 저널리즘을 위한 소중한 참고 자료가 되기를 바랍니다."
