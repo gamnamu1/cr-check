@@ -288,26 +288,78 @@ export function ResultViewer({ result, onReset }: ResultViewerProps) {
         </motion.div>
 
         {/* Action Bar */}
+        {/* Action Bar */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center"
+          className="flex flex-col sm:flex-row gap-4 items-center justify-between"
         >
-          <button
-            onClick={() => setShowPreviewModal(true)}
-            className="flex items-center justify-center gap-2 px-8 py-4 bg-amber-500 hover:bg-amber-600 text-white rounded-xl transition-all transform hover:scale-[1.02]"
-          >
-            <FileDown className="w-5 h-5" />
-            <span>리포트 문서 저장 (TXT)</span>
-          </button>
+          {/* Left: Analyze Another (Back) */}
           <button
             onClick={onReset}
-            className="flex items-center justify-center gap-2 px-8 py-4 bg-white hover:bg-navy-50 text-navy-900 border-2 border-navy-200 rounded-xl transition-all"
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-white hover:bg-navy-50 text-navy-900 border-2 border-navy-200 rounded-xl transition-all order-2 sm:order-1"
           >
             <ArrowLeft className="w-5 h-5" />
             <span>다른 기사 분석하기</span>
           </button>
+
+          {/* Center: Save Report */}
+          <button
+            onClick={() => setShowPreviewModal(true)}
+            className="flex items-center justify-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-600 text-white rounded-xl transition-all transform hover:scale-[1.02] shadow-md order-1 sm:order-2"
+          >
+            <FileDown className="w-5 h-5" />
+            <span>리포트 문서 저장 (TXT)</span>
+          </button>
+
+          {/* Right: SNS Share Buttons */}
+          <div className="flex gap-2 order-3">
+            {/* Facebook */}
+            <button
+              onClick={() => {
+                const url = encodeURIComponent(window.location.href);
+                window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank');
+              }}
+              className="w-10 h-10 rounded-full bg-[#1877F2] text-white flex items-center justify-center hover:scale-110 transition-transform shadow-sm"
+              title="페이스북 공유"
+            >
+              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                <path d="M9.101 23.691v-7.98H6.627v-3.667h2.474v-1.58c0-4.085 1.848-5.978 5.858-5.978.401 0 .955.042 1.468.103a8.68 8.68 0 0 1 1.141.195v3.325a8.623 8.623 0 0 0-.653-.036c-2.148 0-2.971.956-2.971 3.035v.938h4.028l-.676 3.667h-3.352v7.98h-5.022z" />
+              </svg>
+            </button>
+
+            {/* X (Twitter) */}
+            <button
+              onClick={() => {
+                const text = encodeURIComponent(`[CR-Check] 기사 분석 결과\n"${result.article_info.title}"\n\n시민을 위한 종합 리포트를 확인해보세요.`);
+                const url = encodeURIComponent(window.location.href);
+                window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, '_blank');
+              }}
+              className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center hover:scale-110 transition-transform shadow-sm"
+              title="X(트위터) 공유"
+            >
+              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              </svg>
+            </button>
+
+            {/* KakaoTalk (Copy Link Fallback) */}
+            <button
+              onClick={() => {
+                const text = `[CR-Check] 기사 분석 결과\n\n제목: ${result.article_info.title}\n\n매체: ${result.article_info.publisher || '미확인'}\n기자: ${result.article_info.journalist || '미확인'}\n\n*상세 리포트는 PC에서 확인해주세요.`;
+                navigator.clipboard.writeText(text).then(() => {
+                  alert('카카오톡 공유를 위해 요약 내용이 클립보드에 복사되었습니다.\n카카오톡 대화창에 붙여넣기(Ctrl+V) 해주세요.');
+                });
+              }}
+              className="w-10 h-10 rounded-full bg-[#FEE500] text-[#000000] flex items-center justify-center hover:scale-110 transition-transform shadow-sm"
+              title="카카오톡 공유 (클립보드 복사)"
+            >
+              <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                <path d="M12 3c-4.97 0-9 3.185-9 7.115 0 2.557 1.707 4.8 4.27 6.054-.188.702-.682 2.545-.78 2.94-.122.49.178.483.376.351.279-.186 3.045-2.1 4.265-2.94a9.773 9.773 0 0 0 .869.045c4.97 0 9-3.186 9-7.115C21 6.185 16.97 3 12 3" />
+              </svg>
+            </button>
+          </div>
         </motion.div>
       </main>
 
