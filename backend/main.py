@@ -23,6 +23,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",  # 로컬 개발
         "https://cr-check.com",   # 프로덕션 (예시)
+        "https://cr-check.vercel.app", # Vercel 배포
+        "https://www.cr-check.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
