@@ -16,8 +16,9 @@ export function MainAnalysisCenter({ onAnalyze }: MainAnalysisCenterProps) {
       return;
     }
 
-    // Robust URL validation regex from feedback
-    const urlPattern = /^https?:\/\/([\w\-]+\.)+[\w\-]+(\/[\w\-._~:/?#[\]@!$&'()*+,;=]*)?$/;
+    // Robust URL validation regex (Modified to allow Korean characters in path)
+    // Allow http/https, domain, and any non-whitespace characters in path
+    const urlPattern = /^https?:\/\/[^\s/$.?#].[^\s]*$/;
 
     if (!urlPattern.test(content.trim())) {
       alert("정확한 뉴스 기사의 URL을 입력해 주세요. (http:// 또는 https:// 포함)");
@@ -39,6 +40,8 @@ export function MainAnalysisCenter({ onAnalyze }: MainAnalysisCenterProps) {
       /news\.sbs\.co\.kr/,
       /yna\.co\.kr/,
       /newsis\.com/,
+      /news\.nate\.com/,
+      /news\.zum\.com/,
     ];
 
     const isNewsUrl = newsPatterns.some(pattern => pattern.test(content));

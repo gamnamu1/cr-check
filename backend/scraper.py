@@ -45,7 +45,12 @@ class ArticleScraper:
             # 페이지 가져오기
             response = requests.get(url, headers=self.headers, timeout=10)
             response.raise_for_status()
-            response.encoding = 'utf-8'
+            
+            # 인코딩 설정
+            if 'news.nate.com' in url:
+                response.encoding = 'euc-kr'
+            elif response.encoding == 'ISO-8859-1':
+                response.encoding = response.apparent_encoding
 
             # HTML 파싱
             soup = BeautifulSoup(response.text, 'html.parser')
@@ -56,6 +61,12 @@ class ArticleScraper:
             # 다음 뉴스 감지
             elif 'news.daum.net' in url:
                 return self._scrape_daum(soup, url)
+            # 네이트 뉴스 감지
+            elif 'news.nate.com' in url:
+                return self._scrape_nate(soup, url)
+            # 줌 뉴스 감지
+            elif 'news.zum.com' in url:
+                return self._scrape_zum(soup, url)
             # 일반 뉴스 사이트
             else:
                 return self._scrape_generic(soup, url)
@@ -138,6 +149,80 @@ class ArticleScraper:
 
         content = self._clean_text(content_elem.get_text())
 
+        return {
+            "title": title,
+            "content": content,
+            "url": url
+        }
+
+    def _scrape_nate(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """네이트 뉴스 스크래핑"""
+        # 제목 추출 - og:title 메타 태그 또는 title 태그
+        title_elem = soup.select_one('meta[property="og:title"]')
+        if title_elem:
+            title = title_elem.get('content', '')
+            # " : 네이트 뉴스" 제거
+            title = title.replace(' : 네이트 뉴스', '').strip()
+        else:
+            title_elem = soup.find('title')
+            if title_elem:
+                title = self._clean_text(title_elem.get_text())
+                title = title.replace(' : 네이트 뉴스', '').strip()
+            else:
+                raise ValueError("네이트 뉴스 제목을 찾을 수 없습니다.")
+        
+        # 본문 추출
+        content_elem = soup.select_one('#realArtcContents')
+        
+        if not content_elem:
+            raise ValueError("네이트 뉴스 본문을 찾을 수 없습니다.")
+        
+        # 불필요한 요소 제거
+        for tag in content_elem.select('script, style, .ad, .advertisement, .relation'):
+            tag.decompose()
+            
+        # 하단 링크 모음 등 불필요한 p 태그 제거
+        for p in content_elem.select('p'):
+            # 링크가 포함되어 있거나 '인/기/기/사' 같은 텍스트가 있는 경우 제거
+            if p.find('a') or '인/기/기/사' in p.get_text():
+                p.decompose()
+        
+        content = self._clean_text(content_elem.get_text())
+        
+        return {
+            "title": title,
+            "content": content,
+            "url": url
+        }
+
+    def _scrape_zum(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """줌 뉴스 스크래핑"""
+        # 제목 추출 - og:title 메타 태그
+        title_elem = soup.select_one('meta[property="og:title"]')
+        if title_elem:
+            title = title_elem.get('content', '')
+            # " : zum 뉴스" 제거
+            title = title.replace(' : zum 뉴스', '').strip()
+        else:
+            title_elem = soup.find('title')
+            if title_elem:
+                title = self._clean_text(title_elem.get_text())
+                title = title.replace(' : zum 뉴스', '').strip()
+            else:
+                raise ValueError("줌 뉴스 제목을 찾을 수 없습니다.")
+        
+        # 본문 추출 - article 태그
+        content_elem = soup.find('article')
+        
+        if not content_elem:
+            raise ValueError("줌 뉴스 본문을 찾을 수 없습니다.")
+        
+        # 불필요한 요소 제거
+        for tag in content_elem.select('script, style, .ad, .advertisement, figure, img'):
+            tag.decompose()
+        
+        content = self._clean_text(content_elem.get_text())
+        
         return {
             "title": title,
             "content": content,
