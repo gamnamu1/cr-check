@@ -441,9 +441,8 @@ class ArticleScraper:
             title = self._clean_text(title_elem.get_text())
         
         # 본문: article 태그 또는 div#news-contents
-        content_elem = soup.find('article')
-        if not content_elem:
-            content_elem = soup.select_one('div#news-contents') or soup.select_one('div.news-con')
+        # 본문: div#news-contents 우선 검색 후 article 태그 검색
+        content_elem = soup.select_one('div#news-contents') or soup.select_one('div.news-con') or soup.find('article')
         
         if not content_elem:
             # 본문이 여러 p 태그로 구성된 경우
@@ -671,7 +670,7 @@ class ArticleScraper:
         if not title:
             raise ValueError("아시아투데이 제목을 찾을 수 없습니다.")
         
-        content_elem = soup.find('article') or soup.select_one('div#articleBody')
+        content_elem = soup.select_one('div.news_bm') or soup.find('article') or soup.select_one('div#articleBody')
         content = ''
         if content_elem:
             for tag in content_elem.select('script, style, .ad, figure, img'):
@@ -752,7 +751,7 @@ class ArticleScraper:
         if not title:
             raise ValueError("동아일보 제목을 찾을 수 없습니다.")
         
-        content_elem = soup.select_one('div.article_txt') or soup.find('article')
+        content_elem = soup.select_one('section.news_view') or soup.select_one('div.article_txt') or soup.find('article')
         content = ''
         if content_elem:
             for tag in content_elem.select('script, style, .ad, figure, img'):
