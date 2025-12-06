@@ -15,6 +15,7 @@ class ArticleScraper:
     - 네이버 뉴스
     - 다음 뉴스
     - 주요 언론사 직접 URL
+    - 경제지 (13개사)
     """
 
     def __init__(self):
@@ -51,7 +52,7 @@ class ArticleScraper:
             # 인코딩 처리
             if any(domain in url for domain in ['news.nate.com', 'kmib.co.kr']):
                 response.encoding = 'euc-kr'
-            elif any(domain in url for domain in ['seoul.co.kr', 'hankookilbo.com', 'munhwa.com', 'segye.com', 'khan.co.kr', 'naeil.com', 'asiatoday.co.kr', 'edaily.co.kr']):
+            elif any(domain in url for domain in ['seoul.co.kr', 'hankookilbo.com', 'munhwa.com', 'segye.com', 'khan.co.kr', 'naeil.com', 'asiatoday.co.kr', 'edaily.co.kr', 'ekn.kr', 'asiae.co.kr', 'sedaily.com', 'viva100.com', 'mk.co.kr', 'dnews.co.kr', 'biz.heraldcorp.com', 'fnnews.com', 'etoday.co.kr']):
                 response.encoding = 'utf-8'
             elif response.encoding == 'ISO-8859-1':
                 # 헤더에 charset이 없어서 기본값(ISO-8859-1)으로 설정된 경우, 내용 기반 추측 사용
@@ -106,6 +107,27 @@ class ArticleScraper:
                 return self._scrape_hani(soup, url)
             elif 'hankookilbo.com' in url:
                 return self._scrape_hankook(soup, url)
+            # 경제지
+            elif 'edaily.co.kr' in url:
+                return self._scrape_edaily(soup, url)
+            elif 'ekn.kr' in url:
+                return self._scrape_ekn(soup, url)
+            elif 'asiae.co.kr' in url:
+                return self._scrape_asiae(soup, url)
+            elif 'sedaily.com' in url:
+                return self._scrape_sedaily(soup, url)
+            elif 'viva100.com' in url:
+                return self._scrape_viva100(soup, url)
+            elif 'mk.co.kr' in url:
+                return self._scrape_mk(soup, url)
+            elif 'dnews.co.kr' in url:
+                return self._scrape_dnews(soup, url)
+            elif 'biz.heraldcorp.com' in url:
+                return self._scrape_herald(soup, url)
+            elif 'fnnews.com' in url:
+                return self._scrape_fnnews(soup, url)
+            elif 'etoday.co.kr' in url:
+                return self._scrape_etoday(soup, url)
             # 일반 뉴스 사이트
             else:
                 return self._scrape_generic(soup, url)
@@ -960,6 +982,256 @@ class ArticleScraper:
                 return self._clean_text(elem.get_text())
                 
         return "미확인"
+
+    # ============================================
+    # 경제지 스크래퍼
+    # ============================================
+
+    def _scrape_edaily(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """이데일리 스크래핑"""
+        title = self._extract_title(soup)
+        if not title:
+            raise ValueError("이데일리 제목을 찾을 수 없습니다.")
+        
+        content_elem = soup.find('div', class_='news_body') or soup.find('div', id='newsContent')
+        if not content_elem:
+            raise ValueError("이데일리 본문을 찾을 수 없습니다.")
+        
+        for tag in content_elem.select('script, style, .ad, figure, img, .news_domino'):
+            tag.decompose()
+        content = self._clean_text(content_elem.get_text())
+        
+        return {
+            "title": title,
+            "content": content,
+            "url": url,
+            "publisher": "이데일리",
+            "publish_date": self._extract_publish_date(soup),
+            "journalist": self._extract_journalist(soup, pattern=r'([가-힣]{2,4})\s*기자')
+        }
+
+    def _scrape_ekn(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """에너지경제신문 스크래핑"""
+        title = self._extract_title(soup)
+        if not title:
+            raise ValueError("에너지경제신문 제목을 찾을 수 없습니다.")
+        
+        content_elem = soup.find('div', id='news_body_area_contents') or soup.find('div', class_='view-text') or soup.find('div', class_='article_body')
+        if not content_elem:
+            raise ValueError("에너지경제신문 본문을 찾을 수 없습니다.")
+        
+        for tag in content_elem.select('script, style, .ad, figure, img'):
+            tag.decompose()
+        content = self._clean_text(content_elem.get_text())
+        
+        return {
+            "title": title,
+            "content": content,
+            "url": url,
+            "publisher": "에너지경제신문",
+            "publish_date": self._extract_publish_date(soup),
+            "journalist": self._extract_journalist(soup, pattern=r'([가-힣]{2,4})\s*기자')
+        }
+
+    def _scrape_asiae(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """아시아경제 스크래핑"""
+        title = self._extract_title(soup)
+        if not title:
+            raise ValueError("아시아경제 제목을 찾을 수 없습니다.")
+        
+        content_elem = soup.find('div', class_='txt_area') or soup.find('div', id='txt_area') or soup.find('div', itemprop='articleBody')
+        if not content_elem:
+             # Fallback to generic article body
+             content_elem = soup.find('div', class_='article_view')
+        
+        if not content_elem:
+            raise ValueError("아시아경제 본문을 찾을 수 없습니다.")
+        
+        # Remove ad related divs
+        for tag in content_elem.select('script, style, .ad, figure, img, .art_ad, .google_ad'):
+            tag.decompose()
+        content = self._clean_text(content_elem.get_text())
+        
+        return {
+            "title": title,
+            "content": content,
+            "url": url,
+            "publisher": "아시아경제",
+            "publish_date": self._extract_publish_date(soup),
+            "journalist": self._extract_journalist(soup, pattern=r'([가-힣]{2,4})\s*기자')
+        }
+
+    def _scrape_sedaily(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """서울경제 스크래핑"""
+        title = self._extract_title(soup)
+        if not title:
+            raise ValueError("서울경제 제목을 찾을 수 없습니다.")
+        
+        content_elem = soup.find('div', class_='article_view') or soup.find('div', id='articleBody')
+        if not content_elem:
+            raise ValueError("서울경제 본문을 찾을 수 없습니다.")
+        
+        for tag in content_elem.select('script, style, .ad, figure, img'):
+            tag.decompose()
+        content = self._clean_text(content_elem.get_text())
+        
+        return {
+            "title": title,
+            "content": content,
+            "url": url,
+            "publisher": "서울경제",
+            "publish_date": self._extract_publish_date(soup),
+            "journalist": self._extract_journalist(soup, pattern=r'([가-힣]{2,4})\s*기자')
+        }
+
+    def _scrape_viva100(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """브릿지경제 스크래핑"""
+        title = self._extract_title(soup)
+        if not title:
+            raise ValueError("브릿지경제 제목을 찾을 수 없습니다.")
+        
+        content_elem = soup.find('div', class_='news_content') or soup.find('div', class_='article_detail_area') or soup.find('div', class_='view_con')
+        if not content_elem:
+            raise ValueError("브릿지경제 본문을 찾을 수 없습니다.")
+        
+        for tag in content_elem.select('script, style, .ad, figure, img'):
+            tag.decompose()
+        content = self._clean_text(content_elem.get_text())
+        
+        return {
+            "title": title,
+            "content": content,
+            "url": url,
+            "publisher": "브릿지경제",
+            "publish_date": self._extract_publish_date(soup),
+            "journalist": self._extract_journalist(soup, pattern=r'([가-힣]{2,4})\s*기자')
+        }
+
+    def _scrape_mk(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """매일경제 스크래핑"""
+        title = self._extract_title(soup)
+        
+        # 매일경제는 종종 h1이 없고 news_title_text 클래스 사용
+        if not title:
+            title_elem = soup.find('h2', class_='news_title_text') or soup.find('div', class_='news_title_text')
+            if title_elem:
+                title = self._clean_text(title_elem.get_text())
+        
+        if not title:
+            raise ValueError("매일경제 제목을 찾을 수 없습니다.")
+        
+        content_elem = soup.find('div', class_='news_cnt_detail_wrap') or soup.find('div', itemprop='articleBody')
+        if not content_elem:
+             # Fallback
+             content_elem = soup.find('div', class_='art_txt')
+
+        if not content_elem:
+            raise ValueError("매일경제 본문을 찾을 수 없습니다.")
+        
+        for tag in content_elem.select('script, style, .ad, figure, img, .mapping_group'):
+            tag.decompose()
+        content = self._clean_text(content_elem.get_text())
+        
+        return {
+            "title": title,
+            "content": content,
+            "url": url,
+            "publisher": "매일경제",
+            "publish_date": self._extract_publish_date(soup),
+            "journalist": self._extract_journalist(soup, pattern=r'([가-힣]{2,4})\s*기자')
+        }
+
+    def _scrape_dnews(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """e대한경제 스크래핑"""
+        title = self._extract_title(soup)
+        if not title:
+            raise ValueError("e대한경제 제목을 찾을 수 없습니다.")
+        
+        content_elem = soup.find('div', class_='newsCont') or soup.find('div', class_='viewCont') or soup.find('div', id='articleBody')
+        if not content_elem:
+            raise ValueError("e대한경제 본문을 찾을 수 없습니다.")
+        
+        for tag in content_elem.select('script, style, .ad, figure, img'):
+            tag.decompose()
+        content = self._clean_text(content_elem.get_text())
+        
+        return {
+            "title": title,
+            "content": content,
+            "url": url,
+            "publisher": "e대한경제",
+            "publish_date": self._extract_publish_date(soup),
+            "journalist": self._extract_journalist(soup, pattern=r'([가-힣]{2,4})\s*기자')
+        }
+
+    def _scrape_herald(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """헤럴드경제 스크래핑"""
+        title = self._extract_title(soup)
+        if not title:
+            raise ValueError("헤럴드경제 제목을 찾을 수 없습니다.")
+        
+        content_elem = soup.find('div', id='article_text') or soup.find('article', id='articleText') or soup.find('div', class_='article_view')
+        if not content_elem:
+            raise ValueError("헤럴드경제 본문을 찾을 수 없습니다.")
+        
+        for tag in content_elem.select('script, style, .ad, figure, img'):
+            tag.decompose()
+        content = self._clean_text(content_elem.get_text())
+        
+        return {
+            "title": title,
+            "content": content,
+            "url": url,
+            "publisher": "헤럴드경제",
+            "publish_date": self._extract_publish_date(soup),
+            "journalist": self._extract_journalist(soup, pattern=r'([가-힣]{2,4})\s*기자')
+        }
+
+    def _scrape_fnnews(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """파이낸셜뉴스 스크래핑"""
+        title = self._extract_title(soup)
+        if not title:
+            raise ValueError("파이낸셜뉴스 제목을 찾을 수 없습니다.")
+        
+        content_elem = soup.find('div', id='article_content') or soup.find('div', class_='article_content')
+        if not content_elem:
+            raise ValueError("파이낸셜뉴스 본문을 찾을 수 없습니다.")
+        
+        for tag in content_elem.select('script, style, .ad, figure, img'):
+            tag.decompose()
+        content = self._clean_text(content_elem.get_text())
+        
+        return {
+            "title": title,
+            "content": content,
+            "url": url,
+            "publisher": "파이낸셜뉴스",
+            "publish_date": self._extract_publish_date(soup),
+            "journalist": self._extract_journalist(soup, pattern=r'([가-힣]{2,4})\s*기자')
+        }
+
+    def _scrape_etoday(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """이투데이 스크래핑"""
+        title = self._extract_title(soup)
+        if not title:
+            raise ValueError("이투데이 제목을 찾을 수 없습니다.")
+        
+        content_elem = soup.find('div', class_='view_contents') or soup.find('div', class_='articleView') or soup.find('div', class_='article_view')
+        if not content_elem:
+            raise ValueError("이투데이 본문을 찾을 수 없습니다.")
+        
+        for tag in content_elem.select('script, style, .ad, figure, img'):
+            tag.decompose()
+        content = self._clean_text(content_elem.get_text())
+        
+        return {
+            "title": title,
+            "content": content,
+            "url": url,
+            "publisher": "이투데이",
+            "publish_date": self._extract_publish_date(soup),
+            "journalist": self._extract_journalist(soup, pattern=r'([가-힣]{2,4})\s*기자')
+        }
 
     def _clean_text(self, text: str) -> str:
         """텍스트 정제"""

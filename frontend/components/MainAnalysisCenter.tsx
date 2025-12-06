@@ -52,6 +52,20 @@ export function MainAnalysisCenter({ onAnalyze }: MainAnalysisCenterProps) {
       /newspim\.com/,
       /news\.nate\.com/,
       /news\.zum\.com/,
+      // Economic Newspapers
+      /\.edaily\.co\.kr/,
+      /\.ekn\.kr/,
+      /\.asiae\.co\.kr/,
+      /\.sedaily\.com/,
+      /\.viva100\.com/,
+      /\.mt\.co\.kr/,
+      /\.mk\.co\.kr/,
+      /\.dnews\.co\.kr/,
+      /\.hankyung\.com/,
+      /biz\.heraldcorp\.com/,
+      /\.fnnews\.com/,
+      /\.ajunews\.com/,
+      /\.etoday\.co\.kr/,
     ];
 
     const isNewsUrl = newsPatterns.some(pattern => pattern.test(content));
