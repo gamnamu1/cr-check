@@ -120,6 +120,8 @@ class ArticleScraper:
                 return self._scrape_viva100(soup, url)
             elif 'mk.co.kr' in url:
                 return self._scrape_mk(soup, url)
+            elif 'hankyung.com' in url:
+                return self._scrape_hankyung(soup, url)
             elif 'dnews.co.kr' in url:
                 return self._scrape_dnews(soup, url)
             elif 'biz.heraldcorp.com' in url:
@@ -610,6 +612,56 @@ class ArticleScraper:
             "journalist": self._extract_journalist(soup)
         }
 
+    def _scrape_hankyung(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """한국경제 스크래핑"""
+        # Title: use og:title or second h1 (first is "경제")
+        title = ""
+        og_title = soup.find('meta', property='og:title')
+        if og_title:
+            title = og_title.get('content', '')
+        else:
+            h1_tags = soup.find_all('h1')
+            if len(h1_tags) > 1:
+                title = self._clean_text(h1_tags[1].get_text())
+            elif h1_tags:
+                title = self._clean_text(h1_tags[0].get_text())
+        
+        if not title or title == "경제":
+            raise ValueError("한국경제 제목을 찾을 수 없습니다.")
+        
+        # Content: use generic scraper logic
+        content_elem = None
+        for selector in ['article', '[class*="article"]', '[class*="content"]', '[id*="article"]', '[id*="content"]']:
+            content_elem = soup.select_one(selector)
+            if content_elem and len(content_elem.get_text(strip=True)) > 100:
+                break
+        
+        if not content_elem:
+            raise ValueError("한국경제 본문을 찾을 수 없습니다.")
+        
+        for tag in content_elem.select('script, style, .ad, figure, img'):
+            tag.decompose()
+        content = self._clean_text(content_elem.get_text())
+        
+        # Extract journalist name from .author element
+        journalist = "미확인"
+        author_elem = soup.select_one('.author')
+        if author_elem:
+            author_text = author_elem.get_text()
+            # Extract only the name part (before "기자" or "구독")
+            match = re.search(r'([가-힣]{2,4})\s*기자', author_text)
+            if match:
+                journalist = match.group(1) + " 기자"
+        
+        return {
+            "title": title,
+            "content": content,
+            "url": url,
+            "publisher": "한국경제",
+            "publish_date": self._extract_publish_date(soup),
+            "journalist": journalist
+        }
+
     def _scrape_hankook(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
         """한국일보 스크래핑"""
         title = self._extract_title(soup, 'h1.title')
@@ -1001,13 +1053,22 @@ class ArticleScraper:
             tag.decompose()
         content = self._clean_text(content_elem.get_text())
         
+        # Extract journalist from reporter class
+        journalist_elem = soup.select_one('[class*="reporter"]')
+        journalist = "미확인"
+        if journalist_elem:
+            journalist_text = journalist_elem.get_text()
+            match = re.search(r'([가-힣]{2,4})\s*기자', journalist_text)
+            if match and match.group(1) not in ['소문칼럼', '경력', '모집', '기자구독']:
+                journalist = match.group(1) + " 기자"
+        
         return {
             "title": title,
             "content": content,
             "url": url,
             "publisher": "이데일리",
             "publish_date": self._extract_publish_date(soup),
-            "journalist": self._extract_journalist(soup, pattern=r'([가-힣]{2,4})\s*기자')
+            "journalist": journalist
         }
 
     def _scrape_ekn(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
@@ -1024,13 +1085,22 @@ class ArticleScraper:
             tag.decompose()
         content = self._clean_text(content_elem.get_text())
         
+        # Extract journalist from reporter class
+        journalist_elem = soup.select_one('[class*="reporter"]')
+        journalist = "미확인"
+        if journalist_elem:
+            journalist_text = journalist_elem.get_text()
+            match = re.search(r'([가-힣]{2,4})(?:@|기자)', journalist_text)
+            if match:
+                journalist = match.group(1) + " 기자"
+        
         return {
             "title": title,
             "content": content,
             "url": url,
             "publisher": "에너지경제신문",
             "publish_date": self._extract_publish_date(soup),
-            "journalist": self._extract_journalist(soup, pattern=r'([가-힣]{2,4})\s*기자')
+            "journalist": journalist
         }
 
     def _scrape_asiae(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
@@ -1067,7 +1137,11 @@ class ArticleScraper:
         if not title:
             raise ValueError("서울경제 제목을 찾을 수 없습니다.")
         
-        content_elem = soup.find('div', class_='article_view') or soup.find('div', id='articleBody')
+        # Try multiple content selectors
+        content_elem = (soup.find('div', class_='article_body') or 
+                       soup.find('div', id='article_body') or
+                       soup.find('div', class_='article_view') or
+                       soup.find('div', id='articleBody'))
         if not content_elem:
             raise ValueError("서울경제 본문을 찾을 수 없습니다.")
         
@@ -1075,13 +1149,22 @@ class ArticleScraper:
             tag.decompose()
         content = self._clean_text(content_elem.get_text())
         
+        # Extract journalist from reporter class
+        journalist_elem = soup.select_one('[class*="reporter"]')
+        journalist = "미확인"
+        if journalist_elem:
+            journalist_text = journalist_elem.get_text()
+            match = re.search(r'([가-힣]{2,4})\s*기자', journalist_text)
+            if match and match.group(1) not in ['로그인', '구독', '스타', '견습']:
+                journalist = match.group(1) + " 기자"
+        
         return {
             "title": title,
             "content": content,
             "url": url,
             "publisher": "서울경제",
             "publish_date": self._extract_publish_date(soup),
-            "journalist": self._extract_journalist(soup, pattern=r'([가-힣]{2,4})\s*기자')
+            "journalist": journalist
         }
 
     def _scrape_viva100(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
@@ -1155,13 +1238,25 @@ class ArticleScraper:
             tag.decompose()
         content = self._clean_text(content_elem.get_text())
         
+        # Extract journalist name - look for pattern with or without space
+        full_text = soup.get_text()
+        journalist = "미확인"
+        # Pattern allows optional space before 기자
+        matches = re.findall(r'([가-힣]{2,4})\s*기자', full_text)
+        blacklist = ['칼럼', '부김광', '도중', '이메일', '페이스북', '전체']
+        for match in matches:
+            # Filter out blacklisted and check if it's a real name
+            if match not in blacklist and not any(bl in match for bl in blacklist):
+                journalist = match + " 기자"
+                break
+        
         return {
             "title": title,
             "content": content,
             "url": url,
             "publisher": "e대한경제",
             "publish_date": self._extract_publish_date(soup),
-            "journalist": self._extract_journalist(soup, pattern=r'([가-힣]{2,4})\s*기자')
+            "journalist": journalist
         }
 
     def _scrape_herald(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
@@ -1207,7 +1302,7 @@ class ArticleScraper:
             "url": url,
             "publisher": "파이낸셜뉴스",
             "publish_date": self._extract_publish_date(soup),
-            "journalist": self._extract_journalist(soup, pattern=r'([가-힣]{2,4})\s*기자')
+            "journalist": self._extract_journalist(soup, selector='.writer')
         }
 
     def _scrape_etoday(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
