@@ -130,6 +130,24 @@ class ArticleScraper:
                 return self._scrape_fnnews(soup, url)
             elif 'etoday.co.kr' in url:
                 return self._scrape_etoday(soup, url)
+            # 전문지
+            elif 'dt.co.kr' in url:
+                return self._scrape_dt(soup, url)
+            elif 'mediatoday.co.kr' in url:
+                return self._scrape_mediatoday(soup, url)
+            elif 'mediaus.co.kr' in url:
+                return self._scrape_mediaus(soup, url)
+            elif 'journalist.or.kr' in url:
+                return self._scrape_journalist_kr(soup, url)
+            # 인터넷신문
+            elif 'pennmike.com' in url:
+                return self._scrape_pennmike(soup, url)
+            elif 'pressian.com' in url:
+                return self._scrape_pressian(soup, url)
+            elif 'mindlenews.com' in url:
+                return self._scrape_mindle(soup, url)
+            elif 'ohmynews.com' in url:
+                return self._scrape_ohmynews(soup, url)
             # 일반 뉴스 사이트
             else:
                 return self._scrape_generic(soup, url)
@@ -1021,33 +1039,55 @@ class ArticleScraper:
                     return False
             return True
         
-        # 1. 메타 태그 (author)
-        author_tag = soup.select_one('meta[name="author"]')
-        if author_tag:
-            content = author_tag.get('content', '')
-            # 메타 태그에서도 이름만 추출
-            match = re.search(r'([가-힣]{2,4})\s*기자', content)
-            if match and is_valid_name(match.group(1)):
-                return match.group(1) + " 기자"
-            elif content and is_valid_name(content.strip()):
-                return content.strip() + " 기자"
+        # 1. 메타 태그 (author, og:article:author, dable:author)
+        meta_names = ['author', 'og:article:author', 'dable:author', 'byl']
+        for name in meta_names:
+            author_tag = soup.find('meta', property=name) or soup.find('meta', attrs={'name': name})
+            if author_tag:
+                content = author_tag.get('content', '')
+                if not content: continue
+                
+                # 메타 태그에서 이름 추출 (기자, 에디터)
+                # 1. "OOO 기자" 패턴
+                match = re.search(r'([가-힣]{2,4})\s*기자', content)
+                if match and is_valid_name(match.group(1)):
+                    return match.group(1) + " 기자"
+                
+                # 2. "OOO 에디터" 패턴
+                match = re.search(r'([가-힣]{2,4})\s*에디터', content)
+                if match and is_valid_name(match.group(1)):
+                    return match.group(1) + " 기자"
+
+                # 3. 이름만 있는 경우 (검증 후 사용)
+                clean_name = content.strip()
+                if is_valid_name(clean_name):
+                    return clean_name + " 기자"
         
         # 2. Selector 방식
         if selector:
             elem = soup.select_one(selector)
             if elem:
                 text = elem.get_text()
-                # 띄어쓰기 유무 상관없이 매칭 (\s* = 0개 이상의 공백)
+                # 띄어쓰기 유무 상관없이 매칭
                 match = re.search(r'([가-힣]{2,4})\s*기자', text)
                 if match and is_valid_name(match.group(1)):
                     return match.group(1) + " 기자"
-                # 패턴이 추가로 제공된 경우
+                
+                # 에디터 패턴 추가
+                match = re.search(r'([가-힣]{2,4})\s*에디터', text)
+                if match and is_valid_name(match.group(1)):
+                    return match.group(1) + " 기자"
+
                 if pattern:
                     match = re.search(pattern, text)
                     if match and is_valid_name(match.group(1)):
                         return match.group(1) + " 기자"
         
-        # 3. 전체 텍스트에서 패턴 검색 (띄어쓰기 유무 자동 처리)
+        # 3. 전체 텍스트에서 패턴 검색
+        full_text = soup.get_text()
+        search_pattern = pattern if pattern else r'([가-힣]{2,4})\s*기자'
+        # 에디터 패턴도 검색? (일단 기자 패턴만 유지하되, 필요시 확장)
+
         full_text = soup.get_text()
         
         # 기본 패턴 또는 사용자 제공 패턴 사용
@@ -1332,6 +1372,173 @@ class ArticleScraper:
             "publisher": "이투데이",
             "publish_date": self._extract_publish_date(soup),
             "journalist": self._extract_journalist(soup, pattern=r'([가-힣]{2,4})\s*기자')
+        }
+
+    # ============================================
+    # 전문지/인터넷신문 스크래퍼
+    # ============================================
+
+    def _scrape_dt(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """디지털타임스 스크래핑"""
+        title = self._extract_title(soup, 'h1.tit')
+        if not title:
+            raise ValueError("디지털타임스 제목을 찾을 수 없습니다.")
+        
+        content_elem = soup.select_one('section.article-body') or soup.find('div', class_='article_txt')
+        if not content_elem:
+            raise ValueError("디지털타임스 본문을 찾을 수 없습니다.")
+            
+        for tag in content_elem.select('script, style, .ad, figure, img'):
+            tag.decompose()
+        content = self._clean_text(content_elem.get_text())
+        
+        return {
+            "title": title,
+            "content": content,
+            "url": url,
+            "publisher": "디지털타임스",
+            "publish_date": self._extract_publish_date(soup),
+            "journalist": self._extract_journalist(soup, selector='.writer')
+        }
+
+    def _scrape_mediatoday(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """미디어오늘 스크래핑"""
+        return self._scrape_ndsoft_generic(soup, url, "미디어오늘")
+
+    def _scrape_mediaus(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """미디어스 스크래핑"""
+        return self._scrape_ndsoft_generic(soup, url, "미디어스")
+
+    def _scrape_journalist_kr(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """기자협회보 스크래핑"""
+        # 제목
+        title = self._extract_title(soup, '.heading')
+        
+        # 본문
+        content_elem = soup.select_one('#article_view') or soup.find('div', class_='article_view')
+        if content_elem:
+           for tag in content_elem.select('script, style, .ad, figure, img'):
+               tag.decompose()
+           content = self._clean_text(content_elem.get_text())
+        else:
+           # Fallback to generic
+           return self._scrape_ndsoft_generic(soup, url, "기자협회보")
+
+        return {
+            "title": title,
+            "content": content,
+            "url": url,
+            "publisher": "기자협회보",
+            "publish_date": self._extract_publish_date(soup, selector='.date_v2'), # Verified selector
+            "journalist": self._extract_journalist(soup, selector='.writer') # Verified selector
+        }
+        
+    def _scrape_pennmike(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """펜앤드마이크 스크래핑"""
+        return self._scrape_ndsoft_generic(soup, url, "펜앤드마이크")
+
+    def _scrape_pressian(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """프레시안 스크래핑"""
+        title = self._extract_title(soup, 'h2')
+        if not title:
+            raise ValueError("프레시안 제목을 찾을 수 없습니다.")
+            
+        content_elem = soup.select_one('.article_body') or soup.select_one('#news_body_area')
+        if not content_elem:
+             raise ValueError("프레시안 본문을 찾을 수 없습니다.")
+             
+        for tag in content_elem.select('script, style, .ad, figure, img'):
+            tag.decompose()
+        content = self._clean_text(content_elem.get_text())
+        
+        return {
+            "title": title,
+            "content": content,
+            "url": url,
+            "publisher": "프레시안",
+            "publish_date": self._extract_publish_date(soup, selector='.date'),
+            "journalist": self._extract_journalist(soup, selector='.reporter_name')
+        }
+
+    def _scrape_mindle(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """민들레 스크래핑"""
+        # _scrape_ndsoft_generic과 유사하지만 기자명 selector를 다르게 설정
+        title = self._extract_title(soup, '.heading')
+        if not title:
+             raise ValueError("민들레 제목을 찾을 수 없습니다.")
+        
+        content_elem = soup.select_one('#article-view-content-div') or soup.find('div', class_='article-body')
+        if not content_elem:
+            raise ValueError("민들레 본문을 찾을 수 없습니다.")
+            
+        for tag in content_elem.select('script, style, .ad, figure, img'):
+            tag.decompose()
+        content = self._clean_text(content_elem.get_text())
+        
+        return {
+            "title": title,
+            "content": content,
+            "url": url,
+            "publisher": "민들레",
+            "publish_date": self._extract_publish_date(soup),
+            # selector=None으로 하여 메타태그 우선 사용, 실패시 전체 텍스트 검색
+            "journalist": self._extract_journalist(soup, selector=None)
+        }
+
+    def _scrape_ohmynews(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """오마이뉴스 스크래핑"""
+        # 제목
+        title = self._extract_title(soup)
+        if not title:
+            raise ValueError("오마이뉴스 제목을 찾을 수 없습니다.")
+            
+        # 본문
+        content_elem = soup.select_one('.at_contents') or soup.find('div', class_='article_view')
+        if not content_elem:
+             raise ValueError("오마이뉴스 본문을 찾을 수 없습니다.")
+             
+        for tag in content_elem.select('script, style, .ad, figure, img, .comment_box'):
+            tag.decompose()
+        content = self._clean_text(content_elem.get_text())
+        
+        return {
+            "title": title,
+            "content": content,
+            "url": url,
+            "publisher": "오마이뉴스",
+            "publish_date": self._extract_publish_date(soup),
+            "journalist": self._extract_journalist(soup)
+        }
+
+    def _scrape_ndsoft_generic(self, soup: BeautifulSoup, url: str, publisher: str) -> Dict[str, str]:
+        """NDSoft 기반 CMS 공용 스크래퍼"""
+        # 제목
+        title = self._extract_title(soup, '.heading')
+        if not title:
+            raise ValueError(f"{publisher} 제목을 찾을 수 없습니다.")
+            
+        # 본문
+        content_elem = (
+            soup.select_one('#article-view-content-div') or 
+            soup.select_one('.article-body') or
+            soup.select_one('#article_view') or
+            soup.select_one('.article_view')
+        )
+        if not content_elem:
+            raise ValueError(f"{publisher} 본문을 찾을 수 없습니다.")
+            
+        for tag in content_elem.select('script, style, .ad, figure, img'):
+            tag.decompose()
+        content = self._clean_text(content_elem.get_text())
+        
+        # 메타데이터
+        return {
+            "title": title,
+            "content": content,
+            "url": url,
+            "publisher": publisher,
+            "publish_date": self._extract_publish_date(soup),
+            "journalist": self._extract_journalist(soup, selector='ul.art_info li')
         }
 
     def _clean_text(self, text: str) -> str:

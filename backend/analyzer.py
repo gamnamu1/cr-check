@@ -258,7 +258,7 @@ class ArticleAnalyzer:
 3. **건설적 대안 제시**: 단순한 비판을 넘어, "어떻게 썼어야 했는지"에 대한 구체적인 대안을 제시하십시오.
 4. **칭찬 요소 발굴**: 기사에 긍정적인 부분(예: 정확한 사실 확인, 피해자 보호 노력 등)이 있다면 반드시 언급하여 균형을 맞추십시오.
 5. **서술형 표현 (점수화 금지)**
-   - 점수, 등급, 백분율 등 정량적 수치 사용 금지
+   - 점수, 등급, 백분율 등 정량적 수치 사용 금지 (예: "100점 만점에 50점", "B등급" 등 절대 금지)
    - 구체적 설명과 사례로 평가 제공
 6. **구체적 인용**
    - 기사에서 문제가 되는 부분을 직접 인용
@@ -335,12 +335,14 @@ class ArticleAnalyzer:
 """
 
         max_retries = 3
+        current_prompt = prompt
+        
         for attempt in range(max_retries):
             try:
                 message = await self.client.messages.create(
                     model=self.phase2_model,
-                    max_tokens=10000,  # 충분한 토큰 할당
-                    messages=[{"role": "user", "content": prompt}]
+                    max_tokens=10000,
+                    messages=[{"role": "user", "content": current_prompt}]
                 )
 
                 response_text = message.content[0].text.strip()
@@ -353,7 +355,6 @@ class ArticleAnalyzer:
                     reports = result_json["reports"]
                     article_analysis = result_json.get("article_analysis", {})
                 else:
-                    # 구버전 호환성 (혹시 모를 경우)
                     reports = result_json
                     article_analysis = {}
 
@@ -371,16 +372,30 @@ class ArticleAnalyzer:
                     "article_analysis": article_analysis
                 }
 
-            except Exception as e:
-                print(f"⚠️ Phase 2 시도 {attempt + 1}/{max_retries} 실패: {e}")
+            except ValueError as ve:
+                print(f"⚠️ Phase 2 검증 실패 ({attempt + 1}/{max_retries}): {ve}")
+                
+                # 점수화 패턴 감지 시 프롬프트에 강력한 경고 추가하여 재시도
+                if "점수화 패턴" in str(ve):
+                    print("🚨 점수화 패턴 감지됨! 재시도 시 교정 지시 추가.")
+                    current_prompt += f"\n\n🚨 [긴급 교정 요청] 이전 답변에서 금지된 '점수화 패턴'이 감지되었습니다.\n오류 내용: {str(ve)}\n\n반드시 점수, 등급, '100점 만점' 등의 수치 표현을 모두 제거하고, 오직 '서술형'으로만 다시 작성해주세요."
+                
                 if attempt == max_retries - 1:
-                    # 최종 실패 시 에러를 명확히 전달 (숨기지 않음)
+                    raise ValueError(
+                        f"리포트 생성에 실패했습니다.\n"
+                        f"원인: {str(ve)}\n"
+                        f"식별된 카테고리: {categories_text}"
+                    )
+                await self._wait_for_retry(attempt)
+
+            except Exception as e:
+                print(f"⚠️ Phase 2 시스템 오류 ({attempt + 1}/{max_retries}): {e}")
+                if attempt == max_retries - 1:
                     raise ValueError(
                         f"리포트 생성에 실패했습니다.\n"
                         f"원인: {str(e)}\n"
                         f"식별된 카테고리: {categories_text}"
                     )
-                # 재시도 전 대기
                 await self._wait_for_retry(attempt)
 
     async def _wait_for_retry(self, attempt: int):

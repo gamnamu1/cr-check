@@ -66,6 +66,24 @@ export function MainAnalysisCenter({ onAnalyze }: MainAnalysisCenterProps) {
       /\.fnnews\.com/,
       /\.ajunews\.com/,
       /\.etoday\.co\.kr/,
+      // Specialized Magazines
+      /\.dt\.co\.kr/,
+      /\.etnews\.com/,
+      /\.mediatoday\.co\.kr/,
+      /\.mediaus\.co\.kr/,
+      /\.journalist\.or\.kr/,
+      // Internet Newspapers
+      /\.nocutnews\.co\.kr/,
+      /\.mediapen\.com/,
+      /\.dailian\.co\.kr/,
+      /news\.tf\.co\.kr/,
+      /\.newdaily\.co\.kr/,
+      /\.breaknews\.com/,
+      /\.pennmike\.com/,
+      /\.pressian\.com/,
+      /\.ohmynews\.com/,
+      /\.mindlenews\.com/,
+      /\.inews24\.com/,
     ];
 
     const isNewsUrl = newsPatterns.some(pattern => pattern.test(content));
