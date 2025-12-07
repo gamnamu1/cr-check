@@ -7,7 +7,8 @@ from typing import Dict
 import os
 
 from scraper import ArticleScraper
-from analyzer import ArticleAnalyzer
+# Two-Layer 아키텍처 적용된 새 분석기
+from core.analyzer import ArticleAnalyzer
 from export import generate_pdf_response
 
 # FastAPI 앱 생성
@@ -22,6 +23,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:3000",  # 로컬 개발
+        "http://localhost:3001",  # 로컬 개발 (대체 포트)
         "https://cr-check.com",   # 프로덕션 (예시)
         "https://cr-check.vercel.app", # Vercel 배포
         "https://www.cr-check.vercel.app",
