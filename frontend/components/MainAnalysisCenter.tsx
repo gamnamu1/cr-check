@@ -16,12 +16,18 @@ export function MainAnalysisCenter({ onAnalyze }: MainAnalysisCenterProps) {
       return;
     }
 
+    let processedContent = content.trim();
+
+    // Auto-prefix https:// if missing
+    if (!/^https?:\/\//i.test(processedContent)) {
+      processedContent = `https://${processedContent}`;
+    }
+
     // Robust URL validation regex (Modified to allow Korean characters in path)
-    // Allow http/https, domain, and any non-whitespace characters in path
     const urlPattern = /^https?:\/\/[^\s/$.?#].[^\s]*$/;
 
-    if (!urlPattern.test(content.trim())) {
-      alert("정확한 뉴스 기사의 URL을 입력해 주세요. (http:// 또는 https:// 포함)");
+    if (!urlPattern.test(processedContent)) {
+      alert("정확한 뉴스 기사의 URL을 입력해 주세요.");
       return;
     }
 
@@ -84,16 +90,37 @@ export function MainAnalysisCenter({ onAnalyze }: MainAnalysisCenterProps) {
       /\.ohmynews\.com/,
       /\.mindlenews\.com/,
       /\.inews24\.com/,
+      // Local Newspapers (Added 2024-12-08)
+      /\.imaeil\.com/,
+      /\.kado\.net/,
+      /\.jbnews\.com/,
+      /\.ccdailynews\.com/,
+      /\.hidomin\.com/,
+      /\.idomin\.com/,
+      /\.yeongnam\.com/,
+      /\.kgnews\.co\.kr/,
+      /\.kyeonggi\.com/,
+      /\.kyeongin\.com/,
+      /\.kihoilbo\.co\.kr/,
+      /\.incheonilbo\.com/,
+      /\.kyongbuk\.co\.kr/,
+      /\.kookje\.co\.kr/,
+      /\.busan\.com/,
+      /\.daejonilbo\.com/,
+      /\.idaegu\.com/,
+      /\.jnilbo\.com/,
+      /\.jejudomin\.co\.kr/,
+      /kwnews\.co\.kr/,
     ];
 
-    const isNewsUrl = newsPatterns.some(pattern => pattern.test(content));
+    const isNewsUrl = newsPatterns.some(pattern => pattern.test(processedContent));
 
     if (!isNewsUrl) {
       const proceed = window.confirm('일반적인 뉴스 사이트 URL이 아닌 것 같습니다. 분석이 정확하지 않을 수 있습니다. 계속 진행하시겠습니까?');
       if (!proceed) return;
     }
 
-    onAnalyze({ type: 'url', content: content.trim() });
+    onAnalyze({ type: 'url', content: processedContent });
   };
 
   return (
