@@ -148,6 +148,46 @@ class ArticleScraper:
                 return self._scrape_mindle(soup, url)
             elif 'ohmynews.com' in url:
                 return self._scrape_ohmynews(soup, url)
+            elif 'dailian.co.kr' in url:
+                return self._scrape_dailian(soup, url)
+            
+            # 지역일반 (NDSoft 기반)
+            elif any(x in url for x in ['kado.net', 'jbnews.com', 'ccdailynews.com', 'hidomin.com', 'idomin.com', 'kihoilbo.co.kr', 'incheonilbo.com', 'kyongbuk.co.kr', 'daejonilbo.com', 'idaegu.com', 'jnilbo.com', 'jejudomin.co.kr']):
+                publisher_map = {
+                    'kado.net': '강원도민일보', 'jbnews.com': '중부매일', 'ccdailynews.com': '충청일보',
+                    'hidomin.com': '경북도민일보', 'idomin.com': '경남도민일보', 'kihoilbo.co.kr': '기호일보',
+                    'incheonilbo.com': '인천일보', 'kyongbuk.co.kr': '경북일보', 'daejonilbo.com': '대전일보',
+                    'idaegu.com': '대구일보', 'jnilbo.com': '전남일보', 'jejudomin.co.kr': '제주도민일보'
+                }
+                publisher = next((v for k, v in publisher_map.items() if k in url), "지역언론")
+                return self._scrape_ndsoft_generic(soup, url, publisher)
+
+            # 지역일반 (개별 구현)
+            elif 'imaeil.com' in url:
+                return self._scrape_imaeil(soup, url)
+            elif 'yeongnam.com' in url:
+                return self._scrape_yeongnam(soup, url)
+            elif 'kgnews.co.kr' in url:
+                return self._scrape_kgnews(soup, url)
+            elif 'kyeonggi.com' in url:
+                return self._scrape_kyeonggi(soup, url)
+            elif 'busan.com' in url:
+                return self._scrape_busan(soup, url)
+            # 지역일반 (개별 구현)
+            elif 'imaeil.com' in url:
+                return self._scrape_imaeil(soup, url)
+            elif 'yeongnam.com' in url:
+                return self._scrape_yeongnam(soup, url)
+            elif 'kgnews.co.kr' in url:
+                return self._scrape_kgnews(soup, url)
+            elif 'kyeonggi.com' in url:
+                return self._scrape_kyeonggi(soup, url)
+            elif 'busan.com' in url:
+                return self._scrape_busan(soup, url)
+            elif 'kookje.co.kr' in url:
+                return self._scrape_kookje(soup, url)
+            elif 'kwnews.co.kr' in url:
+                return self._scrape_kwnews(soup, url)
             # 일반 뉴스 사이트
             else:
                 return self._scrape_generic(soup, url)
@@ -1506,6 +1546,104 @@ class ArticleScraper:
             "content": content,
             "url": url,
             "publisher": "오마이뉴스",
+            "publish_date": self._extract_publish_date(soup),
+            "journalist": self._extract_journalist(soup)
+        }
+
+    def _scrape_dailian(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """데일리안 스크래핑"""
+        # 제목
+        title = self._extract_title(soup, 'h1.title')
+        if not title:
+            raise ValueError("데일리안 제목을 찾을 수 없습니다.")
+
+        # 본문
+        content_elem = soup.select_one('div.article') or soup.find('div', class_='news-contents')
+        if not content_elem:
+            raise ValueError("데일리안 본문을 찾을 수 없습니다.")
+
+        # 불필요한 요소 제거
+        for tag in content_elem.select('script, style, .ad, figure, img, .contentsBanner, .sh_banner, .article_wing_left, .article_wing_right, .inner-subtitle, .figure'):
+            tag.decompose()
+        
+        content = self._clean_text(content_elem.get_text())
+
+        return {
+            "title": title,
+            "content": content,
+            "url": url,
+            "publisher": "데일리안",
+            "publish_date": self._extract_publish_date(soup),
+            "journalist": self._extract_journalist(soup, selector='p.reporter')
+        }
+
+    def _scrape_imaeil(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """매일신문 스크래핑"""
+        return self._scrape_basic(soup, url, "매일신문", 
+            title_selector='div.header_article_view h3', 
+            content_selector='div.article_content')
+
+    def _scrape_yeongnam(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """영남일보 스크래핑"""
+        return self._scrape_basic(soup, url, "영남일보", 
+            title_selector='#article-view-content-div h1, .article-news-title', 
+            content_selector='.article-news-body')
+
+    def _scrape_kgnews(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """경기신문 스크래핑"""
+        return self._scrape_basic(soup, url, "경기신문", 
+            title_selector='.article-head-title, .h1', 
+            content_selector='#news_body_area')
+
+    def _scrape_kyeonggi(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """경기일보 스크래핑"""
+        return self._scrape_basic(soup, url, "경기일보", 
+            title_selector='.article_head .title', 
+            content_selector='.article_view')
+
+    def _scrape_busan(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """부산일보 스크래핑"""
+        return self._scrape_basic(soup, url, "부산일보", 
+            title_selector='.title_area h1', 
+            content_selector='.article_content')
+
+    def _scrape_kookje(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """국제신문 스크래핑"""
+        return self._scrape_basic(soup, url, "국제신문", 
+            title_selector='.view_tit h3', 
+            content_selector='.news_article')
+
+    def _scrape_kwnews(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """강원일보 스크래핑"""
+        return self._scrape_basic(soup, url, "강원일보", 
+            title_selector='div.article_head h2.title', 
+            content_selector='div.article_content')
+
+    def _scrape_basic(self, soup: BeautifulSoup, url: str, publisher: str, title_selector: str, content_selector: str) -> Dict[str, str]:
+        """기본 스크래퍼 패턴"""
+        title = self._extract_title(soup, title_selector)
+        if not title:
+            # Fallback
+            title_elem = soup.select_one(title_selector)
+            if title_elem: 
+                title = self._clean_text(title_elem.get_text())
+            if not title:
+                raise ValueError(f"{publisher} 제목을 찾을 수 없습니다.")
+
+        content_elem = soup.select_one(content_selector)
+        if not content_elem:
+            raise ValueError(f"{publisher} 본문을 찾을 수 없습니다.")
+
+        for tag in content_elem.select('script, style, .ad, figure, img, .caption'):
+            tag.decompose()
+        
+        content = self._clean_text(content_elem.get_text())
+
+        return {
+            "title": title,
+            "content": content,
+            "url": url,
+            "publisher": publisher,
             "publish_date": self._extract_publish_date(soup),
             "journalist": self._extract_journalist(soup)
         }
