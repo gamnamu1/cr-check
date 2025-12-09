@@ -97,10 +97,10 @@ export function AnalysisProcess({ isLoading, onComplete }: AnalysisProcessProps)
         }
         if (phase === 'analyzing') {
           // 30 -> 98% linear approach (steady pace)
-          // Increment 0.07 per 100ms => ~0.7% per second
-          // Takes about 97 seconds to go from 30% to 98%
+          // Increment 0.055 per 100ms => ~0.55% per second
+          // Takes about 120 seconds to go from 30% to 98%
           if (prev < 98) {
-            return prev + 0.07;
+            return prev + 0.055;
           }
           return prev;
         }
