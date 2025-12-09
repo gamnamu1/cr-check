@@ -34,7 +34,10 @@ class ArticleScraper:
             dict: {
                 "title": 기사 제목,
                 "content": 기사 본문,
-                "url": 원본 URL
+                "url": 원본 URL,
+                "publisher": 언론사명,
+                "publish_date": 게재일,
+                "journalist": 기자명
             }
 
         Raises:
@@ -43,7 +46,11 @@ class ArticleScraper:
         try:
             # URL 유효성 검증
             if not url or not url.startswith('http'):
-                raise ValueError("유효하지 않은 URL입니다.")
+                # http/https가 없는 경우 추가 (기본적으로 https 가정)
+                if url:
+                    url = 'https://' + url
+                else:
+                    raise ValueError("유효하지 않은 URL입니다.")
 
             # 페이지 가져오기
             response = requests.get(url, headers=self.headers, timeout=10)
@@ -65,7 +72,7 @@ class ArticleScraper:
             if 'news.naver.com' in url:
                 return self._scrape_naver(soup, url)
             # 다음 뉴스 감지
-            elif 'news.daum.net' in url:
+            elif 'news.daum.net' in url or 'v.daum.net' in url:
                 return self._scrape_daum(soup, url)
             # 네이트 뉴스 감지
             elif 'news.nate.com' in url:
@@ -173,17 +180,6 @@ class ArticleScraper:
                 return self._scrape_kyeonggi(soup, url)
             elif 'busan.com' in url:
                 return self._scrape_busan(soup, url)
-            # 지역일반 (개별 구현)
-            elif 'imaeil.com' in url:
-                return self._scrape_imaeil(soup, url)
-            elif 'yeongnam.com' in url:
-                return self._scrape_yeongnam(soup, url)
-            elif 'kgnews.co.kr' in url:
-                return self._scrape_kgnews(soup, url)
-            elif 'kyeonggi.com' in url:
-                return self._scrape_kyeonggi(soup, url)
-            elif 'busan.com' in url:
-                return self._scrape_busan(soup, url)
             elif 'kookje.co.kr' in url:
                 return self._scrape_kookje(soup, url)
             elif 'kwnews.co.kr' in url:
@@ -248,32 +244,71 @@ class ArticleScraper:
 
     def _scrape_daum(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
         """다음 뉴스 스크래핑"""
-        # 제목 추출
-        title_elem = soup.select_one('h3.tit_view, .article_view .tit_view')
-        if not title_elem:
-            title_elem = soup.find('h3', class_='tit_view')
+        # 제목 추출 (og:title 우선)
+        title = ""
+        og_title = soup.find('meta', property='og:title')
+
+        if og_title:
+            title = og_title.get('content', '')
+        
+        if not title:
+            title_elem = soup.select_one('.head_view h3.tit_view') or soup.select_one('h3.tit_view')
+            if title_elem:
+                title = self._clean_text(title_elem.get_text())
+        
+        if not title:
+             raise ValueError("다음 뉴스 제목을 찾을 수 없습니다.")
 
         # 본문 추출
-        content_elem = soup.select_one('div.article_view, section[dmcf-sid="news"]')
+        content_elem = soup.select_one('div.article_view') or soup.select_one('section[dmcf-sid]')
         if not content_elem:
-            content_elem = soup.find('div', class_='news_view')
-
-        if not title_elem or not content_elem:
-            raise ValueError("다음 뉴스 형식을 파싱할 수 없습니다.")
-
-        # 텍스트 정제
-        title = self._clean_text(title_elem.get_text())
+            raise ValueError("다음 뉴스 본문을 찾을 수 없습니다.")
 
         # 불필요한 요소 제거
-        for tag in content_elem.select('script, style, .ad, figure, .link_news'):
+        for tag in content_elem.select('script, style, .ad, figure, .link_news, .box_europe, .recomm_vod, .btn_relation'):
             tag.decompose()
 
         content = self._clean_text(content_elem.get_text())
 
+        # 매체명 추출
+        publisher = "Daum" # Fallback
+        
+        # 1. og:article:author
+        og_author = soup.find('meta', property='og:article:author')
+        if og_author:
+            publisher = og_author.get('content', '')
+        
+        # 2. #kakaoServiceLogo (상단 로고)
+        if not publisher or publisher == "Daum":
+            logo_elem = soup.select_one('#kakaoServiceLogo')
+            if logo_elem:
+                publisher = logo_elem.get_text(strip=True)
+
+        # 기자명 추출
+        journalist = "미확인"
+        # .info_view .txt_info 중 날짜(.num_date)가 없는 것이 기자명
+        info_view = soup.select_one('.info_view')
+        if info_view:
+            for txt_info in info_view.select('.txt_info'):
+                if not txt_info.select('.num_date'):
+                    name = txt_info.get_text(strip=True)
+                    if name:
+                        journalist = name + " 기자"
+                        break
+        
+        # 게재일 추출
+        publish_date = "미확인"
+        date_elem = soup.select_one('.num_date')
+        if date_elem:
+            publish_date = date_elem.get_text(strip=True)
+
         return {
             "title": title,
             "content": content,
-            "url": url
+            "url": url,
+            "publisher": publisher,
+            "publish_date": publish_date,
+            "journalist": journalist
         }
 
     def _scrape_nate(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
@@ -1609,9 +1644,46 @@ class ArticleScraper:
 
     def _scrape_kookje(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
         """국제신문 스크래핑"""
-        return self._scrape_basic(soup, url, "국제신문", 
-            title_selector='.view_tit h3', 
-            content_selector='.news_article')
+        # 제목
+        title = self._extract_title(soup, '.news_title h1')
+        if not title:
+            raise ValueError("국제신문 제목을 찾을 수 없습니다.")
+
+        # 본문
+        content_elem = soup.select_one('.news_article')
+        if not content_elem:
+             raise ValueError("국제신문 본문을 찾을 수 없습니다.")
+
+        # 불필요한 요소 제거
+        for tag in content_elem.select('script, style, .ad, figure, img, .caption, table'):
+            tag.decompose()
+        
+        content = self._clean_text(content_elem.get_text())
+
+        # 기자명
+        journalist = "미확인"
+        reporter_elem = soup.select_one('li.f_news_repoter')
+        if reporter_elem:
+            # 텍스트에서 이메일 등 제거하고 이름만 추출
+            text = reporter_elem.get_text()
+            match = re.search(r'([가-힣]{2,4})\s*기자', text)
+            if match:
+                journalist = match.group(1) + " 기자"
+        
+        # 게재일
+        publish_date = self._extract_publish_date(soup, '.f_news_date')
+        if publish_date:
+            # "| 입력 : 2025..." 형식 정리
+            publish_date = re.sub(r'[|]|\s*입력\s*:?', '', publish_date).strip()
+
+        return {
+            "title": title,
+            "content": content,
+            "url": url,
+            "publisher": "국제신문",
+            "publish_date": publish_date,
+            "journalist": journalist
+        }
 
     def _scrape_kwnews(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
         """강원일보 스크래핑"""
