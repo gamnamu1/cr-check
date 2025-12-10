@@ -240,6 +240,14 @@ class ArticleAnalyzer:
         criteria_context = self.criteria.get_criteria_by_ids(issue_ids)
         ethics_context = self.criteria.get_ethics_context(issue_ids)
         
+        # v2.0: 키워드 기반 별도 보도 준칙 자동 감지 및 추가
+        full_article_text = f"{article_title} {article_content}"
+        detected_topics = self.criteria.detect_special_topics(full_article_text)
+        if detected_topics:
+            special_guidelines = self.criteria.get_special_guidelines_text(detected_topics)
+            ethics_context += f"\n\n{special_guidelines}"
+            print(f"   → 특수 보도 준칙 자동 감지: {detected_topics}")
+        
         # 프롬프트 생성
         system_prompt = self.prompt_builder.build_phase2_system_prompt()
         user_prompt = self.prompt_builder.build_phase2_user_prompt(

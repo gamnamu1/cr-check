@@ -9,11 +9,55 @@ Two-Layer 아키텍처에서 '진단(Diagnosis)'과 '근거(Evidence)'를
 1. criteria_checklist.json 로드 및 관리 (진단용)
 2. ethics_library.json 로드 및 관리 (인용용)
 3. Phase 1/2용 프롬프트 데이터 제공
+4. 키워드 기반 별도 보도 준칙 자동 포함 (v2.0)
 """
 
 import json
+import re
 from pathlib import Path
 from typing import Dict, List, Set, Any, Optional
+
+# 별도 보도 준칙 키워드 매핑 (v2.0 추가)
+SPECIAL_GUIDELINES_KEYWORDS = {
+    "suicide_reporting": {  # 자살보도 권고기준
+        "keywords": ["자살", "극단적 선택", "스스로 목숨", "투신", "음독", "자해"],
+        "ethics_ids": ["special_suicide_1", "special_suicide_2"],
+        "guideline_name": "자살보도 권고기준 3.0",
+        "guideline_text": """### 자살보도 권고기준 3.0
+- **기본 원칙**: 자살 보도가 모방 자살을 유발할 수 있음을 유의해야 한다.
+- **제목 제한**: 기사 제목에 '자살'이라는 표현을 쓰지 않고, 선정적인 표현을 피한다.
+- **구체적 묘사 금지**: 자살의 수단, 방법, 장소, 동기 등을 구체적으로 묘사하지 않는다.
+- **미화/합리화 금지**: 자살을 미화하거나 합리화하지 않고, 고통을 해결하는 방법으로 묘사하지 않는다."""
+    },
+    "disaster_reporting": {  # 재난보도준칙
+        "keywords": ["재난", "사고", "참사", "붕괴", "화재", "폭발", "침몰", "지진", "태풍", "홍수"],
+        "ethics_ids": ["special_disaster_1"],
+        "guideline_name": "재난보도준칙",
+        "guideline_text": """### 재난보도준칙
+- **피해자 중심**: 재난 보도는 피해자와 그 가족의 인권을 침해하지 않도록 각별히 유의해야 한다.
+- **선정성 지양**: 피해의 참상을 지나치게 상세하게 묘사하거나, 자극적인 영상을 반복적으로 사용하지 않는다.
+- **정확성 우선**: 확인되지 않은 정보나 유언비어의 확산을 경계하고, 공식적인 발표와 전문가의 의견을 중시한다."""
+    },
+    "human_rights_reporting": {  # 인권보도준칙
+        "keywords": ["장애인", "장애", "이주민", "외국인", "난민", "다문화", "이민자", "불법체류", 
+                    "성소수자", "동성애", "트랜스젠더", "LGBT", "퀴어", "외국인보호소"],
+        "ethics_ids": ["special_hr_1", "special_hr_2", "special_hr_3"],
+        "guideline_name": "인권보도준칙",
+        "guideline_text": """### 인권보도준칙
+- **장애인 인권**: 장애인을 시혜나 동정의 대상으로 묘사하지 않으며, 장애를 극복해야 할 대상이나 불행의 원인으로 그리지 않는다.
+- **이주민/외국인 인권**: 이주민과 외국인을 잠재적 범죄자나 사회 문제의 원인으로 묘사하지 않으며, 그들의 문화적 차이를 존중한다.
+- **성소수자 인권**: 성적 지향이나 성별 정체성을 이유로 차별하거나 혐오하는 표현을 사용하지 않는다."""
+    },
+    "sexual_violence_reporting": {  # 성폭력 범죄 보도
+        "keywords": ["성폭력", "성폭행", "성추행", "강간", "미투", "성범죄", "성희롱"],
+        "ethics_ids": ["special_sv_1", "special_sv_2"],
+        "guideline_name": "성폭력 범죄 보도 세부 권고 기준",
+        "guideline_text": """### 성폭력 범죄 보도 세부 권고 기준
+- **피해자 신원 보호**: 피해자의 신원이 노출될 수 있는 정보(이름, 나이, 주소, 학교, 직장 등)를 보도하지 않는다.
+- **2차 피해 방지**: 피해자의 행실이나 옷차림 등을 문제 삼아 범죄의 원인을 피해자에게 돌리는 듯한 보도를 하지 않는다.
+- **자극적 묘사 금지**: 범행 과정을 지나치게 상세하게 묘사하거나, 선정적인 제목을 사용하여 대중의 호기심을 자극하지 않는다."""
+    }
+}
 
 
 class CriteriaManager:
@@ -213,15 +257,56 @@ class CriteriaManager:
     
     # ==================== 기존 호환성 메서드 ====================
     
-    def get_relevant_content(self, categories: List[str]) -> str:
+    def detect_special_topics(self, article_content: str) -> Set[str]:
         """
-        기존 analyzer.py 호환용 메서드
+        v2.0: 기사 내용에서 특수 주제 감지
+        
+        Args:
+            article_content: 기사 제목 + 본문
+            
+        Returns:
+            감지된 특수 준칙 키 집합 (예: {"human_rights_reporting", "disaster_reporting"})
+        """
+        detected = set()
+        
+        for guideline_key, config in SPECIAL_GUIDELINES_KEYWORDS.items():
+            for keyword in config["keywords"]:
+                if keyword in article_content:
+                    detected.add(guideline_key)
+                    break  # 해당 준칙은 이미 감지됨
+        
+        return detected
+    
+    def get_special_guidelines_text(self, detected_topics: Set[str]) -> str:
+        """
+        v2.0: 감지된 특수 주제에 해당하는 별도 보도 준칙 텍스트 반환
+        
+        Args:
+            detected_topics: 감지된 주제 키 집합
+            
+        Returns:
+            마크다운 형식의 별도 보도 준칙 텍스트
+        """
+        result = []
+        
+        for topic_key in detected_topics:
+            config = SPECIAL_GUIDELINES_KEYWORDS.get(topic_key)
+            if config:
+                header = f"\n\n---\n## ⚠️ 자동 감지된 별도 보도 준칙: {config['guideline_name']}\n(기사 내용에서 관련 키워드가 감지되어 자동 포함됨)\n"
+                result.append(header + config['guideline_text'])
+        
+        return "\n".join(result)
+
+    def get_relevant_content(self, categories: List[str], article_content: str = "") -> str:
+        """
+        기존 analyzer.py 호환용 메서드 (v2.0: 키워드 기반 별도 준칙 자동 포함)
         
         Args:
             categories: 카테고리 이름 목록 (예: ["1. 진실성과 정확성"])
+            article_content: 기사 제목 + 본문 (키워드 감지용, v2.0 추가)
             
         Returns:
-            관련 평가 기준 및 윤리규범 텍스트
+            관련 평가 기준 및 윤리규범 텍스트 + 별도 보도 준칙
         """
         # 카테고리 이름에서 ID 추출
         issue_ids = []
@@ -234,12 +319,20 @@ class CriteriaManager:
         
         if not issue_ids:
             # 전체 카테고리 분석 요청인 경우
-            return self._get_full_criteria_text()
+            base_text = self._get_full_criteria_text()
+        else:
+            criteria_text = self.get_criteria_by_ids(issue_ids)
+            ethics_text = self.get_ethics_context(issue_ids)
+            base_text = f"## 평가 기준\n{criteria_text}\n\n## 관련 윤리규범\n{ethics_text}"
         
-        criteria_text = self.get_criteria_by_ids(issue_ids)
-        ethics_text = self.get_ethics_context(issue_ids)
+        # v2.0: 키워드 기반 별도 보도 준칙 자동 포함
+        if article_content:
+            detected_topics = self.detect_special_topics(article_content)
+            if detected_topics:
+                special_text = self.get_special_guidelines_text(detected_topics)
+                base_text += special_text
         
-        return f"## 평가 기준\n{criteria_text}\n\n## 관련 윤리규범\n{ethics_text}"
+        return base_text
     
     def _get_full_criteria_text(self) -> str:
         """전체 평가 기준 텍스트 반환 (간략 버전)"""
