@@ -225,8 +225,9 @@ class ArticleAnalyzer:
         - 구체적 인용: 기사에서 문제 부분 직접 인용
         - 건설적 피드백: 개선 방향 제시
         """
-        # 관련 내용만 추출
-        relevant_content = self.criteria.get_relevant_content(identified_categories)
+        # 관련 내용만 추출 (+ 키워드 기반 별도 준칙 자동 포함)
+        article_text = f"{article_content['title']} {article_content['content']}"
+        relevant_content = self.criteria.get_relevant_content(identified_categories, article_text)
 
         # 카테고리 목록 텍스트화
         categories_text = '\n'.join(f"- {cat}" for cat in identified_categories) if identified_categories else "특이사항 없음"
