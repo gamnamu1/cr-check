@@ -1033,8 +1033,21 @@ class ArticleScraper:
             
             # 기자명
             credits = json_data.get('credits', {}).get('by', [])
+            journalist_list = []
             if credits:
-                journalist = credits[0].get('name', '미확인') + " 기자"
+                for credit in credits:
+                    # 1. additional_properties.original.byline 확인 (예: "김희래 기자")
+                    byline = credit.get('additional_properties', {}).get('original', {}).get('byline')
+                    if byline:
+                        journalist_list.append(byline)
+                    else:
+                        # 2. name 확인 (예: "희래 김") - " 기자" 접미사 추가
+                        name = credit.get('name')
+                        if name:
+                            journalist_list.append(f"{name} 기자")
+            
+            if journalist_list:
+                journalist = " ".join(journalist_list)
             
             # 게재일
             publish_date = json_data.get('created_date', '미확인')
