@@ -1,3 +1,13 @@
+# Debug & Test files
+debug_*.py
+debug_*.txt
+debug_*.html
+*_debug.html
+*_debug.json
+*_result.json
+scraping_test_result_*.json
+check_urls_result.json
+
 # Python
 __pycache__/
 *.py[cod]
