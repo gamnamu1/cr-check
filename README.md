@@ -277,8 +277,16 @@ npm run lint
 ```
 
 ## 라이선스
+This project is licensed under the **GNU Affero General Public License v3.0 (AGPL-3.0)**.
 
-이 프로젝트는 교육 및 연구 목적으로 제작되었습니다.
+### Why AGPL?
+CR-Check는 시민 주도 언론 비평 플랫폼으로, 평가 기준의 투명성과 무결성을 보장하기 위해 AGPL을 채택했습니다:
+- ✅ 모든 노드가 평가 기준을 공개하여 조작 방지
+- ✅ 네트워크 서비스로 배포 시에도 소스 공개 의무
+- ✅ 시민 주도 생태계 보호
+- ✅ 언론 개혁 운동의 지속 가능성 확보
+
+See [LICENSE](./LICENSE) for details.
 
 ## 기여하기
 
