@@ -63,12 +63,25 @@ export function AnalysisProcess({ isLoading, onComplete }: AnalysisProcessProps)
   const [phase, setPhase] = useState<AnalysisPhase>('scanning');
   const [currentTip, setCurrentTip] = useState(0);
   const [progress, setProgress] = useState(0);
+  // Store the shuffled order of indices
+  const [shuffledIndices, setShuffledIndices] = useState<number[]>([]);
+  // Store the current position in the shuffled array
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     // Initial scanning phase
     const scanningTimer = setTimeout(() => {
       setPhase('analyzing');
     }, 2000);
+
+    // Shuffle the tips indices on mount
+    const indices = Array.from({ length: ethicsTips.length }, (_, i) => i);
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    setShuffledIndices(indices);
+    setCurrentTip(indices[0]); // Set initial tip
 
     return () => clearTimeout(scanningTimer);
   }, []);
@@ -83,9 +96,6 @@ export function AnalysisProcess({ isLoading, onComplete }: AnalysisProcessProps)
   }, [phase, isLoading, onComplete]);
 
   useEffect(() => {
-    // Initial random tip
-    setCurrentTip(Math.floor(Math.random() * ethicsTips.length));
-
     // Progress bar simulation
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
@@ -107,14 +117,18 @@ export function AnalysisProcess({ isLoading, onComplete }: AnalysisProcessProps)
       });
     }, 100);
 
-    // Tips rotation (Random)
+    // Tips rotation (Sequential from shuffled list)
     const tipInterval = setInterval(() => {
-      setCurrentTip((prev) => {
-        let next;
-        do {
-          next = Math.floor(Math.random() * ethicsTips.length);
-        } while (next === prev && ethicsTips.length > 1);
-        return next;
+      setCurrentIndex((prevIndex: number) => {
+        const nextIndex = (prevIndex + 1) % ethicsTips.length;
+        // If we wrapped around, we might want to reshuffle, but user just asked for "before one cycle ends", 
+        // so simple wrapping is fine or we could reshuffle here. 
+        // For 45 items at 6s each, one cycle is 270s (4.5 min). Analysis likely finishes before that.
+        // So simple wrapping is sufficient.
+        if (shuffledIndices.length > 0) {
+          setCurrentTip(shuffledIndices[nextIndex]);
+        }
+        return nextIndex;
       });
     }, 6000);
 
@@ -122,7 +136,7 @@ export function AnalysisProcess({ isLoading, onComplete }: AnalysisProcessProps)
       clearInterval(progressInterval);
       clearInterval(tipInterval);
     };
-  }, [phase]);
+  }, [phase, shuffledIndices]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-navy-50 via-white to-amber-50 flex items-center justify-center px-6">
