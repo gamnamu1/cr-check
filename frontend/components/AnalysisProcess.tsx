@@ -17,7 +17,7 @@ const ethicsTips = [
   "통계 인용 시 출처와 조사 방법을 명시해야 합니다.",
   "보도자료를 그대로 옮겨 쓰는 것은 좋은 저널리즘이 아닙니다.",
   "좋은 기사는 최소 두 개 이상 독립적인 출처를 확인합니다.",
-  "범죄 혐의자는 유죄 확정 전까지 '피의자'로 표현해야 합니다.",
+  "범죄 혐의자는 유죄 확정 전까지 '피의자'로 표시해야 합니다.",
   "성별, 외모, 출신 지역으로 사건을 설명하면 차별적 보도가 됩니다.",
   "따옴표 뒤에 숨지 말고 기자가 직접 사실을 검증해야 합니다.",
   '"~라는 지적"이 있다면, 누가 지적했는지 밝혀야 합니다.',
@@ -28,11 +28,11 @@ const ethicsTips = [
   "취재원의 의도나 심리를 기자가 단정해서는 안 됩니다.",
   "여론조사 결과는 오차범위를 고려해 신중하게 해석해야 합니다.",
   "정보 출처가 불분명한 기사는 신뢰하기 어렵습니다.",
-  "기자의 주관적인 판단이나 의견을 사실과 섞으면 안 됩니다.",
+  "기자의 주관적 판단이나 의견을 사실과 섞으면 안 됩니다.",
   "속보 경쟁에만 몰두하면 사실 확인에 소홀해집니다.",
   "성별, 연령, 지역으로 편견을 만들면 안 됩니다.",
   "장애·질병을 비하하는 차별적 표현을 쓰지 않습니다.",
-  "특정 집단을 향한 혐오 표현이나 은어를 쓰지 않습니다.",
+  "특정 집단을 향한 혐오 표현이나 은어를 사용하지 않습니다.",
   "전문가 의견을 인용할 땐 해당 분야 전문가인지 확인해야 합니다.",
   "보호가 필요한 익명 보도 시 신원이 추정될 정보를 흘리지 않습니다.",
   "시간적 순서만으로 인과관계를 단정해서는 안 됩니다.",
@@ -54,7 +54,6 @@ const ethicsTips = [
   "해외 언론 기사 인용 시 원문을 확인해야 합니다.",
   "제목은 기사 내용을 정확하게 반영해야 합니다.",
   "정치적 대립 구도를 과장하는 제목은 피해야 합니다.",
-  "자살 방법이나 장소를 구체적으로 묘사하지 않습니다.",
   "광고와 기사는 명확히 구분되어야 합니다.",
   "온라인 기사는 수정 이력을 남기고 투명하게 고쳐야 합니다.",
   "진실과 거짓을 같은 비중으로 다루는 것은 공정 보도가 아닙니다.",
@@ -64,12 +63,25 @@ export function AnalysisProcess({ isLoading, onComplete }: AnalysisProcessProps)
   const [phase, setPhase] = useState<AnalysisPhase>('scanning');
   const [currentTip, setCurrentTip] = useState(0);
   const [progress, setProgress] = useState(0);
+  // Store the shuffled order of indices
+  const [shuffledIndices, setShuffledIndices] = useState<number[]>([]);
+  // Store the current position in the shuffled array
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     // Initial scanning phase
     const scanningTimer = setTimeout(() => {
       setPhase('analyzing');
     }, 2000);
+
+    // Shuffle the tips indices on mount
+    const indices = Array.from({ length: ethicsTips.length }, (_, i) => i);
+    for (let i = indices.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    setShuffledIndices(indices);
+    setCurrentTip(indices[0]); // Set initial tip
 
     return () => clearTimeout(scanningTimer);
   }, []);
@@ -84,9 +96,6 @@ export function AnalysisProcess({ isLoading, onComplete }: AnalysisProcessProps)
   }, [phase, isLoading, onComplete]);
 
   useEffect(() => {
-    // Initial random tip
-    setCurrentTip(Math.floor(Math.random() * ethicsTips.length));
-
     // Progress bar simulation
     const progressInterval = setInterval(() => {
       setProgress((prev) => {
@@ -108,14 +117,18 @@ export function AnalysisProcess({ isLoading, onComplete }: AnalysisProcessProps)
       });
     }, 100);
 
-    // Tips rotation (Random)
+    // Tips rotation (Sequential from shuffled list)
     const tipInterval = setInterval(() => {
-      setCurrentTip((prev) => {
-        let next;
-        do {
-          next = Math.floor(Math.random() * ethicsTips.length);
-        } while (next === prev && ethicsTips.length > 1);
-        return next;
+      setCurrentIndex((prevIndex: number) => {
+        const nextIndex = (prevIndex + 1) % ethicsTips.length;
+        // If we wrapped around, we might want to reshuffle, but user just asked for "before one cycle ends", 
+        // so simple wrapping is fine or we could reshuffle here. 
+        // For 45 items at 6s each, one cycle is 270s (4.5 min). Analysis likely finishes before that.
+        // So simple wrapping is sufficient.
+        if (shuffledIndices.length > 0) {
+          setCurrentTip(shuffledIndices[nextIndex]);
+        }
+        return nextIndex;
       });
     }, 6000);
 
@@ -123,7 +136,7 @@ export function AnalysisProcess({ isLoading, onComplete }: AnalysisProcessProps)
       clearInterval(progressInterval);
       clearInterval(tipInterval);
     };
-  }, [phase]);
+  }, [phase, shuffledIndices]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-navy-50 via-white to-amber-50 flex items-center justify-center px-6">
