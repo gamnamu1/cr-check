@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Link2, BarChart3, Users, Scale } from 'lucide-react';
+import { NEWS_PATTERNS } from '@/lib/constants/news-patterns';
 import type { ArticleInput } from '../types';
+
+const URL_PATTERN = /^https?:\/\/[^\s/$.?#].[^\s]*$/;
 
 interface MainAnalysisCenterProps {
   onAnalyze: (input: ArticleInput) => void;
@@ -24,96 +27,13 @@ export function MainAnalysisCenter({ onAnalyze }: MainAnalysisCenterProps) {
     }
 
     // Robust URL validation regex (Modified to allow Korean characters in path)
-    const urlPattern = /^https?:\/\/[^\s/$.?#].[^\s]*$/;
-
-    if (!urlPattern.test(processedContent)) {
+    if (!URL_PATTERN.test(processedContent)) {
       alert("정확한 뉴스 기사의 URL을 입력해 주세요.");
       return;
     }
 
     // News site validation (Optional but recommended)
-    const newsPatterns = [
-      /news\.naver\.com/,
-      /news\.daum\.net/,
-      /v\.daum\.net/,
-      /\.joins\.com/,
-      /\.joongang\.co\.kr/,
-      /\.chosun\.com/,
-      /\.donga\.com/,
-      /\.hani\.co\.kr/,
-      /\.khan\.co\.kr/,
-      /\.kmib\.co\.kr/,
-      /\.seoul\.co\.kr/,
-      /\.segye\.com/,
-      /\.munhwa\.com/,
-      /\.naeil\.com/,
-      /\.hankookilbo\.com/,
-      /\.asiatoday\.co\.kr/,
-      /news\.kbs\.co\.kr/,
-      /imnews\.imbc\.com/,
-      /news\.sbs\.co\.kr/,
-      /yna\.co\.kr/,
-      /newsis\.com/,
-      /news1\.kr/,
-      /newspim\.com/,
-      /news\.nate\.com/,
-      /news\.zum\.com/,
-      // Economic Newspapers
-      /\.edaily\.co\.kr/,
-      /\.ekn\.kr/,
-      /\.asiae\.co\.kr/,
-      /\.sedaily\.com/,
-      /\.viva100\.com/,
-      /\.mt\.co\.kr/,
-      /\.mk\.co\.kr/,
-      /\.dnews\.co\.kr/,
-      /\.hankyung\.com/,
-      /biz\.heraldcorp\.com/,
-      /\.fnnews\.com/,
-      /\.ajunews\.com/,
-      /\.etoday\.co\.kr/,
-      // Specialized Magazines
-      /\.dt\.co\.kr/,
-      /\.etnews\.com/,
-      /\.mediatoday\.co\.kr/,
-      /\.mediaus\.co\.kr/,
-      /\.journalist\.or\.kr/,
-      // Internet Newspapers
-      /\.nocutnews\.co\.kr/,
-      /\.mediapen\.com/,
-      /\.dailian\.co\.kr/,
-      /news\.tf\.co\.kr/,
-      /\.newdaily\.co\.kr/,
-      /\.breaknews\.com/,
-      /\.pennmike\.com/,
-      /\.pressian\.com/,
-      /\.ohmynews\.com/,
-      /\.mindlenews\.com/,
-      /\.inews24\.com/,
-      // Local Newspapers (Added 2024-12-08)
-      /\.imaeil\.com/,
-      /\.kado\.net/,
-      /\.jbnews\.com/,
-      /\.ccdailynews\.com/,
-      /\.hidomin\.com/,
-      /\.idomin\.com/,
-      /\.yeongnam\.com/,
-      /\.kgnews\.co\.kr/,
-      /\.kyeonggi\.com/,
-      /\.kyeongin\.com/,
-      /\.kihoilbo\.co\.kr/,
-      /\.incheonilbo\.com/,
-      /\.kyongbuk\.co\.kr/,
-      /\.kookje\.co\.kr/,
-      /\.busan\.com/,
-      /\.daejonilbo\.com/,
-      /\.idaegu\.com/,
-      /\.jnilbo\.com/,
-      /\.jejudomin\.co\.kr/,
-      /kwnews\.co\.kr/,
-    ];
-
-    const isNewsUrl = newsPatterns.some(pattern => pattern.test(processedContent));
+    const isNewsUrl = NEWS_PATTERNS.some(pattern => pattern.test(processedContent));
 
     if (!isNewsUrl) {
       const proceed = window.confirm('일반적인 뉴스 사이트 URL이 아닌 것 같습니다. 분석이 정확하지 않을 수 있습니다. 계속 진행하시겠습니까?');
