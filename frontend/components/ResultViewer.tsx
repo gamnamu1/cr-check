@@ -1,8 +1,17 @@
-import { useState } from 'react';
-import { motion } from 'motion/react';
+import { useState, useMemo, useCallback, ComponentType } from 'react';
+import dynamic from 'next/dynamic';
 import { ExternalLink, FileDown, ArrowLeft, Users, NotebookPen, BookOpenCheck, Newspaper } from 'lucide-react';
 import type { AnalysisResult } from '../types';
-import { TxtPreviewModal } from './TxtPreviewModal';
+
+const TxtPreviewModal = dynamic(() => import('./TxtPreviewModal').then(mod => mod.TxtPreviewModal), {
+  loading: () => null,
+  ssr: false
+});
+
+const MotionDiv = dynamic(
+  () => import('framer-motion').then((mod) => mod.motion.div as ComponentType<any>),
+  { ssr: false }
+);
 
 interface ResultViewerProps {
   result: AnalysisResult;
@@ -21,7 +30,7 @@ export function ResultViewer({ result, onReset }: ResultViewerProps) {
     { id: 'student' as ReportTab, label: '학생을 위한 교육 리포트', shortLabel: '학생', icon: BookOpenCheck, color: 'navy' },
   ];
 
-  const formatContent = (content: string) => {
+  const formatContent = useCallback((content: string) => {
     // Convert markdown-style content to HTML-like JSX
     const lines = content.split('\n');
     const elements: JSX.Element[] = [];
@@ -146,7 +155,13 @@ export function ResultViewer({ result, onReset }: ResultViewerProps) {
     }
 
     return elements;
-  };
+  }, []);
+
+  const formattedReports = useMemo(() => ({
+    comprehensive: formatContent(result.reports.comprehensive),
+    journalist: formatContent(result.reports.journalist),
+    student: formatContent(result.reports.student)
+  }), [result.reports, formatContent]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-navy-50 via-white to-amber-50">
@@ -169,7 +184,7 @@ export function ResultViewer({ result, onReset }: ResultViewerProps) {
 
       <main className="mx-auto max-w-7xl px-6 py-8">
         {/* Article Overview Card */}
-        <motion.div
+        <MotionDiv
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="bg-white rounded-2xl shadow-lg border border-navy-100 p-8 mb-8"
@@ -242,10 +257,10 @@ export function ResultViewer({ result, onReset }: ResultViewerProps) {
               </div>
             )}
           </div>
-        </motion.div>
+        </MotionDiv>
 
         {/* Report Tabs */}
-        <motion.div
+        <MotionDiv
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
@@ -275,21 +290,21 @@ export function ResultViewer({ result, onReset }: ResultViewerProps) {
 
           {/* Tab Content */}
           <div className="p-8 md:p-12">
-            <motion.div
+            <MotionDiv
               key={activeTab}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3 }}
               className="prose prose-lg max-w-none custom-scrollbar"
             >
-              {formatContent(result.reports[activeTab])}
-            </motion.div>
+              {formattedReports[activeTab]}
+            </MotionDiv>
           </div>
-        </motion.div>
+        </MotionDiv>
 
         {/* Action Bar */}
         {/* Action Bar */}
-        <motion.div
+        <MotionDiv
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
@@ -360,7 +375,7 @@ export function ResultViewer({ result, onReset }: ResultViewerProps) {
               </svg>
             </button>
           </div>
-        </motion.div>
+        </MotionDiv>
       </main>
 
       {/* Preview Modal */}

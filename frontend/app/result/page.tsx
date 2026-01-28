@@ -23,7 +23,7 @@ export default function ResultPage() {
       // No result found, redirect to home
       router.push("/");
     }
-  }, [router]);
+  }, []);
 
   const handleReset = () => {
     sessionStorage.removeItem("analysisResult");
