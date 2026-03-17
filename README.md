@@ -300,7 +300,7 @@ See [LICENSE](./LICENSE) for details.
 
 ## 문의
 
-프로젝트 관련 문의사항은 GitHub Issues를 통해 남겨주세요.
+프로젝트 관련 문의사항은 GitHub Issues, 또는 gamnamu2915@gmail.com을 통해 남겨주세요.
 
 ---
 
