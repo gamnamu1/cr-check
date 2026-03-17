@@ -39,7 +39,7 @@ class ArticleAnalyzer:
 
         # 하이브리드 모델 전략
         self.phase1_model = "claude-haiku-4-5-20251001"
-        self.phase2_model = "claude-sonnet-4-5-20250929"
+        self.phase2_model = "claude-sonnet-4-6"
 
         # 통합 평가 기준 관리자
         self.criteria = CriteriaManager()
