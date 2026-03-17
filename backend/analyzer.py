@@ -43,6 +43,8 @@ class ArticleAnalyzer:
 
         # 통합 평가 기준 관리자
         self.criteria = CriteriaManager()
+        
+        print(f"🔧 모델 설정 확인 — Phase2: {self.phase2_model}")
 
     async def analyze(self, article_content: dict) -> dict:
         """
@@ -343,6 +345,8 @@ class ArticleAnalyzer:
                     max_tokens=10000,
                     messages=[{"role": "user", "content": current_prompt}]
                 )
+                
+                print(f"API 응답 모델: {message.model}")
 
                 response_text = message.content[0].text.strip()
 
