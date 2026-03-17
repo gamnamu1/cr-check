@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 from criteria_manager import CriteriaManager
 from json_parser import robust_json_parse
 
-# .env 파일 로드 (backend 디렉토리에서)
+# .env 파일 로드 (backend 디렉토리에서) 
 env_path = Path(__file__).parent / '.env'
 load_dotenv(dotenv_path=env_path)
 
