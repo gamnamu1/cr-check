@@ -1,6 +1,6 @@
 # backend/requirements.txt
 fastapi>=0.104.1,<0.120.0
-anthropic>=0.18.0,<1.0.0
+anthropic>=0.49.0,<1.0.0
 beautifulsoup4>=4.12.0
 requests>=2.31.0
 weasyprint>=60.0.0
