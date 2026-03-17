@@ -1,9 +1,6 @@
 # Python 3.11 slim 베이스 이미지
 FROM python:3.11-slim
 
-# Cache bust: 2026-03-17 force rebuild for model update
-ENV CACHE_BUST=2026-03-17
-
 # 작업 디렉토리 설정
 WORKDIR /app
 
