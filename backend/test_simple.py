@@ -85,7 +85,7 @@ async def test_analyzer_init():
     print("=" * 60)
 
     try:
-        from analyzer import ArticleAnalyzer
+        from core.analyzer import ArticleAnalyzer
 
         print("\n✅ ArticleAnalyzer import 성공")
 
