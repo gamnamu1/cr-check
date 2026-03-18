@@ -74,9 +74,9 @@ class ArticleAnalyzer:
             self.client = None
             print("⚠️  ArticleAnalyzer: ANTHROPIC_API_KEY가 설정되지 않았습니다.")
         
-        # 모델 설정
+        # 모델 설정 (Sonnet 4.6으로 업데이트됨)
         self.phase1_model = "claude-haiku-4-5-20251001"
-        self.phase2_model = "claude-sonnet-4-5-20250929"
+        self.phase2_model = "claude-sonnet-4-6"
         
         # 핵심 모듈 초기화
         self.criteria = CriteriaManager()
