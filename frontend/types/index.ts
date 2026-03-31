@@ -26,6 +26,14 @@ export interface AnalysisReport {
 export interface AnalysisResult {
   article_info: ArticleMetadata;
   reports: AnalysisReport;
+  // M6 추가 (optional, Phase D 아카이빙용)
+  overall_assessment?: string;
+  detections?: Array<{
+    pattern_code: string;
+    matched_text: string;
+    severity: string;
+    reasoning: string;
+  }>;
 }
 
 export type AnalysisPhase = 'scanning' | 'analyzing' | 'complete';
