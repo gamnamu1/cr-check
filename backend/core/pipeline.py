@@ -71,8 +71,13 @@ def analyze_article(
     start = time.time()
     result = AnalysisResult()
 
-    # 1. 청킹
-    chunks = chunk_article(article_text)
+    # 1. 청킹 — 실패 시 전체 텍스트를 단일 청크로 취급
+    try:
+        chunks = chunk_article(article_text)
+    except Exception as e:
+        logger.warning(f"청킹 실패, 전체 텍스트를 단일 청크로 사용: {e}")
+        chunks = [Chunk(text=article_text, start=0, end=len(article_text), length=len(article_text))]
+
     result.chunks = chunks
     result.chunk_count = len(chunks)
     if chunks:
@@ -80,8 +85,13 @@ def analyze_article(
 
     chunk_texts = [c.text for c in chunks]
 
-    # 2. 패턴 매칭 (Sonnet Solo: 게이트 없음 + Devil's Advocate CoT)
-    pm = match_patterns_solo(chunk_texts, article_text, threshold=vector_threshold)
+    # 2. 패턴 매칭 — 실패 시 복구 불가 (main.py에서 500으로 처리)
+    try:
+        pm = match_patterns_solo(chunk_texts, article_text, threshold=vector_threshold)
+    except Exception as e:
+        logger.error(f"패턴 매칭 실패: {e}", exc_info=True)
+        raise
+
     result.pattern_result = pm
     result.embedding_tokens = pm.embedding_tokens
 
@@ -100,12 +110,22 @@ def analyze_article(
             for d in pm.haiku_detections
             if d.pattern_code in pm.validated_pattern_codes
         ]
-        rr = generate_report(
-            article_text,
-            pm.validated_pattern_ids,
-            haiku_dicts,
-            overall_assessment=result.overall_assessment,
-        )
+        try:
+            rr = generate_report(
+                article_text,
+                pm.validated_pattern_ids,
+                haiku_dicts,
+                overall_assessment=result.overall_assessment,
+            )
+        except Exception as e:
+            logger.error(f"리포트 생성 최종 실패, 에러 메시지 리포트 반환: {e}")
+            rr = ReportResult(
+                reports={
+                    "comprehensive": "리포트 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+                    "journalist": "리포트 생성 중 오류가 발생했습니다.",
+                    "student": "리포트 생성 중 오류가 발생했습니다.",
+                }
+            )
 
         # 결정론적 인용 후처리: cite 태그 → 규범 원문 치환 (3종 각각)
         for report_type in ["comprehensive", "journalist", "student"]:

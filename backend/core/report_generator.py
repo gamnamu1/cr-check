@@ -328,8 +328,8 @@ def generate_report(
                 input_tokens=in_tok,
                 output_tokens=out_tok,
             )
-        except (ValueError, json.JSONDecodeError) as e:
-            logger.warning(f"리포트 생성 시도 {attempt+1}/{max_retries} 실패: {e}")
+        except Exception as e:
+            logger.warning(f"리포트 생성 시도 {attempt+1}/{max_retries} 실패 ({type(e).__name__}): {e}")
             if attempt == max_retries - 1:
                 raise ValueError(f"리포트 생성 최종 실패: {e}")
             time.sleep(2 ** attempt)  # exponential backoff

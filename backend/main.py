@@ -136,11 +136,12 @@ def analyze_article(request: AnalyzeRequest):
         }
 
         # scraper 메타데이터 병합
-        if article_data.get("publisher") and article_data["publisher"] != "미확인":
+        _INVALID_META = {"미확인", "", "N/A", "unknown", "Unknown"}
+        if article_data.get("publisher") and article_data["publisher"] not in _INVALID_META:
             article_info["publisher"] = article_data["publisher"]
-        if article_data.get("publish_date") and article_data["publish_date"] != "미확인":
+        if article_data.get("publish_date") and article_data["publish_date"] not in _INVALID_META:
             article_info["publishDate"] = article_data["publish_date"]
-        if article_data.get("journalist") and article_data["journalist"] != "미확인":
+        if article_data.get("journalist") and article_data["journalist"] not in _INVALID_META:
             article_info["journalist"] = article_data["journalist"]
 
         # Sonnet이 생성한 article_analysis 병합
