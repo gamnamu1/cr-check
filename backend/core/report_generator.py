@@ -240,6 +240,7 @@ def call_sonnet(
     detections_json: str,
     overall_assessment: str,
     ethics_context: str,
+    meta_pattern_block: str = "",
 ) -> tuple[str, int, int]:
     """Sonnet을 호출하여 3종 리포트 생성. (raw_text, input_tokens, output_tokens)."""
     client = Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
@@ -254,7 +255,13 @@ def call_sonnet(
 
 ## 관련 윤리규범 (확정 패턴에 연결된 규범, DB 조회 결과)
 {ethics_context}
+"""
 
+    # 메타 패턴 발동 시에만 블록 추가
+    if meta_pattern_block:
+        user_message += f"\n{meta_pattern_block}\n"
+
+    user_message += f"""
 ## 기사 전문
 {article_text}"""
 
@@ -274,11 +281,45 @@ def call_sonnet(
 
 # ── 메인 함수 ────────────────────────────────────────────────────
 
+def _build_meta_pattern_block(meta_patterns: list) -> str:
+    """메타 패턴 발동 시 Sonnet 프롬프트에 주입할 블록을 생성."""
+    if not meta_patterns:
+        return ""
+
+    blocks = []
+    for mp in meta_patterns:
+        blocks.append(f"""메타 패턴: {mp.meta_pattern_name} ({mp.meta_pattern_code})
+- 충족된 필수 지표: {mp.required_matches}
+- 충족된 보강 지표: {mp.supporting_matches}
+- 사전 확신도: {mp.confidence}""")
+
+    return f"""## 구조적 문제 분석 지시 (메타 패턴 추론)
+
+아래 패턴들이 이 기사에서 탐지되어, 메타 패턴 추론 조건이 충족되었습니다.
+
+{chr(10).join(blocks)}
+
+3종 리포트 각각에서, 종합 평가 직전에 "구조적 문제 분석" 섹션을 작성하세요.
+
+### 표현 수위 가이드라인 (절대 준수)
+- 확신도 low → "일부 징후가 관찰됩니다"
+- 확신도 medium → "구조적 문제의 가능성이 있습니다"
+- 확신도 high → "강한 의심이 됩니다"
+- ❌ 절대 금지: "외부 압력이 있었다", "상업적 동기로 작성되었다" 등 단정적 표현
+  → CR-Check는 "관점을 제시하는 도구"입니다. 확정 판단을 내리지 않습니다.
+
+### 3종 톤 차이
+- comprehensive(시민용): "이런 징후가 보입니다" — 쉬운 비유로 설명
+- journalist(기자용): "구조적 관점에서 검토가 필요합니다" — 건설적 제안
+- student(학생용): "이런 점을 생각해볼까요?" — 질문 형식 유도"""
+
+
 def generate_report(
     article_text: str,
     pattern_ids: list[int],
     detections: list[dict],
     overall_assessment: str = "",
+    meta_patterns: list = None,
 ) -> ReportResult:
     """확정 패턴으로 규범 조회 후 Sonnet 3종 리포트 생성.
 
@@ -287,6 +328,7 @@ def generate_report(
         pattern_ids: 밸리데이션 통과한 패턴 ID 리스트
         detections: Sonnet Solo 확정 결과 (dict 리스트)
         overall_assessment: Devil's Advocate CoT 판단 (컨텍스트용)
+        meta_patterns: 발동된 MetaPatternResult 리스트 (optional)
 
     Returns:
         ReportResult (3종 리포트 + article_analysis)
@@ -300,13 +342,17 @@ def generate_report(
     # 2. detections JSON 문자열
     detections_json = json.dumps(detections, ensure_ascii=False, indent=2)
 
+    # 2.5 메타 패턴 프롬프트 블록 (조건부)
+    meta_block = _build_meta_pattern_block(meta_patterns or [])
+
     # 3. Sonnet 호출 (3종 JSON 반환) + 재시도 로직
     max_retries = 3
 
     for attempt in range(max_retries):
         try:
             raw_text, in_tok, out_tok = call_sonnet(
-                article_text, detections_json, overall_assessment, ethics_context
+                article_text, detections_json, overall_assessment, ethics_context,
+                meta_pattern_block=meta_block,
             )
             result_json = _robust_json_parse(raw_text)
 

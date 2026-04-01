@@ -25,6 +25,8 @@ from .pattern_matcher import (
 )
 from .report_generator import generate_report, ReportResult
 from .citation_resolver import resolve_citations
+from .meta_pattern_inference import check_meta_patterns
+from .db import _get_supabase_config
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +53,7 @@ class AnalysisResult:
     sonnet_input_tokens: int = 0
     sonnet_output_tokens: int = 0
     overall_assessment: str = ""  # Sonnet Solo 판단 근거 (아카이빙용 보존)
+    meta_patterns: list = field(default_factory=list)  # MetaPatternResult 리스트
 
 
 def analyze_article(
@@ -98,6 +101,21 @@ def analyze_article(
     # overall_assessment 보존 (Phase D 아카이빙용)
     result.overall_assessment = pm.suspect_result.overall_assessment if pm.suspect_result else ""
 
+    # 2.5 메타 패턴 추론 (Deterministic — DB 동적 조회)
+    triggered_meta = []
+    if pm.validated_pattern_codes:
+        try:
+            sb_url, sb_key = _get_supabase_config()
+            meta_results = check_meta_patterns(
+                detected_pattern_codes=list(pm.validated_pattern_codes),
+                sb_url=sb_url,
+                sb_key=sb_key,
+            )
+            triggered_meta = [m for m in meta_results if m.triggered]
+            result.meta_patterns = meta_results
+        except Exception as e:
+            logger.warning(f"메타 패턴 추론 실패, 건너뜀: {e}")
+
     # 3. 리포트 생성 (Sonnet) — 선택적
     if run_sonnet and pm.validated_pattern_ids:
         haiku_dicts = [
@@ -116,6 +134,7 @@ def analyze_article(
                 pm.validated_pattern_ids,
                 haiku_dicts,
                 overall_assessment=result.overall_assessment,
+                meta_patterns=triggered_meta,
             )
         except Exception as e:
             logger.error(f"리포트 생성 최종 실패, 에러 메시지 리포트 반환: {e}")
