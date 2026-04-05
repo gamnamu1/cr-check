@@ -1,0 +1,280 @@
+[
+  {
+    "code": "SPG-P",
+    "title": "자살예방 보도준칙 4.0 전문",
+    "full_text": "자살보도에는 사회적 책임이 따릅니다. <자살예방 보도준칙 4.0>은 언론인과 콘텐츠 생산자 등에게 자살보도의 사회적 책임을 인식시키고, 자살예방에 동참할 것을 권유하고자 마련한 기준입니다. 잘못된 자살보도는 모방 자살을 일으킬 수 있습니다. 반면에 자살보도 방식을 바람직하게 바꾸면 소중한 생명을 구할 수 있습니다. 인터넷·스마트 기기가 대중화된 디지털 시대에는 자살 관련 보도와 콘텐츠가 무분별하게 재생산될 수 있어 언론과 콘텐츠 생산자의 윤리적·실질적인 각성이 더욱 필요합니다. 기자·언론사·언론단체 등이 활동하는 매스미디어, 경찰청·소방청 등 국가기관, 블로그·사회관계망 서비스(SNS) 등 1인 미디어에서 함께 이 준칙을 실천할 때 비로소 자살을 예방하고 소중한 생명을 지킬 수 있습니다.",
+    "source": "자살예방 보도준칙 4.0",
+    "article_number": "전문",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (자살예방 보도, 2024년 개정)",
+    "parent_code_id": "JEC-3",
+    "domain": "suicide_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-3(인권 존중·피해 최소화)의 도메인 특화 선언. SRE-P와 동일 도메인이나 SPG는 2024년 개정판으로 1인 미디어·콘텐츠 생산자까지 적용 범위를 확장한 포괄적 준칙. cf. SRE-P"
+  },
+  {
+    "code": "SPG-1",
+    "title": "원칙 1: 자살 사건 보도 자제",
+    "full_text": "자살 사건은 가급적 보도하지 않는다.",
+    "source": "자살예방 보도준칙 4.0",
+    "article_number": "원칙 1",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (자살예방 보도)",
+    "parent_code_id": "JEC-3",
+    "domain": "suicide_reporting",
+    "locale": "ko-KR",
+    "notes": "4원칙 중 제1원칙. SRE-1(자살보도 자제 및 신원 비공개)과 동일 원칙의 강화판으로, '가급적 보도하지 않는다'는 더 적극적 자제를 권고. cf. SRE-1"
+  },
+  {
+    "code": "SPG-1-1",
+    "title": "보도 자제와 자살예방 효과",
+    "full_text": "자살 사건을 보도하지 않으면 자살예방에 도움이 됩니다. 자살 사건을 보도하지 않는 나라에서 자살이 감소하는 사례가 보고됐습니다. 사람의 생명보다 더 큰 보도의 가치는 없습니다. 자살이 부각된 보도는 또 다른 자살을 유발할 수 있으므로 방송 보도나 신문지면 등에서 자살 사건을 가급적 다루지 않습니다. 특히 유명인의 자살은 파급력이 크므로 보도에 더욱 신중해야 합니다. 1인 미디어에서 다룬 자살 사건을 재인용하는 보도는 하지 말아야 합니다.",
+    "source": "자살예방 보도준칙 4.0",
+    "article_number": "원칙 1-1",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (자살예방 보도)",
+    "parent_code_id": "JEC-3",
+    "domain": "suicide_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-3의 피해 최소화를 보도 자제로 구체화. 유명인 자살 파급력(베르테르 효과) + 1인 미디어 재인용 금지는 SRE에 없는 SPG 고유 지침. cf. SRE-1, SRE-A8"
+  },
+  {
+    "code": "SPG-1-2",
+    "title": "보도 시 표현 기준: '사망하다'·'숨지다' 사용",
+    "full_text": "자살 사건을 보도해야 할 경우, 기사 제목에 '사망하다' 또는 '숨지다'와 같은 표현을 사용합니다. '극단적 선택'이라는 표현 등 자살을 '선택' 사항인 것처럼 오인할 수 있게 하는 용어를 쓰지 않습니다. 자살을 미화하는 표현도 사용하지 않습니다. 사회적 문제 제기를 위한 자살보도도 구체적인 내용을 언급하는 것을 피하고 건설적인 해결 방법을 제시합니다.",
+    "source": "자살예방 보도준칙 4.0",
+    "article_number": "원칙 1-2",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (자살예방 보도)",
+    "parent_code_id": "JEC-3",
+    "domain": "suicide_reporting",
+    "locale": "ko-KR",
+    "notes": "'극단적 선택' 표현 금지는 SRE에 없는 SPG 고유 지침(2024년 개정 시 추가). 가치 중립적 용어('사망하다'·'숨지다') 사용 권고. cf. SRE-A6(헤드라인 '자살' 사용 금지)"
+  },
+  {
+    "code": "SPG-1-3",
+    "title": "자살 합리화 금지",
+    "full_text": "자살을 합리화하지 않습니다. 자살로 불명예스러운 사건이 종결되거나 자살이 억울함을 해소하는 방법이 될 수 있다는 논리가 전달되지 않도록 유의합니다. '벼랑 끝 선택', '어쩔 수 없는 선택', '마지막 탈출구', '○○을 이기지 못해 뒤따라 자살' 등과 같은 표현을 사용하지 않습니다.",
+    "source": "자살예방 보도준칙 4.0",
+    "article_number": "원칙 1-3",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (자살예방 보도)",
+    "parent_code_id": "JEC-3",
+    "domain": "suicide_reporting",
+    "locale": "ko-KR",
+    "notes": "SRE-2(영웅화·미화 금지)의 확장. 구체적 금지 표현 목록 제시는 SPG 고유. cf. SRE-2, SRE-A1"
+  },
+  {
+    "code": "SPG-1-4",
+    "title": "객관적·신중한 보도",
+    "full_text": "자살을 객관적이고 신중하게 다룹니다. 자살의 명확한 사실관계가 확인되기 전까지 자살을 단정하는 보도는 삼가야 하며, 명확한 사실관계가 확인된 후 보도하는 것이 좋습니다. 목격자의 인터뷰 내용이나 관련 기관의 발표라도 추측성 보도를 하지 않습니다. 다른 사람을 살해하고 자살하는 행위를 '동반자살'로 표현하지 않습니다. 이는 '살해 후 자살'이나 '자살교사'로 표현해야 하는 범죄 행위입니다.",
+    "source": "자살예방 보도준칙 4.0",
+    "article_number": "원칙 1-4",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (자살예방 보도)",
+    "parent_code_id": "JEC-1",
+    "domain": "suicide_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-1(진실 추구)의 '정확한 사실을 종합적이고 포괄적인 맥락으로 전달'을 자살보도의 사실 확인으로 구체화. '동반자살' 용어 교정은 SRE에 없는 SPG 고유 지침. cf. SRE-4, SRE-A4"
+  },
+  {
+    "code": "SPG-2",
+    "title": "원칙 2: 자살 방법·도구·장소·동기 비보도",
+    "full_text": "구체적인 자살 방법, 도구, 장소, 동기 등을 보도하지 않는다.",
+    "source": "자살예방 보도준칙 4.0",
+    "article_number": "원칙 2",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (자살예방 보도)",
+    "parent_code_id": "JEC-3",
+    "domain": "suicide_reporting",
+    "locale": "ko-KR",
+    "notes": "4원칙 중 제2원칙. SRE-3(자살 장소·방법·경위 묘사 금지)의 확장판으로, '동기'까지 명시적으로 포함. cf. SRE-3"
+  },
+  {
+    "code": "SPG-2-1",
+    "title": "자살 방법·도구·장소 비보도",
+    "full_text": "자살 방법, 도구, 장소는 구체적으로 보도하지 않습니다. 자살 방법 등을 상세하게 설명·묘사하는 행위는 자살을 생각하고 있는 사람들에게 자살에 관한 정보를 제공하는 것과 같습니다.",
+    "source": "자살예방 보도준칙 4.0",
+    "article_number": "원칙 2-1",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (자살예방 보도)",
+    "parent_code_id": "JEC-3",
+    "domain": "suicide_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-3의 피해 최소화를 수단 정보 차단으로 구체화. SRE-3·SRE-A2와 동일 원칙이나 SPG는 '정보 제공과 같다'는 논거를 명시. cf. SRE-3, SRE-A2"
+  },
+  {
+    "code": "SPG-2-2",
+    "title": "자살 동기 단순화·추정 금지",
+    "full_text": "자살 동기를 단순화하거나 추정하지 않습니다. 자살은 복잡한 요인들로 일어나므로 표면적인 자살 동기만을 보도할 경우 잘못된 보도가 될 수 있습니다. 또한 유사한 상황에 처한 사람에게 모방 자살을 일으킬 수 있습니다.",
+    "source": "자살예방 보도준칙 4.0",
+    "article_number": "원칙 2-2",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (자살예방 보도)",
+    "parent_code_id": "JEC-1",
+    "domain": "suicide_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-1(진실 추구)의 정확성·맥락 원칙을 자살 동기 보도로 구체화. 표면적 동기 보도 = 부정확 + 모방 유발. SRE-4와 동일 원칙이나 SPG는 '복잡한 요인' 논거를 명시. cf. SRE-4, SRE-A3, SRE-A4",
+    "junction": [
+      {
+        "parent_code_id": "JEC-3",
+        "context_hint": "모방 자살 유발 방지 맥락에서 롤업 시 보조 경로"
+      }
+    ]
+  },
+  {
+    "code": "SPG-2-3",
+    "title": "시각 자료 사용 자제",
+    "full_text": "자살 사건과 관련한 시각 자료 사용을 자제합니다. 자살 장소, 방법, 도구 등에 관련한 사진이나 영상 또는 자살을 암시하는 자료 등은 사용하지 않습니다. 유명인 자살은 파급력이 더욱 크므로 고인의 자살과 관련한 영상이나 사진 사용을 자제해야 합니다.",
+    "source": "자살예방 보도준칙 4.0",
+    "article_number": "원칙 2-3",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (자살예방 보도)",
+    "parent_code_id": "JEC-3",
+    "domain": "suicide_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-3의 피해 최소화를 시각 자료 통제로 구체화. 유명인 사진·영상의 동일시 효과 차단. cf. SRE-A7(사진 게재 금지)"
+  },
+  {
+    "code": "SPG-3",
+    "title": "원칙 3: 고인의 인격·유족의 사생활 존중",
+    "full_text": "고인의 인격과 유족의 사생활을 존중한다.",
+    "source": "자살예방 보도준칙 4.0",
+    "article_number": "원칙 3",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (자살예방 보도)",
+    "parent_code_id": "JEC-3",
+    "domain": "suicide_reporting",
+    "locale": "ko-KR",
+    "notes": "4원칙 중 제3원칙. SRE-7(사생활 보호)의 확장판으로, 고인의 '인격'까지 보호 범위를 명시적으로 확장. cf. SRE-7"
+  },
+  {
+    "code": "SPG-3-1",
+    "title": "고인·유족 신분 비노출",
+    "full_text": "고인과 유족의 신분을 노출하지 않습니다. 고인의 거주지, 나이, 직업, 경력 등 구체적인 신상을 밝히는 것은 유족(특히 어린 자녀)에게 2차 피해를 유발할 수 있습니다.",
+    "source": "자살예방 보도준칙 4.0",
+    "article_number": "원칙 3-1",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (자살예방 보도)",
+    "parent_code_id": "JEC-3",
+    "domain": "suicide_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-3의 인격권 보호를 자살자·유족의 구체적 신상 비공개로 구체화. 어린 자녀의 2차 피해 명시는 SPG 고유. cf. SRE-1(신원 비공개)"
+  },
+  {
+    "code": "SPG-3-2",
+    "title": "유서 관련 사항 비보도",
+    "full_text": "유서와 관련한 사항을 보도하지 않습니다. 고인과 유족의 사생활을 보호하고 자살에 대한 합리화를 방지하기 위해 유서와 관련한 사항은 보도하지 않습니다.",
+    "source": "자살예방 보도준칙 4.0",
+    "article_number": "원칙 3-2",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (자살예방 보도)",
+    "parent_code_id": "JEC-3",
+    "domain": "suicide_reporting",
+    "locale": "ko-KR",
+    "notes": "SRE에 없는 SPG 고유 지침. 유서 보도 = 사생활 침해 + 자살 합리화의 이중 위험."
+  },
+  {
+    "code": "SPG-3-3",
+    "title": "유족 심리 상태 배려",
+    "full_text": "유족의 심리 상태를 배려합니다. 고인의 갑작스러운 사망 소식으로 충격을 받고 절망감을 느낄 유족이 자살 사건 보도로 더욱 고통받을 수 있다는 점을 감안해야 합니다.",
+    "source": "자살예방 보도준칙 4.0",
+    "article_number": "원칙 3-3",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (자살예방 보도)",
+    "parent_code_id": "JEC-3",
+    "domain": "suicide_reporting",
+    "locale": "ko-KR",
+    "notes": "SRE에 없는 SPG 고유 지침. 보도 자체가 유족에게 추가적 심리적 피해를 줄 수 있다는 인식."
+  },
+  {
+    "code": "SPG-3-4",
+    "title": "고인의 인격·비밀 보호",
+    "full_text": "고인의 인격과 비밀은 살아있는 사람처럼 보호해야 합니다. 고인의 인격을 침해하거나 비밀을 노출하는 보도는 고인과 유족의 권리나 법익을 해칠 수 있습니다.",
+    "source": "자살예방 보도준칙 4.0",
+    "article_number": "원칙 3-4",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (자살예방 보도)",
+    "parent_code_id": "JEC-3",
+    "domain": "suicide_reporting",
+    "locale": "ko-KR",
+    "notes": "사후 인격권 보호 원칙. SRE-7과 유사하나 SPG는 '살아있는 사람처럼'이라는 기준을 명시. cf. SRE-7"
+  },
+  {
+    "code": "SPG-4",
+    "title": "원칙 4: 자살예방 정보 제공",
+    "full_text": "자살예방을 위한 정보를 제공한다.",
+    "source": "자살예방 보도준칙 4.0",
+    "article_number": "원칙 4",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (자살예방 보도)",
+    "parent_code_id": "JEC-1",
+    "domain": "suicide_reporting",
+    "locale": "ko-KR",
+    "notes": "[앙상블 반영] JEC-3에서 JEC-1로 변경. '정보를 제공한다'는 행위 유형으로 판단 시 JEC-1(정확한 정보 전달)이 primary. 하위 세부항 분포(JEC-1: 2건, JEC-3: 2건) 균등, SRE-D 계열에서도 JEC-1 다수. 파파게노 효과 활용. cf. SRE-D1~D7",
+    "junction": [
+      {
+        "parent_code_id": "JEC-3",
+        "context_hint": "생명 보호·피해 예방 맥락에서 롤업 시 보조 경로"
+      }
+    ]
+  },
+  {
+    "code": "SPG-4-1",
+    "title": "잘못된 믿음 교정 정보 제공",
+    "full_text": "자살에 대한 잘못된 믿음을 바로잡을 수 있는 정보를 제공합니다.",
+    "source": "자살예방 보도준칙 4.0",
+    "article_number": "원칙 4-1",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (자살예방 보도)",
+    "parent_code_id": "JEC-1",
+    "domain": "suicide_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-1(진실 추구)의 오해 교정으로서의 구체화. cf. SRE-D5(자살 신화 교정)"
+  },
+  {
+    "code": "SPG-4-2",
+    "title": "긴급 도움 기관 정보 제공",
+    "full_text": "자살예방 관련 긴급 도움 요청 기관 정보를 제공합니다. 우울감 등 말하기 어려운 고민이 있거나, 주변에 이런 어려움을 겪는 가족·지인이 있을 경우 자살예방 상담전화 ☎109 또는 SNS상담 마들랜(마음을 들어주는 랜선친구)에서 24시간 전문가의 상담을 받을 수 있습니다.",
+    "source": "자살예방 보도준칙 4.0",
+    "article_number": "원칙 4-2",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (자살예방 보도)",
+    "parent_code_id": "JEC-3",
+    "domain": "suicide_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-3의 피해 최소화를 구체적 기관 정보(109, 마들랜) 제공으로 구체화. SRE-D7(위기자 도움 방법)과 유사하나 SPG는 구체적 기관·전화번호를 명시한 고유 지침."
+  },
+  {
+    "code": "SPG-4-3",
+    "title": "전문가 의견 반영·생명 소중함 강조",
+    "full_text": "전문가의 의견을 반영하고 생명의 소중함을 강조합니다.",
+    "source": "자살예방 보도준칙 4.0",
+    "article_number": "원칙 4-3",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (자살예방 보도)",
+    "parent_code_id": "JEC-1",
+    "domain": "suicide_reporting",
+    "locale": "ko-KR",
+    "notes": "전문가 의견 반영(JEC-1 진실·검증)이 primary. 생명 소중함 강조는 JEC-3 피해 최소화와 연결되나, 행위 유형(전문가 자문에 기반한 보도)으로 판단 시 JEC-1이 적합. cf. SRE-D3(위기 극복 사례), SRE-D4(절망 극복 사례)",
+    "junction": [
+      {
+        "parent_code_id": "JEC-3",
+        "context_hint": "생명 존중·피해 예방 맥락에서 롤업 시 보조 경로"
+      }
+    ]
+  },
+  {
+    "code": "SPG-4-4",
+    "title": "자살의 부정적 결과 전달",
+    "full_text": "자살의 부정적 결과를 명확히 전달합니다.",
+    "source": "자살예방 보도준칙 4.0",
+    "article_number": "원칙 4-4",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (자살예방 보도)",
+    "parent_code_id": "JEC-3",
+    "domain": "suicide_reporting",
+    "locale": "ko-KR",
+    "notes": "자살 미화·합리화 방지의 역방향 접근. 부정적 결과를 명확히 전달함으로써 모방 자살 억제. SRE에 없는 SPG 고유 지침. cf. SRE-2(자살 영웅화·미화 금지)의 보완적 관계."
+  }
+]

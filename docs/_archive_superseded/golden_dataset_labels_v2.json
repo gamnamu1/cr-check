@@ -1,0 +1,1427 @@
+{
+  "metadata": {
+    "generated": "2026-03-23",
+    "version": "labeling_v2",
+    "total": 27,
+    "tp_count": 21,
+    "tn_count": 6,
+    "labeling_method": "Claude 초안 작성 → Gamnamu 점검·승인",
+    "reference_files": [
+      "golden_dataset_final_27.json",
+      "ethics_codes_mapping.json (394 codes)",
+      "current-criteria_v2_active.md (119 patterns)"
+    ],
+    "tier_definitions": {
+      "1": "JEC — 언론윤리헌장 최상위 원칙",
+      "2": "PCE/PCP — 신문윤리강령·실천요강",
+      "3": "EPG/HRG/IRG/SRE/SPG/DRG — 세부 보도가이드라인",
+      "4": "HSD 등 — 보충 가이드라인"
+    },
+    "rationale_prefixes": {
+      "직접 적용": "해당 코드가 이 위반에 1:1 대응",
+      "보조 적용": "직접 대응은 아니지만 관련 측면을 포착",
+      "상위 규범": "하위 코드를 포괄하는 중간 계층",
+      "최상위 원칙": "JEC 수준의 포괄적 원칙",
+      "유추 적용": "원래 대상은 다르지만 유사 상황에 차선 매핑"
+    },
+    "tn_field_definitions": {
+      "rationale": "AI가 이 기사를 문제 기사로 오탐하기 쉬운 표면적 이유",
+      "why_justified": "그럼에도 이 보도가 저널리즘 윤리상 정당한 방어 논리"
+    },
+    "changelog_v1_to_v2": [
+      "B-15: PCE-1→PCE-3 (DB 계층 구조 정합)",
+      "D-01, D-02: PCP-3-1 제거 (사실 오류≠사실/의견 혼재)",
+      "A-09: PCE-2→PCE-4 (PCP-10-7 직계 부모), JEC-5에 Junction Table note 추가",
+      "B-15: 1-4-1 rationale에 '119개 패턴 중 가장 근접한 코드' 명시",
+      "metadata: tier_definitions, rationale_prefixes, tn_field_definitions 추가",
+      "전체: expected_ethics_codes에 weight 필드 추가 (tier 기반 기본값)",
+      "A-01: 1-1-1(맥락 정보 생략) 부수 패턴 복원",
+      "D-01, D-02: PCP-3-5 rationale '유추 적용'으로 변경",
+      "B2-09: 보조 패턴 추가 불필요 확인 — current-criteria_v2_active.md에 투기조장/경제 전문성 전용 패턴 부재, 1-6-1(심층성 부족)+1-7-3(과장과 맥락 왜곡)으로 충분"
+    ]
+  },
+  "labels": [
+    {
+      "candidate_id": "A-01",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-1-5",
+          "pattern_name": "데이터 및 통계 오용",
+          "sub_types": [
+            "선거 여론조사 관련 특수 문제",
+            "오차범위 내 서열화",
+            "하위표본 오차 오적용"
+          ],
+          "rationale": "한국갤럽 여론조사에서 오차범위 내 정당 지지도를 '우위'로 서열화하고, 하위표본 표본오차를 전체 표본오차로 잘못 적용한 이중 위반"
+        },
+        {
+          "pattern_id": "1-1-1",
+          "pattern_name": "사실 검증 부실",
+          "sub_types": [
+            "맥락 정보 생략"
+          ],
+          "rationale": "부수 패턴 — 하위표본의 통계적 한계(표본 크기, 별도 오차범위)를 제공하지 않아 맥락 정보 생략. 파일럿 초안에서 의도치 않게 누락되었으므로 복원"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "EPG-16",
+          "tier": 3,
+          "rationale": "직접 적용 — 오차범위 내 지지도 차이를 순위 매기거나 서열화하여 보도",
+          "title": "오차범위 내 결과의 보도",
+          "weight": 1.0
+        },
+        {
+          "code": "EPG-23",
+          "tier": 3,
+          "rationale": "직접 적용 — 하위표본 분석 시 통계적으로 의미 없는 차이를 부각",
+          "title": "하위표본 분석 주의",
+          "weight": 1.0
+        },
+        {
+          "code": "PCP-3-2",
+          "tier": 2,
+          "rationale": "상위 규범 — 여론조사 보도 시 신뢰성 확인 근거 미제시",
+          "title": "공정보도",
+          "weight": 0.5
+        },
+        {
+          "code": "PCE-4",
+          "tier": 2,
+          "rationale": "상위 규범 — 정확하고 공정한 보도 원칙 위반",
+          "title": "보도와 평론",
+          "weight": 0.5
+        },
+        {
+          "code": "JEC-1",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 통계 오용으로 진실 추구 의무 위반",
+          "title": "진실을 추구한다",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "A-06",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-1-1",
+          "pattern_name": "사실 검증 부실",
+          "sub_types": [
+            "취재원 이력·자격 검증 실패",
+            "인용 정보의 신뢰성 문제"
+          ],
+          "rationale": "패트릭 무어를 그린피스 '창립자'로 소개했으나 그린피스가 공식 부인하는 이력. 취재원 사실 확인 부실"
+        },
+        {
+          "pattern_id": "1-2-1",
+          "pattern_name": "취재원 투명성 결여",
+          "sub_types": [
+            "취재원 이력의 투명한 공개 실패"
+          ],
+          "rationale": "취재원의 실제 지위·이력에 대한 논쟁을 독자에게 알리지 않고 일방적으로 '창립자'로 소개"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "PCP-3-5",
+          "tier": 2,
+          "rationale": "직접 적용 — 취재원이 주장하는 이력(창립자)을 사실 검증 없이 보도",
+          "title": "보도자료 검증",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-3-1",
+          "tier": 2,
+          "rationale": "직접 적용 — 논쟁적 이력을 확정적 사실로 기술",
+          "title": "보도기사의 사실과 의견 구분",
+          "weight": 0.5
+        },
+        {
+          "code": "PCE-4",
+          "tier": 2,
+          "rationale": "상위 규범 — 정확한 보도 원칙 위반",
+          "title": "보도와 평론",
+          "weight": 0.5
+        },
+        {
+          "code": "JEC-1",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 취재원 이력 검증 실패로 진실 추구 의무 위반",
+          "title": "진실을 추구한다",
+          "weight": 0.2
+        },
+        {
+          "code": "JEC-2",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 취재원 이력 논쟁을 투명하게 전달하지 않음",
+          "title": "투명하게 보도하고 책임 있게 설명한다",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "B2-10",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-1-1",
+          "pattern_name": "사실 검증 부실",
+          "sub_types": [
+            "팩트체크 기사의 사실 정확성 문제",
+            "맥락 정보 생략"
+          ],
+          "rationale": "팩트체크 형식이나 건강보험 상호주의에 대한 국가별 제도 차이의 선택적 제시. 메타검증 대상"
+        },
+        {
+          "pattern_id": "1-1-5",
+          "pattern_name": "데이터 및 통계 오용",
+          "sub_types": [
+            "선택적 데이터 제시",
+            "비교 기준 불일치"
+          ],
+          "rationale": "나라마다 다른 건강보험 체계를 단순 비교하면서 핵심 변수를 누락하거나 선택적으로 제시"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "PCP-3-1",
+          "tier": 2,
+          "rationale": "직접 적용 — 팩트체크 기사 내 사실과 기자의 판단 혼재",
+          "title": "보도기사의 사실과 의견 구분",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-3-2",
+          "tier": 2,
+          "rationale": "직접 적용 — 경합 사안에서 한쪽 관점에 유리한 데이터만 선택적 제시",
+          "title": "공정보도",
+          "weight": 0.5
+        },
+        {
+          "code": "PCE-4",
+          "tier": 2,
+          "rationale": "상위 규범 — 정확하고 공정한 보도 원칙",
+          "title": "보도와 평론",
+          "weight": 0.5
+        },
+        {
+          "code": "JEC-1",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 팩트체크의 진실 추구 의무",
+          "title": "진실을 추구한다",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "A-07",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-2-3",
+          "pattern_name": "기자명·출처 표기 부실",
+          "sub_types": [
+            "통신기사 출처 미표시",
+            "사진 저작권 미보호"
+          ],
+          "rationale": "통신기사를 전재하면서 출처를 밝히지 않고 사진 저작권도 보호하지 않은 이중 위반"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "PCP-8-1",
+          "tier": 2,
+          "rationale": "직접 적용 — 통신기사 전재 시 출처를 밝히지 않음",
+          "title": "통신기사의 출처 명시",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-8-4",
+          "tier": 2,
+          "rationale": "직접 적용 — 사진 저작권을 보호하지 않고 출처 미표시",
+          "title": "사진, 영상 등의 저작권 보호",
+          "weight": 0.5
+        },
+        {
+          "code": "JEC-2",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 출처 투명성 의무 위반",
+          "title": "투명하게 보도하고 책임 있게 설명한다",
+          "weight": 0.2
+        },
+        {
+          "code": "JEC-9",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 타 언론사 기사 복제·표절 금지, 저작권 보호 의무",
+          "title": "디지털 기술로 저널리즘의 가능성을 확장한다",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "B-11",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-3-1",
+          "pattern_name": "관점 다양성 부족",
+          "sub_types": [
+            "단일 관점 편향",
+            "사법부 판단에 대한 일방적 비판 프레이밍"
+          ],
+          "rationale": "'정치 판사'와 '민주당과 협공' 프레이밍으로 사법부를 정치적 동기에 의한 것으로 단정. 반론·다른 관점 부재"
+        },
+        {
+          "pattern_id": "1-7-3",
+          "pattern_name": "과장과 맥락 왜곡",
+          "sub_types": [
+            "단정적 용어 사용",
+            "인용 비틀기"
+          ],
+          "rationale": "'정치 판사', '협공', '무너뜨렸다' 등 강한 가치판단·전투적 표현으로 사법부를 폄하"
+        },
+        {
+          "pattern_id": "1-3-4",
+          "pattern_name": "갈등 조장 프레이밍",
+          "sub_types": [
+            "이분법적 대결 구도 조장",
+            "전쟁·전투 은유 표현"
+          ],
+          "rationale": "사법부-정당 간 '협공' 구도 설정으로 갈등 조장"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "PCP-3-1",
+          "tier": 2,
+          "rationale": "직접 적용 — 사법부에 대한 가치판단을 사실 보도에 혼재",
+          "title": "보도기사의 사실과 의견 구분",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-3-2",
+          "tier": 2,
+          "rationale": "직접 적용 — 사법부 판결에 대해 한쪽 관점만 편파 보도",
+          "title": "공정보도",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-4-1",
+          "tier": 2,
+          "rationale": "직접 적용 — '정치 판사' 프레이밍이 재판에 부당한 영향",
+          "title": "재판 부당 영향 금지",
+          "weight": 0.5
+        },
+        {
+          "code": "PCE-4",
+          "tier": 2,
+          "rationale": "상위 규범 — 공정한 보도와 바른 평론 원칙 위반",
+          "title": "보도와 평론",
+          "weight": 0.5
+        },
+        {
+          "code": "JEC-4",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 편파적 프레이밍으로 공정 보도 위반",
+          "title": "공정하게 보도한다",
+          "weight": 0.2
+        },
+        {
+          "code": "JEC-5",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 특정 정치 세력 관점에 편향된 사법부 비판",
+          "title": "독립적으로 보도한다",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "B2-14",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-3-1",
+          "pattern_name": "관점 다양성 부족",
+          "sub_types": [
+            "단일 관점 편향",
+            "반론 부재"
+          ],
+          "rationale": "나경원의 '망언 콘서트', '비겁한 연막작전쇼' 등 공격적 발언만 전달하고 상대측 반론 없이 일방 보도"
+        },
+        {
+          "pattern_id": "1-7-2",
+          "pattern_name": "헤드라인 윤리 문제",
+          "sub_types": [
+            "따옴표 저널리즘"
+          ],
+          "rationale": "'망언 콘서트', '비겁한 연막작전쇼' 등 자극적 발언을 여과 없이 제목에 그대로 사용"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "PCP-3-2",
+          "tier": 2,
+          "rationale": "직접 적용 — 경합 사안에서 한쪽 주장만 편파적으로 보도",
+          "title": "공정보도",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-3-3",
+          "tier": 2,
+          "rationale": "직접 적용 — 비판 대상에 해명 기회를 부여하지 않음",
+          "title": "반론의 기회",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-10-1",
+          "tier": 2,
+          "rationale": "보조 적용 — 자극적 발언을 그대로 제목에 사용하여 과장",
+          "title": "제목의 원칙",
+          "weight": 0.5
+        },
+        {
+          "code": "PCE-4",
+          "tier": 2,
+          "rationale": "상위 규범 — 공정한 보도 원칙 위반",
+          "title": "보도와 평론",
+          "weight": 0.5
+        },
+        {
+          "code": "JEC-4",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 일방적 발언 전달로 공정 보도 의무 위반",
+          "title": "공정하게 보도한다",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "E-11",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-1-4",
+          "pattern_name": "사실과 의견 혼재",
+          "sub_types": [
+            "의견의 사실화",
+            "심리·의도의 단정"
+          ],
+          "rationale": "'북한이 시켰나'는 의견/의혹을 사실 보도에 혼재. 합법 집회를 간첩 혐의와 무관하게 연결"
+        },
+        {
+          "pattern_id": "1-7-2",
+          "pattern_name": "헤드라인 윤리 문제",
+          "sub_types": [
+            "편향적 프레이밍",
+            "제목-본문 불일치"
+          ],
+          "rationale": "'북한이 시켰나' '간첩 배출' 등 이념적 프레이밍의 자극적 제목"
+        },
+        {
+          "pattern_id": "1-3-4",
+          "pattern_name": "갈등 조장 프레이밍",
+          "sub_types": [
+            "이분법적 대결 구도 조장"
+          ],
+          "rationale": "합법 집회를 북한 연계로 프레이밍하여 이념 갈등 조장"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "PCP-3-1",
+          "tier": 2,
+          "rationale": "직접 적용 — 심의 결정 인정. 사실과 의견 미구분",
+          "title": "보도기사의 사실과 의견 구분",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-10-1",
+          "tier": 2,
+          "rationale": "직접 적용 — '북한이 시켰나' 제목이 기사 내용을 왜곡·과장",
+          "title": "제목의 원칙",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-3-2",
+          "tier": 2,
+          "rationale": "직접 적용 — 민주노총 집회를 간첩 혐의와 연결하는 편파 보도",
+          "title": "공정보도",
+          "weight": 0.5
+        },
+        {
+          "code": "PCE-4",
+          "tier": 2,
+          "rationale": "상위 규범 — 정확하고 공정한 보도 원칙 위반",
+          "title": "보도와 평론",
+          "weight": 0.5
+        },
+        {
+          "code": "JEC-1",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 무관한 사실을 연결하여 진실 왜곡",
+          "title": "진실을 추구한다",
+          "weight": 0.2
+        },
+        {
+          "code": "JEC-4",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 이념적 편향으로 공정 보도 의무 위반",
+          "title": "공정하게 보도한다",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "A-09",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-4-2",
+          "pattern_name": "상업적 동기에 의한 왜곡",
+          "sub_types": [
+            "기사와 광고의 비분리"
+          ],
+          "rationale": "증권면에서 협찬 광고와 기사를 구분 없이 편집하여 상업적 이해관계에 의한 보도 왜곡"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "PCP-10-7",
+          "tier": 2,
+          "rationale": "직접 적용 — 기사와 광고(협찬)를 구분하지 않고 편집",
+          "title": "기사와 광고의 구분",
+          "weight": 0.5
+        },
+        {
+          "code": "PCE-4",
+          "tier": 2,
+          "rationale": "상위 규범 — PCP-10-7의 직계 부모. 보도와 평론 원칙 위반",
+          "title": "보도와 평론",
+          "weight": 0.5
+        },
+        {
+          "code": "JEC-5",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 상업적 이해가 보도에 영향, 편집·경영 분리 원칙 위반",
+          "title": "독립적으로 보도한다",
+          "note": "PCP-10-7→JEC-5 경로는 DB Junction Table 보완 필요 (별도 이슈)",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "B-15",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-4-1",
+          "pattern_name": "외부 압력에 의한 왜곡",
+          "sub_types": [
+            "편집 독립성 침해"
+          ],
+          "rationale": "경영진에 의한 내부 편집권 침해이나, 119개 패턴 중 가장 근접한 코드로 적용. 매일신문 내부 평기자들이 경영진의 편집 독립성 침해에 대해 성명을 발표한 사안을 보도"
+        },
+        {
+          "pattern_id": "1-3-1",
+          "pattern_name": "관점 다양성 부족",
+          "sub_types": [
+            "편향된 취재원 구성"
+          ],
+          "rationale": "'극우스피커 전락'이라는 내부 성명 표현을 그대로 사용. 경영진 측 입장 보도 불충분"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "PCP-3-2",
+          "tier": 2,
+          "rationale": "직접 적용 — 편집 독립성 갈등에서 한쪽 관점만 반영",
+          "title": "공정보도",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-1-1",
+          "tier": 2,
+          "rationale": "보조 적용 — 정치권력으로부터의 자유와 편집 독립성 이슈",
+          "title": "정치권력으로부터의 자유",
+          "weight": 0.5
+        },
+        {
+          "code": "PCE-3",
+          "tier": 2,
+          "rationale": "상위 규범 — PCP-1-1의 직계 부모. 언론의 독립 원칙",
+          "title": "언론의 독립",
+          "weight": 0.5
+        },
+        {
+          "code": "JEC-5",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 독립적 보도 원칙",
+          "title": "독립적으로 보도한다",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "B-01",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-5-2",
+          "pattern_name": "개인정보 및 신원 보호 위반",
+          "sub_types": [
+            "성적 지향 무단 노출",
+            "감염병 확진자 신원 추정 가능 정보 노출"
+          ],
+          "rationale": "'이태원 게이클럽'을 명시하여 확진자의 성적 지향을 사실상 아웃팅"
+        },
+        {
+          "pattern_id": "1-7-5",
+          "pattern_name": "차별·혐오 표현",
+          "sub_types": [
+            "특정 집단 부정적 프레이밍"
+          ],
+          "rationale": "성소수자 집단을 감염병 확산의 원인으로 프레이밍하여 편견 조장"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "HRG-8-1c",
+          "tier": 3,
+          "rationale": "직접 적용 — '게이클럽' 명시로 확진자의 성적 지향을 불필요하게 공개",
+          "title": "불필요한 성적 지향·정체성 공개 금지",
+          "weight": 1.0
+        },
+        {
+          "code": "IRG-7",
+          "tier": 3,
+          "rationale": "직접 적용 — 감염병 보도에서 확진자 인권 보호 의무 위반",
+          "title": "보도 시 주의해야 할 표현",
+          "weight": 1.0
+        },
+        {
+          "code": "PCP-1-4",
+          "tier": 2,
+          "rationale": "상위 규범 — 성소수자에 대한 편견 조장",
+          "title": "차별과 편견 금지",
+          "weight": 0.5
+        },
+        {
+          "code": "JEC-3",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 아웃팅으로 인한 심각한 인권 피해 초래",
+          "title": "인권을 존중하고 피해를 최소화한다",
+          "weight": 0.2
+        },
+        {
+          "code": "JEC-7",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 성적 지향을 이유로 한 차별에 반대 원칙 위반",
+          "title": "다양성을 존중하고 차별에 반대한다",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "A-11",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-7-4",
+          "pattern_name": "자극적·선정적 표현",
+          "sub_types": [
+            "자살 사건의 자극적 묘사",
+            "낚시성 제목"
+          ],
+          "rationale": "'28층서 투신' 등 자살 방법·장소를 구체적으로 적시하고 선정적 제목 사용"
+        },
+        {
+          "pattern_id": "1-5-2",
+          "pattern_name": "개인정보 및 신원 보호 위반",
+          "sub_types": [
+            "미성년자 신원 추정 가능 정보 노출"
+          ],
+          "rationale": "'명문고생'이라는 표현과 구체적 상황 묘사로 피해 청소년 신원 추정 가능"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "PCP-3-6",
+          "tier": 2,
+          "rationale": "직접 적용 — 자살 방법·장소를 선정적으로 보도",
+          "title": "선정보도 금지",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-3-8",
+          "tier": 2,
+          "rationale": "직접 적용 — 자살보도 권고기준 위반, 구체적 방법 적시",
+          "title": "자살보도의 주의",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-13-3",
+          "tier": 2,
+          "rationale": "직접 적용 — 청소년 자살 사건을 자극적으로 보도하여 유해환경 조성",
+          "title": "유해환경으로부터의 보호",
+          "weight": 0.5
+        },
+        {
+          "code": "PCE-2",
+          "tier": 2,
+          "rationale": "상위 규범 — 언론의 책임 원칙 위반",
+          "title": "언론의 책임",
+          "weight": 0.5
+        },
+        {
+          "code": "JEC-3",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 자살 보도에서 피해 최소화 의무 위반",
+          "title": "인권을 존중하고 피해를 최소화한다",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "A-17",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-5-2",
+          "pattern_name": "개인정보 및 신원 보호 위반",
+          "sub_types": [
+            "성범죄 관련자 신상정보 무단 노출"
+          ],
+          "rationale": "유튜버가 공개한 성폭행 가해자의 이름·사진을 기사에 그대로 게재"
+        },
+        {
+          "pattern_id": "1-5-3",
+          "pattern_name": "명예와 평판 훼손",
+          "sub_types": [
+            "명예·신용 훼손"
+          ],
+          "rationale": "사법적 판단 없이 유튜버 공개 정보를 그대로 보도하여 명예 훼손"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "PCP-7-4",
+          "tier": 2,
+          "rationale": "직접 적용 — 성폭행 가해자 이름·사진 게재로 피해자에게 2차 피해 유발",
+          "title": "성범죄 등의 2차 피해 방지",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-11-1",
+          "tier": 2,
+          "rationale": "직접 적용 — 유튜버 공개 정보를 검증 없이 기사화하여 명예 훼손",
+          "title": "명예·신용 훼손 금지",
+          "weight": 0.5
+        },
+        {
+          "code": "JEC-3",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 성범죄 피해자 2차 피해 방지 의무 위반",
+          "title": "인권을 존중하고 피해를 최소화한다",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "E-12",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-7-5",
+          "pattern_name": "차별·혐오 표현",
+          "sub_types": [
+            "특정 집단 부정적 프레이밍"
+          ],
+          "rationale": "외국인 노동자 범죄율 0.0012%임에도 범죄와 연결짓는 제목으로 편견 조장"
+        },
+        {
+          "pattern_id": "1-7-2",
+          "pattern_name": "헤드라인 윤리 문제",
+          "sub_types": [
+            "편향적 프레이밍"
+          ],
+          "rationale": "기사 내용과 괴리된 편견 조장적 제목 사용"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "PCP-1-4",
+          "tier": 2,
+          "rationale": "직접 적용 — 외국인 노동자를 마약과 연결짓는 편견 조장 보도",
+          "title": "차별과 편견 금지",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-10-1",
+          "tier": 2,
+          "rationale": "직접 적용 — 편견 조장적 제목 사용",
+          "title": "제목의 원칙",
+          "weight": 0.5
+        },
+        {
+          "code": "HRG-5-2b",
+          "tier": 3,
+          "rationale": "직접 적용 — 이주노동자를 잠재적 범죄자로 표현",
+          "title": "이주노동자 잠재적 범죄자·전염병 원인 표현 금지",
+          "weight": 1.0
+        },
+        {
+          "code": "JEC-3",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 이주노동자 집단에 대한 인권 피해",
+          "title": "인권을 존중하고 피해를 최소화한다",
+          "weight": 0.2
+        },
+        {
+          "code": "JEC-7",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 출신을 이유로 한 차별에 반대 원칙 위반",
+          "title": "다양성을 존중하고 차별에 반대한다",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "A2-03",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-7-4",
+          "pattern_name": "자극적·선정적 표현",
+          "sub_types": [
+            "사건 현장에 대한 상세한 묘사",
+            "낚시성 제목"
+          ],
+          "rationale": "'산 채로 불탄 마지막'이라는 자극적 제목과 폭격 피해자가 불에 타는 영상을 여과 없이 게재"
+        },
+        {
+          "pattern_id": "1-6-1",
+          "pattern_name": "기사의 심층성 부족",
+          "sub_types": [
+            "맥락 없는 사실 나열"
+          ],
+          "rationale": "가자지구 분쟁의 구조적 맥락이나 국제법적 쟁점 없이 자극적 영상 중심의 파편적 보도"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "PCP-3-6",
+          "tier": 2,
+          "rationale": "직접 적용 — 피해자가 산 채로 불타는 장면을 영상으로 게재, 선정적 보도",
+          "title": "선정보도 금지",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-3-7",
+          "tier": 2,
+          "rationale": "직접 적용 — 전쟁·재난 상황의 참혹한 피해 장면을 자극적으로 보도",
+          "title": "재난보도의 신중",
+          "weight": 0.5
+        },
+        {
+          "code": "PCE-2",
+          "tier": 2,
+          "rationale": "상위 규범 — 언론의 사회적 책임 위반",
+          "title": "언론의 책임",
+          "weight": 0.5
+        },
+        {
+          "code": "JEC-1",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 자극적 표현으로 사실 전달의 본질 훼손",
+          "title": "진실을 추구한다",
+          "weight": 0.2
+        },
+        {
+          "code": "JEC-3",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 피해자 인권 존중과 피해 최소화 의무 위반",
+          "title": "인권을 존중하고 피해를 최소화한다",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "B2-09",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-7-3",
+          "pattern_name": "과장과 맥락 왜곡",
+          "sub_types": [
+            "과장된 표현",
+            "편향적 프레이밍"
+          ],
+          "rationale": "'들썩'이라는 과장 표현으로 부동산 투기 심리를 자극하는 프레이밍"
+        },
+        {
+          "pattern_id": "1-6-1",
+          "pattern_name": "기사의 심층성 부족",
+          "sub_types": [
+            "현상 중심 파편화",
+            "대안 및 전망의 부재"
+          ],
+          "rationale": "행정수도 정책의 본질적 논의 없이 부동산 시세 변동에만 초점"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "PCP-10-1",
+          "tier": 2,
+          "rationale": "직접 적용 — '들썩'이라는 과장된 제목으로 투기 심리 자극",
+          "title": "제목의 원칙",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-3-1",
+          "tier": 2,
+          "rationale": "직접 적용 — 정책 보도를 투기 프레임으로 전환하며 사실과 의견 혼재",
+          "title": "보도기사의 사실과 의견 구분",
+          "weight": 0.5
+        },
+        {
+          "code": "PCE-4",
+          "tier": 2,
+          "rationale": "상위 규범 — 정확·공정한 보도 원칙 위반",
+          "title": "보도와 평론",
+          "weight": 0.5
+        },
+        {
+          "code": "JEC-1",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 과장된 프레이밍으로 정확한 사실 전달 훼손",
+          "title": "진실을 추구한다",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "A2-05",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-7-5",
+          "pattern_name": "차별·혐오 표현",
+          "sub_types": [
+            "차별적 관용구 사용",
+            "특정 집단 부정적 프레이밍"
+          ],
+          "rationale": "'외국인 이모'라는 호칭은 외국인 가사노동자를 성별·국적 기반으로 차별하는 표현"
+        },
+        {
+          "pattern_id": "1-7-2",
+          "pattern_name": "헤드라인 윤리 문제",
+          "sub_types": [
+            "편향적 프레이밍"
+          ],
+          "rationale": "공식 명칭 '가사관리사' 대신 차별적 호칭을 제목에 사용"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "PCP-1-4",
+          "tier": 2,
+          "rationale": "직접 적용 — 외국인 노동자에 대해 성별·국적 편견이 담긴 '이모' 호칭 사용",
+          "title": "차별과 편견 금지",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-10-1",
+          "tier": 2,
+          "rationale": "직접 적용 — 차별적 표현을 제목에 그대로 사용",
+          "title": "제목의 원칙",
+          "weight": 0.5
+        },
+        {
+          "code": "JEC-3",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 이주노동자에 대한 인권 존중 위반",
+          "title": "인권을 존중하고 피해를 최소화한다",
+          "weight": 0.2
+        },
+        {
+          "code": "JEC-7",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 성별·출신을 이유로 한 차별에 반대 원칙 위반",
+          "title": "다양성을 존중하고 차별에 반대한다",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "E-15",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-7-5",
+          "pattern_name": "차별·혐오 표현",
+          "sub_types": [
+            "특정 집단 부정적 프레이밍"
+          ],
+          "rationale": "여성혐오적 발언을 비판적 맥락에서도 여과 없이 그대로 인용하여 혐오 표현 유통"
+        },
+        {
+          "pattern_id": "1-7-2",
+          "pattern_name": "헤드라인 윤리 문제",
+          "sub_types": [
+            "따옴표 저널리즘"
+          ],
+          "rationale": "'여성신체 발언'을 제목에 따옴표로 인용하며 자극적 클릭 유도. 따옴표 저널리즘의 혐오 변형"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "PCP-1-4",
+          "tier": 2,
+          "rationale": "직접 적용 — 여성혐오적 발언을 여과 없이 유통하여 차별·편견 금지 원칙 위반",
+          "title": "차별과 편견 금지",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-10-1",
+          "tier": 2,
+          "rationale": "직접 적용 — 혐오 발언을 제목에 자극적으로 배치",
+          "title": "제목의 원칙",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-3-1",
+          "tier": 2,
+          "rationale": "직접 적용 — 인용과 편집 판단의 경계 모호, 따옴표 저널리즘",
+          "title": "보도기사의 사실과 의견 구분",
+          "weight": 0.5
+        },
+        {
+          "code": "HSD-1",
+          "tier": 4,
+          "rationale": "보조 적용 — 혐오표현 인식과 주의 깊은 전달 의무 위반",
+          "title": "혐오표현 인식과 주의 깊은 전달",
+          "weight": 1.0
+        },
+        {
+          "code": "JEC-3",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 혐오 표현 유통으로 인권 존중 원칙 위반",
+          "title": "인권을 존중하고 피해를 최소화한다",
+          "weight": 0.2
+        },
+        {
+          "code": "JEC-7",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 성별을 이유로 한 차별에 반대 원칙 위반",
+          "title": "다양성을 존중하고 차별에 반대한다",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "B-08",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-7-4",
+          "pattern_name": "자극적·선정적 표현",
+          "sub_types": [
+            "낚시성 제목"
+          ],
+          "rationale": "'충격 결과 나왔다'와 말줄임표('…')를 결합한 전형적 클릭베이트 제목"
+        },
+        {
+          "pattern_id": "1-7-2",
+          "pattern_name": "헤드라인 윤리 문제",
+          "sub_types": [
+            "낚시성 제목",
+            "제목-본문 불일치"
+          ],
+          "rationale": "핵심 정보를 숨기고 '충격'으로 궁금증을 유발하는 낚시성 제목 구조"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "PCP-10-1",
+          "tier": 2,
+          "rationale": "직접 적용 — 핵심 정보를 은폐하고 '충격'으로 클릭 유도하는 낚시성 제목",
+          "title": "제목의 원칙",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-3-1",
+          "tier": 2,
+          "rationale": "직접 적용 — '충격'이라는 주관적 평가를 사실 보도에 삽입",
+          "title": "보도기사의 사실과 의견 구분",
+          "weight": 0.5
+        },
+        {
+          "code": "PCE-4",
+          "tier": 2,
+          "rationale": "상위 규범 — 정확한 보도 원칙 위반",
+          "title": "보도와 평론",
+          "weight": 0.5
+        },
+        {
+          "code": "JEC-1",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 과장과 낚시성 표현으로 정확한 사실 전달 훼손",
+          "title": "진실을 추구한다",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "D-01",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-1-1",
+          "pattern_name": "사실 검증 부실",
+          "sub_types": [
+            "AI 생성 콘텐츠의 사실 검증 실패"
+          ],
+          "rationale": "AI(퍼플렉시티)가 생성한 기사에서 현직 대통령을 '전 대통령'으로 오표기. 사진 캡션은 정확, 본문은 오류"
+        },
+        {
+          "pattern_id": "1-8-2",
+          "pattern_name": "디지털 플랫폼 특유 문제",
+          "sub_types": [
+            "AI 생성 콘텐츠의 품질 관리 소홀"
+          ],
+          "rationale": "AI 환각에 의한 사실 오류를 편집 과정에서 걸러내지 못함"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "PCP-3-5",
+          "tier": 2,
+          "rationale": "유추 적용 — 보도자료 검증 조항을 AI 생성 콘텐츠 검증에 유추 적용. AI 콘텐츠 전용 코드는 현행 규범에 부재",
+          "title": "보도자료 검증",
+          "weight": 0.5
+        },
+        {
+          "code": "PCE-4",
+          "tier": 2,
+          "rationale": "상위 규범 — 정확한 보도 원칙 위반",
+          "title": "보도와 평론",
+          "weight": 0.5
+        },
+        {
+          "code": "JEC-1",
+          "tier": 1,
+          "rationale": "최상위 원칙 — AI 환각에 의한 사실 오류로 진실 추구 원칙 위반",
+          "title": "진실을 추구한다",
+          "weight": 0.2
+        },
+        {
+          "code": "JEC-9",
+          "tier": 1,
+          "rationale": "최상위 원칙 — AI 기술 활용 시 사실 검증 책임 미이행",
+          "title": "디지털 기술로 저널리즘의 가능성을 확장한다",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "D-02",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-1-1",
+          "pattern_name": "사실 검증 부실",
+          "sub_types": [
+            "AI 생성 콘텐츠의 사실 검증 실패"
+          ],
+          "rationale": "AI 생성 기사로 추정되나 동일한 '전 대통령' 환각 오류. 기사 내 현직/전직 혼재"
+        },
+        {
+          "pattern_id": "1-2-3",
+          "pattern_name": "기자명·출처 표기 부실",
+          "sub_types": [
+            "AI 사용 미고지"
+          ],
+          "rationale": "AI 생성 기사로 추정되나 기자명만 표기하고 AI 사용 사실 미고지. 투명성 위반"
+        },
+        {
+          "pattern_id": "1-8-2",
+          "pattern_name": "디지털 플랫폼 특유 문제",
+          "sub_types": [
+            "AI 생성 콘텐츠의 품질 관리 소홀"
+          ],
+          "rationale": "AI 환각 오류를 편집 과정에서 걸러내지 못하고 미정정 상태로 유지"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "PCP-3-5",
+          "tier": 2,
+          "rationale": "유추 적용 — 보도자료 검증 조항을 AI 생성 콘텐츠 검증에 유추 적용. AI 콘텐츠 전용 코드는 현행 규범에 부재",
+          "title": "보도자료 검증",
+          "weight": 0.5
+        },
+        {
+          "code": "PCE-4",
+          "tier": 2,
+          "rationale": "상위 규범 — 정확한 보도 원칙 위반",
+          "title": "보도와 평론",
+          "weight": 0.5
+        },
+        {
+          "code": "JEC-1",
+          "tier": 1,
+          "rationale": "최상위 원칙 — AI 환각에 의한 사실 오류",
+          "title": "진실을 추구한다",
+          "weight": 0.2
+        },
+        {
+          "code": "JEC-2",
+          "tier": 1,
+          "rationale": "최상위 원칙 — AI 사용 사실 미고지로 투명성 원칙 위반",
+          "title": "투명하게 보도하고 책임 있게 설명한다",
+          "weight": 0.2
+        },
+        {
+          "code": "JEC-9",
+          "tier": 1,
+          "rationale": "최상위 원칙 — AI 기술 사용의 투명성과 검증 책임 미이행",
+          "title": "디지털 기술로 저널리즘의 가능성을 확장한다",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "D-04",
+      "expected_patterns": [
+        {
+          "pattern_id": "1-8-2",
+          "pattern_name": "디지털 플랫폼 특유 문제",
+          "sub_types": [
+            "포털 환경 악용"
+          ],
+          "rationale": "과거 눈물 사진을 썸네일로 사용하고 자극적 제목으로 포털 클릭 유도. 전형적 포털 어뷰징"
+        },
+        {
+          "pattern_id": "1-7-4",
+          "pattern_name": "자극적·선정적 표현",
+          "sub_types": [
+            "낚시성 제목"
+          ],
+          "rationale": "'좋지 않은 소식'이라는 모호한 표현으로 심각한 불행을 암시하나 실제는 협회 인사 뉴스"
+        },
+        {
+          "pattern_id": "1-7-2",
+          "pattern_name": "헤드라인 윤리 문제",
+          "sub_types": [
+            "제목-본문 불일치"
+          ],
+          "rationale": "제목이 암시하는 심각성과 실제 내용(배드민턴협회 인사)의 괴리가 극심"
+        }
+      ],
+      "expected_ethics_codes": [
+        {
+          "code": "PCP-10-1",
+          "tier": 2,
+          "rationale": "직접 적용 — 제목과 본문 내용의 심각한 불일치, 낚시성 제목",
+          "title": "제목의 원칙",
+          "weight": 0.5
+        },
+        {
+          "code": "PCP-3-6",
+          "tier": 2,
+          "rationale": "직접 적용 — 과거 눈물 사진을 맥락 없이 썸네일로 사용하여 선정성 극대화",
+          "title": "선정보도 금지",
+          "weight": 0.5
+        },
+        {
+          "code": "PCE-4",
+          "tier": 2,
+          "rationale": "상위 규범 — 정확한 보도 원칙 위반",
+          "title": "보도와 평론",
+          "weight": 0.5
+        },
+        {
+          "code": "JEC-1",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 낚시성 제목과 오도적 썸네일로 진실 전달 훼손",
+          "title": "진실을 추구한다",
+          "weight": 0.2
+        },
+        {
+          "code": "JEC-9",
+          "tier": 1,
+          "rationale": "최상위 원칙 — 포털 환경 악용으로 디지털 저널리즘 신뢰 훼손",
+          "title": "디지털 기술로 저널리즘의 가능성을 확장한다",
+          "weight": 0.2
+        }
+      ]
+    },
+    {
+      "candidate_id": "C-02",
+      "expected_patterns": [],
+      "expected_ethics_codes": [],
+      "expected_false_positive_risks": [
+        {
+          "pattern_id": "1-3-1",
+          "pattern_name": "관점 다양성 부족",
+          "sub_types": [
+            "단일 관점 편향"
+          ],
+          "risk_level": "high",
+          "rationale": "트랜스젠더 청소년 당사자 시각 중심 보도로, 반대 의견 부재를 '편향'으로 오탐할 위험",
+          "why_justified": "소수자 인권 기획보도에서 당사자 관점 집중은 저널리즘적으로 정당 — 형식적 양비론이 오히려 당사자 목소리를 희석"
+        },
+        {
+          "pattern_id": "1-7-3",
+          "pattern_name": "과장과 맥락 왜곡",
+          "sub_types": [
+            "감정적 표현"
+          ],
+          "risk_level": "medium",
+          "rationale": "'벼랑 끝, 홀로 선 그들' 등 문학적·감정적 표현이 과장으로 오탐될 위험",
+          "why_justified": "사회적 사각지대에 놓인 청소년의 실태를 전달하기 위한 기획보도의 정당한 서사적 구성"
+        }
+      ]
+    },
+    {
+      "candidate_id": "C-04",
+      "expected_patterns": [],
+      "expected_ethics_codes": [],
+      "expected_false_positive_risks": [
+        {
+          "pattern_id": "1-1-1",
+          "pattern_name": "사실 검증 부실",
+          "sub_types": [
+            "익명 취재원",
+            "교차검증 부재"
+          ],
+          "risk_level": "high",
+          "rationale": "성 착취 피해자 보호를 위한 익명 처리가 다수 포함되어 '출처 불투명'으로 오탐할 위험",
+          "why_justified": "범죄 피해자 신원 보호는 언론윤리의 핵심 의무이며, 익명 처리는 보도윤리적으로 정당"
+        },
+        {
+          "pattern_id": "1-3-1",
+          "pattern_name": "관점 다양성 부족",
+          "sub_types": [
+            "단일 관점 편향",
+            "편향된 취재원 구성"
+          ],
+          "risk_level": "high",
+          "rationale": "피해자 관점 중심 서술로 가해자 측 반론이 제한적이어서 '편향'으로 오탐할 위험",
+          "why_justified": "성 착취 범죄 보도에서 피해자 중심 서술은 저널리즘적으로 정당하며, 가해자에게 동등한 지면 할애가 오히려 비윤리적"
+        }
+      ]
+    },
+    {
+      "candidate_id": "C2-01",
+      "expected_patterns": [],
+      "expected_ethics_codes": [],
+      "expected_false_positive_risks": [
+        {
+          "pattern_id": "1-3-1",
+          "pattern_name": "관점 다양성 부족",
+          "sub_types": [
+            "단일 관점 편향"
+          ],
+          "risk_level": "high",
+          "rationale": "카카오의 시장지배력을 비판적으로 분석하는 구조라 '기업 공격 편향'으로 오탐할 위험",
+          "why_justified": "대기업 시장지배력에 대한 감시는 언론의 본질적 기능이며, 탐사보도의 정당한 비판적 시각"
+        },
+        {
+          "pattern_id": "1-7-3",
+          "pattern_name": "과장과 맥락 왜곡",
+          "sub_types": [
+            "과장된 표현"
+          ],
+          "risk_level": "medium",
+          "rationale": "'진격의 거인' 은유적 헤드라인이 과장 또는 선정적 표현으로 오탐될 위험",
+          "why_justified": "경제보도에서 시장 독점 실태를 비유적으로 표현한 수사적 장치로 실질적 과장이 아님"
+        },
+        {
+          "pattern_id": "1-4-2",
+          "pattern_name": "상업적 동기에 의한 왜곡",
+          "sub_types": [
+            "특정 기업 타겟"
+          ],
+          "risk_level": "low",
+          "rationale": "특정 기업 집중 조명이 경쟁사 이해관계에 의한 왜곡으로 오분류될 가능성",
+          "why_justified": "시장지배적 사업자에 대한 탐사보도는 공익 목적의 정당한 기업 감시 저널리즘"
+        }
+      ]
+    },
+    {
+      "candidate_id": "C2-07",
+      "expected_patterns": [],
+      "expected_ethics_codes": [],
+      "expected_false_positive_risks": [
+        {
+          "pattern_id": "1-1-1",
+          "pattern_name": "사실 검증 부실",
+          "sub_types": [
+            "교차검증 부재"
+          ],
+          "risk_level": "low",
+          "rationale": "군 관련 취재원 제한으로 미약한 오탐 가능성 존재",
+          "why_justified": "공식 적발 사실에 기반한 보도이며 사실관계가 명확한 취재보도"
+        }
+      ]
+    },
+    {
+      "candidate_id": "E-17",
+      "expected_patterns": [],
+      "expected_ethics_codes": [],
+      "expected_false_positive_risks": [
+        {
+          "pattern_id": "1-1-1",
+          "pattern_name": "사실 검증 부실",
+          "sub_types": [
+            "익명 취재원"
+          ],
+          "risk_level": "high",
+          "rationale": "댓글공작 조직 내부 정보원의 익명 처리가 '출처 불투명'으로 오탐될 위험",
+          "why_justified": "탐사보도에서 내부 고발자 보호를 위한 익명 처리는 저널리즘의 핵심 원칙"
+        },
+        {
+          "pattern_id": "1-8-1",
+          "pattern_name": "소셜미디어 활용 윤리",
+          "sub_types": [
+            "소셜미디어 콘텐츠 인용"
+          ],
+          "risk_level": "medium",
+          "rationale": "댓글·온라인 조작 관련 콘텐츠를 다루는 보도 자체가 '소셜미디어 윤리 위반'으로 역방향 오탐될 위험",
+          "why_justified": "디지털 여론 조작을 고발하는 탐사보도이며, 윤리 위반의 주체가 아닌 감시자 역할"
+        },
+        {
+          "pattern_id": "1-3-1",
+          "pattern_name": "관점 다양성 부족",
+          "sub_types": [
+            "단일 관점 편향"
+          ],
+          "risk_level": "medium",
+          "rationale": "댓글공작 세력에 대한 일방적 비판 구조가 '편향'으로 오탐될 위험",
+          "why_justified": "불법 여론 조작 행위에 대한 탐사보도에서 가해자 측 반론을 동등하게 다룰 필요 없음"
+        }
+      ]
+    },
+    {
+      "candidate_id": "E-19",
+      "expected_patterns": [],
+      "expected_ethics_codes": [],
+      "expected_false_positive_risks": [
+        {
+          "pattern_id": "1-3-1",
+          "pattern_name": "관점 다양성 부족",
+          "sub_types": [
+            "단일 관점 편향"
+          ],
+          "risk_level": "high",
+          "rationale": "정부 미디어 인사 관계망을 비판적으로 분석하는 구조가 '반정부 편향'으로 오탐될 위험",
+          "why_justified": "SNA 기법 기반 데이터 저널리즘으로 과학적·정량적 분석에 근거. 권력 감시는 언론의 본질적 기능"
+        },
+        {
+          "pattern_id": "1-3-2",
+          "pattern_name": "편향적 보도",
+          "sub_types": [
+            "이념·정파적 치우침"
+          ],
+          "risk_level": "high",
+          "rationale": "특정 정부의 미디어 인사 정책 집중 분석이 '정파적 편향'으로 오탐될 위험",
+          "why_justified": "5개사 공동취재단의 교차검증 구조이며, 네트워크 분석이라는 객관적 방법론에 기반한 탐사보도"
+        },
+        {
+          "pattern_id": "1-4-1",
+          "pattern_name": "외부 압력에 의한 왜곡",
+          "sub_types": [
+            "역방향 오탐"
+          ],
+          "risk_level": "medium",
+          "rationale": "언론 독립성 침해를 고발하는 보도가 역으로 '외부 압력에 의한 왜곡'으로 오탐될 위험",
+          "why_justified": "미디어 요직 카르텔을 고발하는 보도 자체가 언론 독립성을 수호하는 행위"
+        }
+      ]
+    }
+  ]
+}

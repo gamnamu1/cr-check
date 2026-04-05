@@ -1,0 +1,237 @@
+[
+  {
+    "code": "EPG-P", "title": "선거여론조사보도준칙 전문",
+    "full_text": "선거는 민주주의를 구현하는 핵심적인 정치과정으로 공정하고 깨끗한 선거는 민주주의의 유지 및 발전을 위한 기본 전제이다. 유권자 등 미디어 이용자에게 후보자와 정당에 관한 정확하고 신뢰할만한 정보를 제공하는 것은 언론의 기본 사명 중 하나이다. 과학적 방법론에 기초하여 대표성을 확보한 전문적인 여론조사는 선거 기간 중 유권자에게 유용한 정보를 제공할 수 있다.",
+    "source": "선거여론조사보도준칙", "article_number": "전문", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-4", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-4(공정 보도)의 도메인 특화 선언. 공정한 선거 = 민주주의 전제. 정확·신뢰할만한 정보 제공 = JEC-1 요소 포함.",
+    "junction": [{"parent_code_id": "JEC-1", "context_hint": "정확·신뢰할만한 정보 제공 맥락에서 롤업 시 보조 경로"}]
+  },
+  {
+    "code": "EPG-1", "title": "목적",
+    "full_text": "이 준칙은 선거여론조사의 활용과 보도에 관한 세부 기준을 제시함으로써 선거여론조사보도의 정확성, 객관성, 신뢰성을 제고하고 언론의 원활한 공적 기능 수행에 기여함을 목적으로 한다.",
+    "source": "선거여론조사보도준칙", "article_number": "제1조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-8", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "절차 윤리(JEC-8). cf. DRG-1, MRG-1 패턴."
+  },
+  {
+    "code": "EPG-2", "title": "적용범위",
+    "full_text": "이 준칙은 공직선거법 제2조에 따른 공직선거, 교육감선거 등에 적용하며, 신문, 인터넷신문, 방송, 뉴스통신 등 미디어에 적용한다.",
+    "source": "선거여론조사보도준칙", "article_number": "제2조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-8", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "적용범위 = 행정적 규정 = 절차 윤리(JEC-8)."
+  },
+  {
+    "code": "EPG-3", "title": "여론조사의 한계",
+    "full_text": "여론조사 수치가 곧 여론 그 자체는 아니므로 미디어는 여론조사 결과를 여론과 동일시해서는 안 되며, 수치에 과도한 의미를 부여해서는 안 된다.",
+    "source": "선거여론조사보도준칙", "article_number": "제3조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-1", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-1(진실 추구)의 '정확한 사실을 종합적이고 포괄적인 맥락으로 전달'을 여론조사 한계 인식으로 구체화."
+  },
+  {
+    "code": "EPG-4", "title": "과학성",
+    "full_text": "미디어는 대표성과 신뢰성이 의심되는 여론조사를 기획하거나 의뢰하지 않는다. 여론조사 결과를 보도할 때 정확성, 객관성, 신뢰성을 충족한 과학적 해석을 최고의 가치로 삼아야 하며, 여론조사 결과를 속보 경쟁의 대상으로 보지 말아야 한다. 여론조사 결과를 자의적으로 해석하거나 일상생활에서 다루는 숫자처럼 취급하지 말아야 한다.",
+    "source": "선거여론조사보도준칙", "article_number": "제4조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-1", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-1의 검증·정확성 원칙을 여론조사 과학성으로 구체화. '정확성은 신속성에 우선한다' 원칙 반영."
+  },
+  {
+    "code": "EPG-5", "title": "공정성",
+    "full_text": "왜곡된 선거여론조사 결과가 보도되어 선거 운동에 오용되지 않도록 주의해야 한다. 미디어의 정치적 의도성이 의심되는 보도를 해서는 안 된다. 여론조사 결과 중 특정 정당, 후보자에게 유리한 내용만을 뽑아 단편적, 단락적 보도를 하지 않는다.",
+    "source": "선거여론조사보도준칙", "article_number": "제5조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-4", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-4(공정 보도)의 '특정 집단, 세력, 견해에 치우치지 않고 공평무사'를 여론조사 공정 보도로 구체화."
+  },
+  {
+    "code": "EPG-6", "title": "조사기관의 선정",
+    "full_text": "미디어는 과학성, 공정성 등의 여론조사 원칙을 준수하고 있는 전문 조사기관에 선거 여론조사를 의뢰해야 한다.",
+    "source": "선거여론조사보도준칙", "article_number": "제6조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-8", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "[앙상블 반영] JEC-1에서 JEC-8로 변경. 조사기관 '선정'은 정확성 확인 행위(EPG-11 감리)가 아닌 절차 결정. JEC-8의 '정당한 방법을 사용'을 조사기관 선정 절차로 구체화. DRG-1·MRG-2 패턴과 일관."
+  },
+  {
+    "code": "EPG-7", "title": "표본의 대표성 확보",
+    "full_text": "미디어가 선거여론조사를 실시하는 경우에는 당해 조사대상의 전 계층을 대표할 수 있도록 피조사자를 선정해야 한다. 대표성 있는 표집이 아닐 경우에는 표본이 왜곡될 가능성이 있다는 점을 늘 염두에 두어야 한다.",
+    "source": "선거여론조사보도준칙", "article_number": "제7조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-1", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-1의 정확성 원칙을 표본 대표성 확보로 구체화."
+  },
+  {
+    "code": "EPG-8", "title": "금지되는 조사행위",
+    "full_text": "특정 정당 또는 후보자에게 편향되도록 하는 어휘나 문장을 사용하여 질문하는 행위, 피조사자에게 응답을 강요하거나 유도하는 행위, 오락·사행성을 조장하는 조사, 피조사자 성명 공개 행위 등은 금지된다. 또한 특정 정당·후보자가 의뢰하거나 비용을 제공하는 여론조사, 비과학적 인터넷·ARS 여론조사도 기획·의뢰하지 않는다.",
+    "source": "선거여론조사보도준칙", "article_number": "제8조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-4", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-4(공정 보도)의 공평무사 원칙을 금지 조사행위 목록으로 구체화.",
+    "junction": [{"parent_code_id": "JEC-5", "context_hint": "특정 정당·후보자 의뢰 조사 거부 = 독립성 맥락에서 롤업 시 보조 경로"}]
+  },
+  {
+    "code": "EPG-9", "title": "무리한 속보 경쟁 자제",
+    "full_text": "미디어는 특정 사건 발생 후 단기간에 과학성, 공정성이 결여된 여론조사를 실시해 무리한 보도를 해서는 안 된다.",
+    "source": "선거여론조사보도준칙", "article_number": "제9조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-1", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-1의 '정확성은 신속성에 우선한다' 원칙의 선거 여론조사 적용."
+  },
+  {
+    "code": "EPG-10", "title": "품질의 제고",
+    "full_text": "미디어는 비용과 시간이 들더라도 고품질 여론조사를 실시하도록 노력한다. 저품질 불량 여론조사를 여러 번 하기보다는 횟수를 줄여 과학성, 공정성을 갖춘 여론조사를 하는 것이 바람직하다.",
+    "source": "선거여론조사보도준칙", "article_number": "제10조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-1", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-1의 검증·정확성 원칙을 고품질 여론조사 추구로 구체화."
+  },
+  {
+    "code": "EPG-11", "title": "여론조사의 감리",
+    "full_text": "미디어는 전문 조사기관이 조사 설계를 제대로 했는지, 표본은 확률에 입각해 제대로 추출하는지, 실제조사는 성실히 수행하는지 등을 감리하기 위해 조사 전후에 전문가의 조언을 얻어 감리하는 것이 바람직하다.",
+    "source": "선거여론조사보도준칙", "article_number": "제11조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-1", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-1의 '모든 정보를 성실하게 검증'을 여론조사 감리 절차로 구체화."
+  },
+  {
+    "code": "EPG-12", "title": "대상 여론조사",
+    "full_text": "미디어는 선거여론조사 결과를 공표·보도할 때에는 중앙심의위원회 홈페이지에 등록된 선거여론조사 결과만을 공표·보도해야 한다.",
+    "source": "선거여론조사보도준칙", "article_number": "제12조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-2", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-2(투명·설명책임)의 출처 투명성을 중앙심의위원회 등록 조사만 보도하도록 제한."
+  },
+  {
+    "code": "EPG-13", "title": "공표·보도해야 할 사항",
+    "full_text": "정당과 후보자의 지지율 및 선호도와 관련한 여론조사 보도는 중앙심의위원회 선거여론조사기준을 참조하여 보도한다.",
+    "source": "선거여론조사보도준칙", "article_number": "제13조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-2", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-2의 투명성을 심의위 기준 참조 의무로 구체화."
+  },
+  {
+    "code": "EPG-14", "title": "인용의 제한",
+    "full_text": "특정 정당 또는 후보자가 의뢰한 경우, 질문이 편향된 경우, 과학적 표집과정을 거치지 않은 경우 등은 인용하지 않아야 한다.",
+    "source": "선거여론조사보도준칙", "article_number": "제14조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-4", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-4의 공정 보도를 편향 여론조사 인용 제한으로 구체화."
+  },
+  {
+    "code": "EPG-15", "title": "인용시 표기 사항",
+    "full_text": "이미 보도된 타 기관의 결과를 인용하여 보도할 때에는 해당 선거여론조사의 조사의뢰자, 조사기관, 조사기간 등과 함께 중앙심의위원회 홈페이지 참조를 밝혀야 한다.",
+    "source": "선거여론조사보도준칙", "article_number": "제15조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-2", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-2의 '정보의 출처를 명확히 밝힌다'를 여론조사 인용 표기로 구체화."
+  },
+  {
+    "code": "EPG-16", "title": "오차범위 내 결과의 보도",
+    "full_text": "지지율 또는 선호도가 오차범위 안에 있을 경우 순위를 매기거나 서열화하지 않고 '경합' 또는 '오차범위 내에 있다'고 보도한다. '오차범위 내에서 앞섰다' 등의 표현은 사용하지 않는다.",
+    "source": "선거여론조사보도준칙", "article_number": "제16조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-1", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-1의 정확성을 통계적 오차범위 존중으로 구체화. 오차범위 내 서열화 금지.",
+    "junction": [{"parent_code_id": "JEC-4", "context_hint": "후보자 간 공정 표현 맥락에서 롤업 시 보조 경로"}]
+  },
+  {
+    "code": "EPG-17", "title": "조사 결과의 비교",
+    "full_text": "서로 다른 시점에서 실시된 여론조사는 그 조사방법이 동일한 경우에만 상호비교가 가능하다. '지지율 조사'와 '선호도 조사'처럼 성격이 다른 여론조사들을 직접 비교하지 않는다.",
+    "source": "선거여론조사보도준칙", "article_number": "제17조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-1", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-1의 정확성을 여론조사 간 비교 기준(방법론 동일성)으로 구체화."
+  },
+  {
+    "code": "EPG-18", "title": "항목 무응답의 고려",
+    "full_text": "찬성과 반대의 의견을 묻는 조사의 경우 '무응답자' 및 '모르겠다'라고 응답한 사람의 비율에 특히 주의해야 한다.",
+    "source": "선거여론조사보도준칙", "article_number": "제18조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-1", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-1의 '종합적이고 포괄적인 맥락 전달'을 무응답 비율 고려로 구체화."
+  },
+  {
+    "code": "EPG-19", "title": "주관적 표현 자제",
+    "full_text": "조사결과에 대해 '의외의', '예상을 넘는', '기대에 못 미치는' 등 주관적일 수 있는 표현은 가급적 자제한다. 여론조사 결과를 자의적으로 해석하여 주관적인 견해나 판단을 보도하는 것을 자제해야 한다.",
+    "source": "선거여론조사보도준칙", "article_number": "제19조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-1", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-1의 '사실과 의견을 분리'를 여론조사 보도의 주관적 표현 자제로 구체화."
+  },
+  {
+    "code": "EPG-20", "title": "인포그래픽 제작 주의",
+    "full_text": "후보자나 정당 간 지지율 또는 선호도의 차이가 오차한계 내에 있을 경우 그래프, 그림, 표 등은 동등한 크기와 조건으로 제작해야 한다. 다른 조사와 비교할 경우 그래프 등을 사용해 그 차이를 과장 또는 축소하지 않아야 한다.",
+    "source": "선거여론조사보도준칙", "article_number": "제20조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-4", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-4의 공정 보도를 시각 자료(인포그래픽) 공정성으로 구체화."
+  },
+  {
+    "code": "EPG-21", "title": "전문 용어에 대한 해설",
+    "full_text": "미디어는 여론조사 보도 시 신뢰수준, 표본오차, 오차범위, 응답률, 가중값 등 전문용어를 매체 이용자들이 쉽게 이해할 수 있도록 보도해야 한다.",
+    "source": "선거여론조사보도준칙", "article_number": "제21조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-2", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-2의 '독자가 정보에 대해 스스로 판단할 수 있도록'을 전문용어 해설 의무로 구체화."
+  },
+  {
+    "code": "EPG-22", "title": "순위 일변도 보도 지양",
+    "full_text": "미디어는 선거 기간 중 정당이나 후보자의 지지율과 선호도에만 집중할 것이 아니라 정책 및 공약에 충분한 관심을 기울여 보도해야 한다.",
+    "source": "선거여론조사보도준칙", "article_number": "제22조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-4", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-4의 '다양한 입장을 두루 담아 균형 잡힌 시각'을 정책·공약 보도 강화로 구체화."
+  },
+  {
+    "code": "EPG-23", "title": "하위표본 분석 주의",
+    "full_text": "여론조사 결과를 성별, 연령별, 지역별 등 하위표본으로 나누어 추가 분석한 결과를 보도할 때 통계적으로 의미 없는 차이를 부각시키지 말아야 한다.",
+    "source": "선거여론조사보도준칙", "article_number": "제23조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-1", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-1의 정확성을 하위표본 통계적 의미 검증으로 구체화."
+  },
+  {
+    "code": "EPG-24", "title": "지원 준비와 교육",
+    "full_text": "언론사는 선거여론조사에 관한 교재를 비치하고 선거보도 종사자에게 사전 교육을 실시함으로써 정확하고 신뢰할 수 있는 보도를 할 수 있도록 한다.",
+    "source": "선거여론조사보도준칙", "article_number": "제24조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-8", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-8의 절차 윤리를 사전 교육으로 구체화."
+  },
+  {
+    "code": "EPG-25", "title": "교육 참여 독려",
+    "full_text": "언론사는 사내외에서 실시하는 각종 선거보도교육 프로그램에 소속 기자들이 적극적으로 참여하도록 독려한다.",
+    "source": "선거여론조사보도준칙", "article_number": "제25조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-8", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-8의 절차 윤리를 전문성 함양 독려로 구체화."
+  },
+  {
+    "code": "EPG-26", "title": "언론사별 준칙 제정",
+    "full_text": "언론사는 필요할 경우 이 준칙을 토대로 각 사의 사정에 맞춰 구체적이고 효율적인 자체 준칙을 만들어 시행한다.",
+    "source": "선거여론조사보도준칙", "article_number": "제26조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-8", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-8의 절차 윤리를 자체 준칙 제정으로 구체화."
+  },
+  {
+    "code": "EPG-27", "title": "준칙 준수 의사의 공표",
+    "full_text": "이 준칙의 제정에 참여했거나 준칙에 동의하는 언론사는 자체 매체를 통해 적절한 방법으로 준칙 준수 의사를 밝힌다.",
+    "source": "선거여론조사보도준칙", "article_number": "제27조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-2", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-2의 투명성을 준칙 준수 의사 공표로 구체화."
+  },
+  {
+    "code": "EPG-28", "title": "심의",
+    "full_text": "이 준칙의 제정에 참여했거나 준칙에 동의하는 언론사의 특정 기사나 보도가 준칙을 어겼다고 판단될 경우에는 심의기구별로 적절한 제재조치를 취한다.",
+    "source": "선거여론조사보도준칙", "article_number": "제28조", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (선거·여론조사 보도)",
+    "parent_code_id": "JEC-2", "domain": "election_poll_reporting", "locale": "ko-KR",
+    "notes": "JEC-2의 설명책임을 자율 심의·제재 메커니즘으로 구체화."
+  }
+]

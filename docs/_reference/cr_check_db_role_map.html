@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CR-Check DB 구축 역할 분담표</title>
+<style>
+  :root {
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f4;
+    --text-primary: #1a1a1a;
+    --text-secondary: #6b6b6b;
+    --text-tertiary: #9a9a9a;
+    --border-light: rgba(0,0,0,0.12);
+    --border-hover: rgba(0,0,0,0.25);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg-primary: #1a1a1a;
+      --bg-secondary: #2a2a2a;
+      --text-primary: #e8e8e8;
+      --text-secondary: #a0a0a0;
+      --text-tertiary: #707070;
+      --border-light: rgba(255,255,255,0.12);
+      --border-hover: rgba(255,255,255,0.25);
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); color: var(--text-primary); background: var(--bg-primary); padding: 2rem; max-width: 720px; margin: 0 auto; line-height: 1.6; }
+  h1 { font-size: 20px; font-weight: 600; margin-bottom: 0.5rem; }
+  .subtitle { font-size: 13px; color: var(--text-secondary); margin-bottom: 1.5rem; }
+  .legend { display: flex; flex-wrap: wrap; gap: 12px; margin: 0 0 1.5rem; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .dot-gam { background: #7F77DD; }
+  .dot-cla { background: #1D9E75; }
+  .dot-ant { background: #D85A30; }
+  .dot-cli { background: #378ADD; }
+  .dot-ens { background: #C4841D; }
+  .role-label { color: var(--text-secondary); font-size: 11px; }
+  .phase { margin-bottom: 1.5rem; }
+  .phase-header { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; cursor: pointer; user-select: none; }
+  .phase-header:hover .phase-title { opacity: 0.7; }
+  .phase-badge { font-size: 11px; font-weight: 500; padding: 2px 10px; border-radius: 10px; white-space: nowrap; }
+  .badge-done { background: #E1F5EE; color: #085041; }
+  .badge-now { background: #E6F1FB; color: #0C447C; }
+  .badge-next { background: var(--bg-secondary); color: var(--text-secondary); }
+  .phase-title { font-size: 16px; font-weight: 500; transition: opacity .15s; }
+  .chevron { font-size: 12px; color: var(--text-tertiary); transition: transform .2s; display: inline-block; }
+  .chevron.open { transform: rotate(90deg); }
+  .task-list { display: none; flex-direction: column; gap: 8px; padding-left: 4px; }
+  .task-list.open { display: flex; }
+  .task-card { border: 0.5px solid var(--border-light); border-radius: var(--radius-lg); padding: 12px 14px; transition: border-color .15s; }
+  .task-card:hover { border-color: var(--border-hover); }
+  .task-name { font-size: 14px; font-weight: 500; margin-bottom: 6px; }
+  .task-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 8px; }
+  .actors { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .actor-pill { display: flex; align-items: center; gap: 4px; font-size: 11px; padding: 3px 8px; border-radius: 10px; font-weight: 500; }
+  .pill-gam { background: #EEEDFE; color: #3C3489; }
+  .pill-cla { background: #E1F5EE; color: #085041; }
+  .pill-ant { background: #FAECE7; color: #712B13; }
+  .pill-cli { background: #E6F1FB; color: #0C447C; }
+  .pill-ens { background: #FDF3E4; color: #6B4510; }
+  @media (prefers-color-scheme: dark) {
+    .pill-gam { background: #3C3489; color: #CECBF6; }
+    .pill-cla { background: #085041; color: #9FE1CB; }
+    .pill-ant { background: #712B13; color: #F5C4B3; }
+    .pill-cli { background: #0C447C; color: #B5D4F4; }
+    .pill-ens { background: #6B4510; color: #F5DDB8; }
+    .badge-done { background: #085041; color: #9FE1CB; }
+    .badge-now { background: #0C447C; color: #B5D4F4; }
+  }
+  .arrow-flow { display: flex; align-items: center; gap: 2px; font-size: 11px; color: var(--text-tertiary); margin: 0 2px; }
+  .done-mark { font-size: 12px; color: #1D9E75; margin-left: 4px; }
+  .m-tag { font-size: 10px; font-weight: 500; padding: 1px 6px; border-radius: 6px; background: var(--bg-secondary); color: var(--text-secondary); margin-left: 6px; }
+  .updated-note { font-size: 11px; color: var(--text-tertiary); margin-top: 2rem; text-align: right; }
+</style>
+</head>
+<body>
+<h1>CR-Check DB 구축 — 역할 분담표</h1>
+<p class="subtitle">사각편대: Gamnamu(기획·승인) · Claude Code CLI(코딩 실행) · Claude.ai(1차 감리) · Antigravity/Gemini(2차 더블체크)</p>
+
+<div class="legend">
+  <div class="legend-item"><span class="dot dot-gam"></span><span style="font-weight:500">Gamnamu</span><span class="role-label">기획·최종 승인</span></div>
+  <div class="legend-item"><span class="dot dot-cli"></span><span style="font-weight:500">Claude Code CLI</span><span class="role-label">코딩 실행</span></div>
+  <div class="legend-item"><span class="dot dot-cla"></span><span style="font-weight:500">Claude.ai</span><span class="role-label">1차 감리</span></div>
+  <div class="legend-item"><span class="dot dot-ant"></span><span style="font-weight:500">Antigravity</span><span class="role-label">2차 더블체크</span></div>
+  <div class="legend-item"><span class="dot dot-ens"></span><span style="font-weight:500">앙상블</span><span class="role-label">교차 리뷰</span></div>
+</div>
+<div class="phase" id="p0">
+  <div class="phase-header" onclick="toggle('p0')">
+    <span class="chevron open" id="ch-p0">&#9654;</span>
+    <span class="phase-title">Week 0 — 사전 준비</span>
+    <span class="phase-badge badge-done">완료</span>
+  </div>
+  <div class="task-list open" id="tl-p0">
+    <div class="task-card">
+      <div class="task-name">작업 A: 추가 규범 6개 원문 수집 <span class="done-mark">&#10003;</span></div>
+      <div class="task-desc">한국기자협회 사이트에서 6개 규범 전문 수집, Code of Ethics 파일에 추가, 원문 대조 교정</div>
+      <div class="actors">
+        <span class="actor-pill pill-gam">Gamnamu — 수집·대조</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-cla">Claude.ai — 정리·교정 보조</span>
+      </div>
+    </div>
+    <div class="task-card">
+      <div class="task-name">작업 B: ethics_codes_mapping.json 작성 <span class="done-mark">&#10003;</span></div>
+      <div class="task-desc">14개 규범 394개 엔트리 병합. tier, parent_code_id, junction, domain 부여. 4개 AI 리뷰어 교차 검수 통과.</div>
+      <div class="actors">
+        <span class="actor-pill pill-gam">Gamnamu — 최종 판단·승인</span>
+        <span class="arrow-flow">↔</span>
+        <span class="actor-pill pill-cla">Claude.ai — 초안 제시·근거 분석</span>
+      </div>
+    </div>
+    <div class="task-card">
+      <div class="task-name">Supabase + OpenAI + MCP 환경 구축 <span class="done-mark">&#10003;</span></div>
+      <div class="task-desc">Supabase 프로젝트 생성(cr-check-db, Seoul), .env 설정, OpenAI API 연결, Supabase MCP 읽기 전용 연결(PAT 인증).</div>
+      <div class="actors">
+        <span class="actor-pill pill-gam">Gamnamu — 환경 구축</span>
+        <span class="arrow-flow">↔</span>
+        <span class="actor-pill pill-cla">Claude.ai — MCP 설정 가이드</span>
+      </div>
+    </div>
+    <div class="task-card">
+      <div class="task-name">골든 데이터셋 26건 확정 (TP20+TN6) <span class="done-mark">&#10003;</span></div>
+      <div class="task-desc">선별·레이블링 v3·Data Leakage 점검·원문 아카이빙 완료. 앙상블 검증 2회(골든 데이터셋 + DB 구축 사전 검수) 통과. 반영 4건을 마스터 플랜에 직접 수정.</div>
+      <div class="actors">
+        <span class="actor-pill pill-cla">Claude.ai — 초안·분석·감리</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-cli">Claude Code — 레이블링·스크래핑</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-ens">앙상블 5AI — 교차 검증 2회</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-gam">Gamnamu — 최종 확정</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="phase" id="p1">
+  <div class="phase-header" onclick="toggle('p1')">
+    <span class="chevron" id="ch-p1">&#9654;</span>
+    <span class="phase-title">Week 1 — DB 기반 구축 (사각편대)</span>
+    <span class="phase-badge badge-now">다음</span>
+  </div>
+  <div class="task-list" id="tl-p1">
+    <div class="task-card">
+      <div class="task-name">M1: 전체 스키마 생성 <span class="m-tag">Day 1</span></div>
+      <div class="task-desc">supabase/migrations/ 폴더에 Migration SQL 파일 생성. 마스터 플랜 섹션 6 기반. is_citable, 재귀 CTE 롤업 반영 확인.</div>
+      <div class="actors">
+        <span class="actor-pill pill-cli">Claude Code CLI — Migration SQL 작성</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-cla">Claude.ai — 1차 감리</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-ant">Antigravity — 2차 더블체크</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-gam">Gamnamu — 승인</span>
+      </div>
+    </div>
+    <div class="task-card">
+      <div class="task-name">M2: 시드 데이터 입력 <span class="m-tag">Day 2</span></div>
+      <div class="task-desc">패턴·규범 데이터 2-패스 삽입 (1차 NULL → 2차 code-to-id UPDATE). is_citable 플래그 포함.</div>
+      <div class="actors">
+        <span class="actor-pill pill-cli">Claude Code CLI — 2-패스 삽입 스크립트</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-cla">Claude.ai — 1차 감리</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-ant">Antigravity — 2차 + MCP DB 조회</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-gam">Gamnamu — tier 최종 확인</span>
+      </div>
+    </div>
+    <div class="task-card">
+      <div class="task-name">관계 데이터 구축 (Stage 1) <span class="m-tag">Day 3</span></div>
+      <div class="task-desc">명시적 교차참조 15건 시드 + 임베딩 유사도/LLM 추출로 30~40건 확장.</div>
+      <div class="actors">
+        <span class="actor-pill pill-cli">Claude Code CLI — 임베딩 유사도 매트릭스</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-cla">Claude.ai — LLM 관계 추출</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-gam">Gamnamu — 수동 검수</span>
+      </div>
+    </div>
+    <div class="task-card">
+      <div class="task-name">M3: 임베딩 생성 + 모델 벤치마크 <span class="m-tag">Day 4</span></div>
+      <div class="task-desc">OpenAI vs 대안 모델 Recall@10 비교. 골든셋 26건 기반 평가. 기사 청킹 프로토타이핑 포함.</div>
+      <div class="actors">
+        <span class="actor-pill pill-cli">Claude Code CLI — 벤치마크 코드</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-cla">Claude.ai — 1차 감리</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-ant">Antigravity — 2차 독립 검증</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-gam">Gamnamu — 모델 선택 결정</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="phase" id="p2">
+  <div class="phase-header" onclick="toggle('p2')">
+    <span class="chevron" id="ch-p2">&#9654;</span>
+    <span class="phase-title">Week 2 — Phase 0 완성 + Phase 1</span>
+    <span class="phase-badge badge-next">대기</span>
+  </div>
+  <div class="task-list" id="tl-p2">
+    <div class="task-card">
+      <div class="task-name">M4: 1.5회 RAG 파이프라인 구현 <span class="m-tag">Day 5-6</span></div>
+      <div class="task-desc">벡터검색 → Haiku(패턴 확정) → 규범 정밀조회 → Sonnet(보고서). 기사 청킹 로직 포함.</div>
+      <div class="actors">
+        <span class="actor-pill pill-cli">Claude Code CLI — 파이프라인 구현</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-cla">Claude.ai — 1차 감리 (메타 패턴 라우팅)</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-ant">Antigravity — 2차 더블체크</span>
+      </div>
+    </div>
+    <div class="task-card">
+      <div class="task-name">M5: 결정론적 인용 + 메타 패턴 추론 <span class="m-tag">Day 7</span></div>
+      <div class="task-desc">CitationResolver(cite 태그 → DB 원문 치환) + 메타 패턴(1-4-1, 1-4-2) 하이브리드 추론.</div>
+      <div class="actors">
+        <span class="actor-pill pill-cli">Claude Code CLI — CitationResolver + 추론 로직</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-cla">Claude.ai — 1차 감리</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-ant">Antigravity — 2차 인용 리뷰</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-gam">Gamnamu — 가드레일 최종 검토</span>
+      </div>
+    </div>
+    <div class="task-card">
+      <div class="task-name">M6: Phase 1 아카이빙 통합 + 배포 <span class="m-tag">Day 8-9</span></div>
+      <div class="task-desc">DatabaseManager + main.py 수정, 공개 URL 공유 기능. Dev Set 26건 E2E 테스트 → Reserved Test Set 73건 최종 평가.</div>
+      <div class="actors">
+        <span class="actor-pill pill-cli">Claude Code CLI — 통합 구현·배포</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-cla">Claude.ai — 1차 E2E 감리</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-ant">Antigravity — 2차 + 브라우저 UI 검증</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-gam">Gamnamu — 최종 승인·배포</span>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="phase" id="p3">
+  <div class="phase-header" onclick="toggle('p3')">
+    <span class="chevron" id="ch-p3">&#9654;</span>
+    <span class="phase-title">Week 3 — Phase 2 (통계 대시보드)</span>
+    <span class="phase-badge badge-next">대기</span>
+  </div>
+  <div class="task-list" id="tl-p3">
+    <div class="task-card">
+      <div class="task-name">통계 함수 + API + 대시보드 UI <span class="m-tag">Day 10-12</span></div>
+      <div class="task-desc">분석 통계 집계 함수, API 엔드포인트, 프론트엔드 대시보드 구현.</div>
+      <div class="actors">
+        <span class="actor-pill pill-cli">Claude Code CLI — 풀스택 구현</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-cla">Claude.ai — 1차 감리</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-ant">Antigravity — 2차 + 브라우저 테스트</span>
+        <span class="arrow-flow">→</span>
+        <span class="actor-pill pill-gam">Gamnamu — UI/UX 검토·승인</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p class="updated-note">마지막 업데이트: 2026-03-25 — 역할 재편(Claude Code CLI 코딩, Claude.ai 1차 감리, Antigravity 2차 더블체크), Week 0 완료, 앙상블 검증 4건 마스터 플랜 반영.</p>
+
+<script>
+function toggle(id) {
+  const tl = document.getElementById('tl-' + id);
+  const ch = document.getElementById('ch-' + id);
+  const isOpen = tl.classList.contains('open');
+  tl.classList.toggle('open', !isOpen);
+  ch.classList.toggle('open', !isOpen);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+[
+  {
+    "candidate_id": "C-01",
+    "excluded": true,
+    "reason": "방송부문 수상 TN (MBC 취재보도1부문)",
+    "policy_ref": "GOLDEN_DATASET_BROADCAST_EXCLUSION_POLICY.md"
+  },
+  {
+    "candidate_id": "C-07",
+    "excluded": true,
+    "reason": "방송부문 수상 TN (MBC 기획보도 방송부문)",
+    "policy_ref": "GOLDEN_DATASET_BROADCAST_EXCLUSION_POLICY.md"
+  },
+  {
+    "candidate_id": "C-08",
+    "excluded": true,
+    "reason": "방송부문 수상 TN (JTBC 기획보도 방송부문)",
+    "policy_ref": "GOLDEN_DATASET_BROADCAST_EXCLUSION_POLICY.md"
+  },
+  {
+    "candidate_id": "C2-04",
+    "excluded": true,
+    "reason": "방송 취재보도 TN (MBC 취재보도1)",
+    "policy_ref": "GOLDEN_DATASET_BROADCAST_EXCLUSION_POLICY.md"
+  },
+  {
+    "candidate_id": "C2-05",
+    "excluded": true,
+    "reason": "지역 방송 TN (TBC 지역 취재보도)",
+    "policy_ref": "GOLDEN_DATASET_BROADCAST_EXCLUSION_POLICY.md"
+  },
+  {
+    "candidate_id": "E-16",
+    "excluded": true,
+    "reason": "TV 프로그램 TN (KBS 시사기획 창)",
+    "policy_ref": "GOLDEN_DATASET_BROADCAST_EXCLUSION_POLICY.md"
+  },
+  {
+    "candidate_id": "E-20",
+    "excluded": true,
+    "reason": "방송 리포트 TN (KBS 데이터저널리즘 — 방송 리포트)",
+    "policy_ref": "GOLDEN_DATASET_BROADCAST_EXCLUSION_POLICY.md"
+  },
+  {
+    "candidate_id": "E-10",
+    "excluded": true,
+    "reason": "Gamnamu 확정: 목록에서 제외. 결정번호 미확인 + AI 이미지가 핵심 문제(비텍스트).",
+    "policy_ref": "GOLDEN_DATASET_BROADCAST_EXCLUSION_POLICY.md"
+  },
+  {
+    "candidate_id": "E-13",
+    "excluded": true,
+    "reason": "Gamnamu 확인: TV조선 방송 보도 건 제외.",
+    "policy_ref": "GOLDEN_DATASET_BROADCAST_EXCLUSION_POLICY.md"
+  }
+]

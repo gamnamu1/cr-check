@@ -1,7 +1,7 @@
 # CR-Check DB+RAG 통합 마스터 플랜
 
 > **문서 상태**: Active — Single Source of Truth
-> **최종 수정**: 2026-03-17
+> **최종 수정**: 2026-03-25 (앙상블 검증 반영: ivfflat 제거, is_citable 추가, 재귀 CTE 롤업, KJA→JCE 수정)
 > **운영 방식**: 전 Phase 익명 운영 (Auth 없음), 분석 결과는 공개 URL로 접근·공유
 
 ---
@@ -53,13 +53,11 @@ CR-Check의 가장 근본적인 기술 부채: **119개 보도관행 패턴 ↔ 
 
 | 항목 | 수치 |
 |------|------|
-| 현재 수록된 규범 문서 | 8개 |
-| 추가 수록 필요한 규범 | 6개 |
-| 전체 규범 문서 | 14개 |
-| 임베딩 대상 (추가 포함 추정) | ~160개 |
-| 총 텍스트량 | ~28,000자 (추가 포함) |
+| 수록된 규범 문서 | 14개 (수집 완료, 2026-03-19) |
+| 임베딩 대상 (추정) | ~160개 |
+| 총 텍스트량 | ~40,000자 (1,097줄) |
 
-**추가 수록 대상 규범 6개**:
+**추가 수록 완료된 규범 6개** (2026-03-19 작업 A 완료):
 
 | 규범 | Tier | 패턴 대응 |
 |------|------|-----------|
@@ -79,7 +77,7 @@ CR-Check의 가장 근본적인 기술 부채: **119개 보도관행 패턴 ↔ 
 | 전체 임베딩 대상 | ~262개 |
 | 예상 관계 (pattern↔ethics) | 300~500건 |
 | 패턴 간 관계 (시드 + 확장) | 30~50건 |
-| 총 텍스트량 | ~50,000자 |
+| 총 텍스트량 | ~52,000자 |
 
 **결론**: 소규모 정밀 검색 시스템. Supabase pgvector 무료 티어로 충분.
 
@@ -227,8 +225,8 @@ LLM에게 규범 원문을 "복사해서 출력하라"고 기대하는 대신,
 ```
 [흐름]
 1. Sonnet 프롬프트: "규범 인용 시 <cite ref="{ethics_code}"/> 태그만 출력하세요"
-2. Sonnet 출력: "이 기사는 <cite ref="KJA-3"/>을 위반합니다"
-3. 백엔드 후처리: <cite ref="KJA-3"/>를 ethics_codes 테이블의 full_text로 치환
+2. Sonnet 출력: "이 기사는 <cite ref="JCE-3"/>을 위반합니다"
+3. 백엔드 후처리: <cite ref="JCE-3"/>를 ethics_codes 테이블의 full_text로 치환
 4. 최종 리포트: 100% 정확한 원문 인용 보장
 
 [보완] 정규식 검증을 안전망으로 병행:
@@ -327,8 +325,9 @@ CREATE TABLE public.patterns (
 
 CREATE INDEX idx_patterns_code ON public.patterns(code);
 CREATE INDEX idx_patterns_locale ON public.patterns(locale);
-CREATE INDEX idx_patterns_embedding ON public.patterns
-  USING ivfflat (description_embedding vector_cosine_ops) WITH (lists = 10);
+-- 벡터 인덱스 불필요: ~102개 패턴 규모에서 sequential scan이
+-- 100% recall + 1ms 미만 응답으로 ivfflat/HNSW보다 우수.
+-- 1만 건 이상 확장 시 HNSW 도입 검토. (앙상블 검증 2026-03-25, 5/5 합의)
 ```
 
 ```sql
@@ -352,6 +351,7 @@ CREATE TABLE public.ethics_codes (
   effective_until DATE,                    -- NULL = 현재 유효
   superseded_by BIGINT REFERENCES public.ethics_codes(id),
   change_reason TEXT,
+  is_citable BOOLEAN NOT NULL DEFAULT TRUE,  -- 서문/부칙 등 인용 부적합 조항 필터링 (앙상블 검증 5/5 합의)
   text_embedding vector(1536),
   created_at TIMESTAMPTZ DEFAULT now(),
   updated_at TIMESTAMPTZ DEFAULT now(),
@@ -361,8 +361,8 @@ CREATE TABLE public.ethics_codes (
 CREATE INDEX idx_ethics_code ON public.ethics_codes(code);
 CREATE INDEX idx_ethics_locale ON public.ethics_codes(locale);
 CREATE INDEX idx_ethics_active ON public.ethics_codes(is_active);
-CREATE INDEX idx_ethics_embedding ON public.ethics_codes
-  USING ivfflat (text_embedding vector_cosine_ops) WITH (lists = 10);
+-- 벡터 인덱스 불필요: ~160개 규범 규모에서 sequential scan 충분.
+-- 패턴 관계 확장(섹션 9) 및 임베딩 벤치마크(M3)에서 활용 예정.
 
 -- 활성 규범만 검색하는 뷰
 CREATE VIEW public.active_ethics_codes AS
@@ -475,7 +475,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql STABLE;
 
--- 7b. 확정 패턴에 대한 규범 정밀 조회 (Sonnet 단계용)
+-- 7b. 확정 패턴에 대한 규범 정밀 조회 + 롤업 parent chain (Sonnet 단계용)
+-- 앙상블 검증 반영: 재귀 CTE로 parent chain 수집 (최대 2-hop, 비용 미미)
 CREATE OR REPLACE FUNCTION get_ethics_for_patterns(
   confirmed_pattern_ids BIGINT[]
 )
@@ -493,14 +494,43 @@ RETURNS TABLE (
 ) AS $$
 BEGIN
   RETURN QUERY
-  SELECT per.pattern_id, p.code,
-         ec.id, ec.code, ec.title, ec.full_text, ec.tier,
-         per.relation_type, per.strength, per.reasoning
-  FROM public.pattern_ethics_relations per
-  JOIN public.patterns p ON per.pattern_id = p.id
-  JOIN public.active_ethics_codes ec ON per.ethics_code_id = ec.id
-  WHERE per.pattern_id = ANY(confirmed_pattern_ids)
-  ORDER BY p.code, ec.tier;
+  WITH direct_codes AS (
+    -- 1단계: pattern_ethics_relations에서 직접 연결된 규범
+    SELECT per.pattern_id, p.code AS p_code,
+           ec.id AS ec_id, ec.code AS ec_code, ec.title, ec.full_text, ec.tier,
+           per.relation_type, per.strength, per.reasoning
+    FROM public.pattern_ethics_relations per
+    JOIN public.patterns p ON per.pattern_id = p.id
+    JOIN public.active_ethics_codes ec ON per.ethics_code_id = ec.id
+    WHERE per.pattern_id = ANY(confirmed_pattern_ids)
+    AND ec.is_citable = TRUE
+  ),
+  parent_chain AS (
+    -- 2단계: 직접 규범의 parent chain을 재귀적으로 수집 (구체→포괄 롤업)
+    SELECT ec.id, ec.code, ec.title, ec.full_text, ec.tier, ec.parent_code_id
+    FROM public.ethics_codes ec
+    WHERE ec.id IN (SELECT ec_id FROM direct_codes)
+    AND ec.is_active = TRUE
+    UNION
+    SELECT parent.id, parent.code, parent.title, parent.full_text, parent.tier, parent.parent_code_id
+    FROM public.ethics_codes parent
+    JOIN parent_chain child ON parent.id = child.parent_code_id
+    WHERE parent.is_active = TRUE AND parent.is_citable = TRUE
+  )
+  -- 직접 관계 규범 반환
+  SELECT dc.pattern_id, dc.p_code,
+         dc.ec_id, dc.ec_code, dc.title, dc.full_text, dc.tier,
+         dc.relation_type, dc.strength, dc.reasoning
+  FROM direct_codes dc
+  UNION
+  -- 롤업 상위 규범 반환 (직접 관계에 없는 parent만)
+  SELECT DISTINCT d.pattern_id, d.p_code,
+         pc.id, pc.code, pc.title, pc.full_text, pc.tier,
+         'related_to'::TEXT, 'moderate'::TEXT, 'parent chain rollup'::TEXT
+  FROM parent_chain pc
+  CROSS JOIN (SELECT DISTINCT pattern_id, p_code FROM direct_codes) d
+  WHERE pc.id NOT IN (SELECT ec_id FROM direct_codes)
+  ORDER BY tier;
 END;
 $$ LANGUAGE plpgsql STABLE;
 ```
@@ -845,12 +875,16 @@ response = openai.embeddings.create(
 
 | 항목 | 상태 | 설명 |
 |------|------|------|
-| 작업 A: 추가 규범 6개 원문 수집 | ⬜ | 기자협회 사이트 → Code of Ethics 파일에 추가 |
-| 작업 B: 규범 parent-child 매핑 | ⬜ | ~160개 조항의 tier + parent_code_id + tier_rationale |
-| 기사 청킹 로직 프로토타이핑 | ⬜ | 골든셋 구축과 동시 진행. 청킹 품질이 벡터 검색의 전제 조건이므로 골든셋 벤치마크 전에 검증 필수. 네이버 뉴스, 언론사 직접 사이트, 포털 전재 등 다양한 HTML 구조에서 전처리(노이즈 제거) + 병합 로직이 정상 작동하는지 확인 (섹션 4 참조) |
-| 골든 데이터셋 구축 (20~30건) | ⬜ | Phase 0 병행, 8개 대분류에서 골고루 선정 |
-| 임베딩 모델 벤치마크 | ⬜ | 골든셋 기반 Recall@10 비교 |
-| CR-Check GitHub 코드의 정적 매핑 구조 파악 | ⬜ | 구현 단계에서 코드 접근 후 처리 |
+| 작업 A: 추가 규범 6개 원문 수집 | ✅ | 완료 (2026-03-19). 14개 규범 전부 수록, 원문 대조 교정 완료 |
+| 작업 B: 규범 parent-child 매핑 | ✅ | 완료 (2026-03-23). 394개 코드, 교차검증 에러 0건. `ethics_codes_mapping.json` |
+| 골든 데이터셋 구축 | ✅ | 완료 (2026-03-23). 26건 확정 (TP 20 + TN 6). `golden_dataset_final.json` |
+| 레이블링 | ✅ | 완료 (2026-03-23). v3, weight 필드 포함. `golden_dataset_labels.json` |
+| Data Leakage 점검 | ✅ | 완료 (2026-03-23). 26건 전부 CLEAN, 포털 전재본으로 해결 |
+| 기사 원문 아카이빙 | ✅ | 완료 (2026-03-23). 26건 `article_texts/` 저장, URL Rot 대비 |
+| 앙상블 검증 (DB 구축 사전 검수) | ✅ | 완료 (2026-03-25). 5AI 교차검증, 반영 4건·보류 4건·불채택 2건 |
+| 기사 청킹 로직 프로토타이핑 | ⬜ | M3 벤치마크 전까지 검증 필수 (섹션 4 참조) |
+| 임베딩 모델 벤치마크 | ⬜ | 골든셋 기반 Recall@10 비교 (Week 1 M3) |
+| CR-Check GitHub 코드의 정적 매핑 구조 파악 | ⬜ | M4(RAG 파이프라인) 구현 시 처리 |
 
 ### 중간 우선순위
 
@@ -867,7 +901,7 @@ response = openai.embeddings.create(
 | 패턴/규범 업데이트 워크플로우 자동화 | 임베딩 재생성 자동화 |
 | 패턴 공출현 마이닝 (Stage 2) | Phase 1 운영 3개월 후 |
 
-### 작업 A 상세: 추가 규범 6개 원문 수집
+### 작업 A 상세: 추가 규범 6개 원문 수집 ✅ (2026-03-19 완료)
 
 **수집 URL**:
 
@@ -881,7 +915,7 @@ response = openai.embeddings.create(
 | 혐오표현 반대 선언 | journalist.or.kr/news/section4.html?p_num=16 |
 
 **절차**: 전문 수집 → Code of Ethics 파일에 동일 형식으로 추가 → 조항 수 재집계
-**완료 기준**: 14개 규범 모두 수록, 각 조항이 개별 식별 가능
+**완료 기준**: 14개 규범 모두 수록, 각 조항이 개별 식별 가능 → ✅ 달성 (원문 대조 교정까지 완료)
 
 ### 작업 B 상세: 규범 parent-child 매핑
 
@@ -934,7 +968,7 @@ Week 3: Phase 2
 
 ### 14.3 작업-감수 루프 단위
 
-실행은 Antigravity, 감수는 Claude Code CLI.
+실행은 Claude Code CLI, 1차 감리는 Claude.ai, 2차 더블체크는 Antigravity(Gemini).
 마일스톤 단위로 감수 사이클을 진행:
 
 | 마일스톤 | 작업 내용 | 감수 포인트 |
@@ -991,9 +1025,9 @@ Week 3: Phase 2
 /Users/gamnamu/Documents/cr-check/docs/
 ├── DB_AND_RAG_MASTER_PLAN_v4.0.md    ← 본 문서 (Single Source of Truth)
 ├── DB_BUILD_EXECUTION_GUIDE.md        ← 실행 가이드 (Antigravity용)
-├── Code of Ethics for the Press.md    ← 규범 원문 (8개 수록, 6개 추가 예정)
+├── Code of Ethics for the Press.md    ← 규범 원문 (14개 수록 완료, 1,097줄)
 ├── current-criteria_v2_active.md      ← 패턴 원문 (v2, 활성)
-├── SESSION_CONTEXT_2026-03-15.md      ← 세션 컨텍스트
+├── SESSION_CONTEXT_2026-03-19.md      ← 세션 컨텍스트
 ├── CR_CHECK_PERFORMANCE_AUDIT.md      ← 성능 감사
 ├── evaluatie-template.md              ← 평가 템플릿
 ├── scraping-lists.md                  ← 스크래핑 목록

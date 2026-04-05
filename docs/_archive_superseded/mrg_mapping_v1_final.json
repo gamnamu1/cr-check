@@ -1,0 +1,299 @@
+[
+  {
+    "code": "MRG-P",
+    "title": "군 취재·보도 기준 서문",
+    "full_text": "이 기준은 북한의 군사도발과 외부세력 침입으로 군사작전이 전개되는 등 국가안보상의 중대한 위기가 발생했을 때 언론과 군이 갈등 소지를 방지하고 양측의 원활한 협조 필요성에 대한 공감대에 바탕을 둔 것이다. 국민의 알 권리를 위한 언론의 보도 행위와 군의 국가보위 및 국민 보호 임무가 조화로운 균형을 이루어야 한다. 군은 국민 알권리 충족을 위해 신속하고 충분한 정보를 제공하고 언론은 국가안보와 작전에 임하는 장병의 안전을 고려하여 신중하게 보도해야 한다. 각 언론사는 군 작전지역 등 위험지역 취재 시 군 당국과 사전에 협의하고 군은 취재진의 안전한 취재활동 보장을 위해 최선을 다해야 한다.",
+    "source": "군 취재·보도 기준",
+    "article_number": "서문",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-4",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-4(공정 보도)의 '균형 잡힌 시각'을 알권리와 국가안보의 균형으로 구체화. 언론-군 협력 프레임워크의 선언.",
+    "junction": [
+      {
+        "parent_code_id": "JEC-5",
+        "context_hint": "언론의 독립적 보도 맥락에서 보조 경로"
+      }
+    ]
+  },
+  {
+    "code": "MRG-1",
+    "title": "목적",
+    "full_text": "이 기준은 북한의 군사도발과 외부세력 침입 등에 의해 군 비상상황이 발생하였을 경우 군의 작전을 보장하면서 정확하고 신속한 취재 보도에 대한 기본적인 방향과 실천요강을 제공하는데 있다.",
+    "source": "군 취재·보도 기준",
+    "article_number": "제1조",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-1",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-1(진실 추구)의 '정확한 사실을 종합적이고 포괄적인 맥락으로 전달'을 군 비상상황 보도로 구체화."
+  },
+  {
+    "code": "MRG-2",
+    "title": "적용범위",
+    "full_text": "이 기준은 군은 물론 한국기자협회 소속 회원사와 회원, 작전지역 취재에 참여하는 모든 매체에게 적용된다. 다만, 한국에서 활동하는 외신에 대해서는 한국기자협회가 외신기자협회에 이 기준을 준수하도록 협조를 구한다.",
+    "source": "군 취재·보도 기준",
+    "article_number": "제2조",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-8",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "[앙상블 반영] JEC-1에서 JEC-8로 변경. 적용 대상(준수 의무 주체)을 정의하는 행정적 규정으로, 절차 준수 조항군(MRG-6, MRG-9, MRG-S5)과 동일하게 JEC-8(정당한 취재 방법·절차 윤리) 연결이 일관됨."
+  },
+  {
+    "code": "MRG-3",
+    "title": "용어의 정의",
+    "full_text": "이 기준에서 '국가안보위기'란 북한 및 외부세력이 대한민국의 주권과 국민의 생존에 중대한 위협을 가하는 도발행위를 감행하여 군이 작전을 수행하는 경우를 말한다.",
+    "source": "군 취재·보도 기준",
+    "article_number": "제3조",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-1",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "용어 정의. 행정적 규정이나 보도 대상의 정확한 범위 설정이라는 점에서 JEC-1 연결."
+  },
+  {
+    "code": "MRG-4",
+    "title": "취재지원 원칙",
+    "full_text": "군은 비상상황과 관련한 정보가 '사실에 입각하여, 신속하고, 정확하게' 국민들에게 전달되도록 언론의 취재 및 보도 활동을 적극적으로 지원한다.",
+    "source": "군 취재·보도 기준",
+    "article_number": "제4조",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-1",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-1의 진실 추구를 군의 정보 제공 의무로 구체화. '사실에 입각하여, 신속하고, 정확하게'라는 원칙이 JEC-1과 직접 대응.",
+    "junction": [
+      {
+        "parent_code_id": "JEC-2",
+        "context_hint": "투명한 정보 공개 맥락에서 보조 경로"
+      }
+    ]
+  },
+  {
+    "code": "MRG-5",
+    "title": "신변안전 대책",
+    "full_text": "작전지역 부대는 취재 보도진에 대한 신변안전 대책을 강구한다.",
+    "source": "군 취재·보도 기준",
+    "article_number": "제5조",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-8",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-8(품위·이해상충 경계)의 '취재보도 과정에서 정당한 방법'을 취재진 안전 보장으로 확장. 군이 언론인의 안전한 취재 환경을 조성할 의무."
+  },
+  {
+    "code": "MRG-6",
+    "title": "작전지역 출입",
+    "full_text": "군 작전지역에 출입하는 취재진은 군 당국이 정하는 소정의 절차에 따라 서면으로 출입등록을 하고 안전조치에 협조해야 한다.",
+    "source": "군 취재·보도 기준",
+    "article_number": "제6조",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-8",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-8의 정당한 취재 방법을 작전지역 출입 절차로 구체화. 취재진의 협조 의무."
+  },
+  {
+    "code": "MRG-7",
+    "title": "정보제공방법",
+    "full_text": "군은 국민들에게 브리핑, 보도자료 등 올바른 정보를 알리기 위한 방법을 강구하고 가용 여건을 고려 작전 현장 부근에 보도본부를 설치해 취재 및 보도를 지원한다.",
+    "source": "군 취재·보도 기준",
+    "article_number": "제7조",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-2",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-2(투명·설명책임)의 '정보의 출처를 명확히 밝힌다'를 군의 브리핑·보도자료 체계로 구체화."
+  },
+  {
+    "code": "MRG-8",
+    "title": "군사기밀 보호",
+    "full_text": "언론은 작전상황과 관련된 장비 배치와 수량, 군부대의 특정한 위치를 드러내는 정보나 사진, 적 정보수집 방법 등에 대한 사항을 보도하는 것이 적을 이롭게 할 수 있다는 점을 유념해야 한다.",
+    "source": "군 취재·보도 기준",
+    "article_number": "제8조",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-3",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-3의 '피해를 최소화한다'를 국가안보·장병 안전 피해로 확장. 보도로 인한 군사적 피해 방지가 핵심 보호 법익.",
+    "junction": [
+      {
+        "parent_code_id": "JEC-1",
+        "context_hint": "정확한 보도의 책임(보도 여부 판단) 맥락에서 보조 경로"
+      }
+    ]
+  },
+  {
+    "code": "MRG-9",
+    "title": "통제구역 준수",
+    "full_text": "취재진이 작전 현장에 대한 취재를 할 경우 작전부대에서 제시하는 접근 통제선을 준수해야 한다.",
+    "source": "군 취재·보도 기준",
+    "article_number": "제9조",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-8",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-8의 정당한 취재 방법을 작전 현장 통제선 준수로 구체화."
+  },
+  {
+    "code": "MRG-10",
+    "title": "안전조치 협조",
+    "full_text": "군과 언론사는 현장 취재진의 안전대책 강구에 최대한 협조해야 한다.",
+    "source": "군 취재·보도 기준",
+    "article_number": "제10조",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-8",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-8의 취재 과정 윤리를 군-언론 양방향 안전 협조로 구체화. cf. MRG-5(신변안전 대책)와 주체 차이: MRG-5는 군의 의무, MRG-10은 양측 공동."
+  },
+  {
+    "code": "MRG-11",
+    "title": "작전현장 갈등 조정",
+    "full_text": "군 작전 현장에서 군 관계관 및 취재보도진 사이에 갈등이나 마찰 상황이 발생할 경우에는 군과 언론이 국방부 대변인실과 해당 언론매체 담당데스크와의 협의를 통해 합리적 조정방안을 강구한다.",
+    "source": "군 취재·보도 기준",
+    "article_number": "제11조",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-6",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-6(갈등 해소·신뢰)의 '대립하는 관점과 주장이 표출되고 조정될 수 있는' 원칙을 군-언론 갈등 조정 절차로 구체화."
+  },
+  {
+    "code": "MRG-12",
+    "title": "인권 존중 보도",
+    "full_text": "군 작전 수행 중 전·사상자, 입원환자, 가족 및 장례 등에 관한 취재는 개인의 사생활과 인권을 존중하고 숭고한 희생이 폄훼되지 않도록 한다",
+    "source": "군 취재·보도 기준",
+    "article_number": "제12조",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-3",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-3의 '개인의 인권과 존엄성을 침해하지 않도록'을 전·사상자와 유가족으로 구체화. '숭고한 희생이 폄훼되지 않도록'이라는 군 특유의 표현 포함."
+  },
+  {
+    "code": "MRG-13",
+    "title": "보호장비 대여 및 비용부담",
+    "full_text": "군은 취재진의 신변안전을 위한 보호장비를 대여하거나 대피장소 및 숙식, 이동수단을 제공할 수 있다. 현장 접근이 어려운 도서지역에서 비상사태가 발생했을 때는 군에서 기본적 이동수단 등을 제공할 수 있으나 숙식에 따른 경비와 추가적인 장비운용에 따른 비용은 해당 언론사에서 부담한다.",
+    "source": "군 취재·보도 기준",
+    "article_number": "제13조",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-8",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-8의 이해상충 경계를 군-언론 간 물자 지원과 비용 분담으로 구체화. 언론사 비용 자부담 원칙은 독립성 유지 장치.",
+    "junction": [
+      {
+        "parent_code_id": "JEC-5",
+        "context_hint": "언론 독립성(비용 자부담) 맥락에서 보조 경로"
+      }
+    ]
+  },
+  {
+    "code": "MRG-S1",
+    "title": "사실 기반 신속 정확 브리핑",
+    "full_text": "군은 비상상황 발생시 '사실에 입각하여, 신속하고, 정확한' 정보제공 및 브리핑을 한다.",
+    "source": "군 취재·보도 기준",
+    "article_number": "실천수칙 ①",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-1",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "MRG-4의 실천지침. JEC-1의 진실 추구를 군 브리핑으로 구체화."
+  },
+  {
+    "code": "MRG-S2",
+    "title": "취재진 안전조치",
+    "full_text": "군은 현장취재가 승인된 취재보도진의 신변안전을 위해 최대한 안전조치를 마련한다.",
+    "source": "군 취재·보도 기준",
+    "article_number": "실천수칙 ②",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-8",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "MRG-5의 실천지침."
+  },
+  {
+    "code": "MRG-S3",
+    "title": "현장보도본부 설치·운영",
+    "full_text": "군은 비상상황 조치의 일환으로 필요시 현장보도본부를 설치하여 브리핑 및 취재활동을 지원한다.",
+    "source": "군 취재·보도 기준",
+    "article_number": "실천수칙 ③",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-2",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "MRG-7의 실천지침. JEC-2의 투명성을 보도본부 운영으로 구체화."
+  },
+  {
+    "code": "MRG-S4",
+    "title": "취재기본규칙(ground rules) 준수",
+    "full_text": "언론은 진행 중인 작전사항, 작전계획, 기밀사항은 사전에 동의한 절차와 현장 작전 부대가 요청하는 취재기본규칙(ground rules)을 준수한다.",
+    "source": "군 취재·보도 기준",
+    "article_number": "실천수칙 ④",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-3",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "MRG-8의 실천지침. 군사기밀 보호를 취재기본규칙 준수로 절차화."
+  },
+  {
+    "code": "MRG-S5",
+    "title": "군 당국 기본 절차 준수",
+    "full_text": "언론은 현장취재나 브리핑이 있을 때 군 당국이 정한 기본적인 절차를 준수한다.",
+    "source": "군 취재·보도 기준",
+    "article_number": "실천수칙 ⑤",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-8",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "MRG-6의 실천지침."
+  },
+  {
+    "code": "MRG-S6",
+    "title": "공동취재단 구성",
+    "full_text": "언론은 작전 현장 여건에 따라 공동취재단 구성을 원칙으로 하며, 공동 취재단은 국방부 출입등록매체를 중심으로 한다.",
+    "source": "군 취재·보도 기준",
+    "article_number": "실천수칙 ⑥",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-4",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "JEC-4의 공정성을 공동취재단 구성(취재 기회 균등)으로 구체화."
+  },
+  {
+    "code": "MRG-S7",
+    "title": "전·사상자 인권 존중 보도",
+    "full_text": "언론은 작전 중 전사 또는 순직하거나 부상을 당한 장병의 인권을 존중하고, 그들의 희생이 폄훼되지 않도록 보도한다",
+    "source": "군 취재·보도 기준",
+    "article_number": "실천수칙 ⑦",
+    "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (국가안보 위기시 군 취재·보도)",
+    "parent_code_id": "JEC-3",
+    "domain": "military_reporting",
+    "locale": "ko-KR",
+    "notes": "MRG-12의 실천지침."
+  }
+]

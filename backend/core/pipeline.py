@@ -146,21 +146,27 @@ def analyze_article(
                 }
             )
 
-        # 결정론적 인용 후처리: cite 태그 → 규범 원문 치환 (3종 각각)
-        for report_type in ["comprehensive", "journalist", "student"]:
-            text = rr.reports.get(report_type, "")
-            if text:
-                try:
-                    resolved, hallucinated = resolve_citations(text, rr.ethics_refs or [])
-                    rr.reports[report_type] = resolved
-                    if hallucinated:
-                        logger.warning(f"[{report_type}] 환각 ref 제거: {hallucinated}")
-                except Exception as e:
-                    logger.error(f"[{report_type}] CitationResolver 실패, cite 태그 제거: {e}")
-                    text = re.sub(r'<cite\s+ref="[^"]*"\s*/>', '', text)
-                    text = re.sub(r'<cite\s+ref="[^"]*"\s*>\s*</cite>', '', text)
-                    text = re.sub(r' {2,}', ' ', text)
-                    rr.reports[report_type] = text
+        # [Phase β] cite 태그 후치환 비활성화 — Sonnet이 규범을 직접 서술하므로 불필요
+        # 복원이 필요하면 아래 주석을 해제하세요.
+        # --- 결정론적 인용 후처리 (비활성화) ---
+        # pre_citation_reports = {rt: rr.reports.get(rt, "") for rt in ["comprehensive", "journalist", "student"]}
+        # hallucinated_refs_log = {}
+        # for report_type in ["comprehensive", "journalist", "student"]:
+        #     text = rr.reports.get(report_type, "")
+        #     if text:
+        #         try:
+        #             resolved, hallucinated = resolve_citations(text, rr.ethics_refs or [])
+        #             rr.reports[report_type] = resolved
+        #             hallucinated_refs_log[report_type] = hallucinated if hallucinated else []
+        #             if hallucinated:
+        #                 logger.warning(f"[{report_type}] 환각 ref 제거: {hallucinated}")
+        #         except Exception as e:
+        #             logger.error(f"[{report_type}] CitationResolver 실패, cite 태그 제거: {e}")
+        #             hallucinated_refs_log[report_type] = []
+        #             text = re.sub(r'<cite\s+ref="[^"]*"\s*/>', '', text)
+        #             text = re.sub(r'<cite\s+ref="[^"]*"\s*>\s*</cite>', '', text)
+        #             text = re.sub(r' {2,}', ' ', text)
+        #             rr.reports[report_type] = text
 
         result.report_result = rr
         result.sonnet_input_tokens = rr.input_tokens
@@ -175,4 +181,98 @@ def analyze_article(
         )
 
     result.total_seconds = time.time() - start
+
+    # ── 진단용 JSON 덤프 ────────────────────────────────────────
+    try:
+        import json as _json
+        from datetime import datetime as _dt
+        from pathlib import Path as _Path
+
+        _diag_dir = _Path(__file__).parent.parent / "diagnostics"
+        _diag_dir.mkdir(exist_ok=True)
+        _ts = _dt.now().strftime("%Y%m%d_%H%M%S")
+
+        # Checkpoint 1: 청킹
+        _cp1 = {
+            "chunk_count": result.chunk_count,
+            "avg_chunk_length": round(result.avg_chunk_length, 1),
+            "chunks_preview": [
+                {"index": i, "length": c.length, "preview": c.text[:80]}
+                for i, c in enumerate(result.chunks)
+            ],
+        }
+
+        # Checkpoint 2: 벡터 검색
+        _cp2 = {
+            "candidate_count": len(pm.vector_candidates),
+            "vector_candidates": [
+                {"pattern_code": vc.pattern_code, "pattern_name": vc.pattern_name, "similarity": round(vc.similarity, 4)}
+                for vc in pm.vector_candidates
+            ],
+        }
+
+        # Checkpoint 3: 패턴 식별
+        _cp3 = {
+            "overall_assessment": result.overall_assessment,
+            "haiku_detections": [
+                {"pattern_code": d.pattern_code, "matched_text": d.matched_text, "severity": d.severity, "reasoning": d.reasoning}
+                for d in pm.haiku_detections
+            ],
+            "validated_pattern_codes": list(pm.validated_pattern_codes),
+            "hallucinated_codes": list(pm.hallucinated_codes),
+            "haiku_raw_response": pm.haiku_raw_response,
+        }
+
+        # Checkpoint 4, 5: 리포트 관련 (run_sonnet=True이고 패턴이 확정된 경우에만)
+        _cp4 = {}
+        _cp5 = {}
+        if run_sonnet and pm.validated_pattern_ids:
+            # CP4: 규범 조회
+            _ethics = rr.ethics_refs or []
+            _patterns_with_ethics = set(er.pattern_code for er in _ethics)
+            _patterns_without = [pc for pc in pm.validated_pattern_codes if pc not in _patterns_with_ethics]
+            _cp4 = {
+                "ethics_ref_count": len(_ethics),
+                "patterns_without_ethics": _patterns_without,
+                "ethics_refs": [
+                    {
+                        "pattern_code": er.pattern_code,
+                        "ethics_code": er.ethics_code,
+                        "ethics_title": er.ethics_title,
+                        "ethics_tier": er.ethics_tier,
+                        "full_text_length": len(er.ethics_full_text),
+                        "full_text_preview": er.ethics_full_text[:300],
+                        "relation_type": er.relation_type,
+                        "strength": er.strength,
+                    }
+                    for er in _ethics
+                ],
+            }
+
+            # CP5: 리포트 (cite 태그 후치환 비활성화 상태에서는 pre/post가 동일)
+            _cp5 = {
+                "pre_citation_reports": {rt: rr.reports.get(rt, "") for rt in ["comprehensive", "journalist", "student"]},
+                "post_citation_reports": {rt: rr.reports.get(rt, "") for rt in ["comprehensive", "journalist", "student"]},
+                "hallucinated_refs_per_report": {},
+                "sonnet_raw_response": rr.sonnet_raw_response,
+            }
+
+        _diag = {
+            "timestamp": _ts,
+            "total_seconds": round(result.total_seconds, 2),
+            "checkpoint_1_chunks": _cp1,
+            "checkpoint_2_vector": _cp2,
+            "checkpoint_3_pattern": _cp3,
+            "checkpoint_4_ethics": _cp4,
+            "checkpoint_5_report": _cp5,
+        }
+
+        _diag_path = _diag_dir / f"diagnostic_{_ts}.json"
+        _diag_path.write_text(_json.dumps(_diag, ensure_ascii=False, indent=2), encoding="utf-8")
+        logger.info(f"진단 덤프 저장: {_diag_path}")
+
+    except Exception as _diag_err:
+        logger.warning(f"진단 덤프 실패 (파이프라인에 영향 없음): {_diag_err}")
+    # ── 진단용 JSON 덤프 끝 ─────────────────────────────────────
+
     return result

@@ -1,0 +1,85 @@
+[
+  {
+    "code": "IRG-P", "title": "감염병보도준칙 전문",
+    "full_text": "감염병이 발생했을 때 정확하고 신속한 정보는 국민의 생명 보호와 안전에 직결되는 만큼 무엇보다 정확한 사실에 근거해 보도해야 한다. 추측성 기사나 과장된 기사는 국민들에게 혼란을 야기한다는 점을 명심하고, 감염병을 퇴치하고 피해 확산을 막는데 우리 언론인도 다함께 노력한다. 감염병 관련 기사를 작성할 때는 반드시 전문가의 자문을 구한 뒤 작성하도록 하고, 과도한 보도 경쟁으로 피해자들의 사생활이 침해되지 않도록 최대한 노력한다.",
+    "source": "감염병보도준칙", "article_number": "전문", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (감염병 보도)",
+    "parent_code_id": "JEC-1", "domain": "infectious_disease_reporting", "locale": "ko-KR",
+    "notes": "정확한 사실 기반 보도(JEC-1)가 primary. 전문가 자문, 추측성·과장 기사 경계, 피해 확산 방지.",
+    "junction": [{"parent_code_id": "JEC-3", "context_hint": "피해자 사생활 보호 맥락에서 롤업 시 보조 경로"}]
+  },
+  {
+    "code": "IRG-1", "title": "감염병 보도의 기본 내용",
+    "full_text": "감염병 보도는 해당 병에 취약한 집단을 알려주고, 예방법 및 행동수칙을 우선적, 반복적으로 제공한다. 감염병 치료에 필요한 의료기관 등에 대한 정보를 제공한다. 감염병 관련 의학적 용어는 일반인들이 이해하기 쉽게 전달한다.",
+    "source": "감염병보도준칙", "article_number": "기본원칙 1", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (감염병 보도)",
+    "parent_code_id": "JEC-3", "domain": "infectious_disease_reporting", "locale": "ko-KR",
+    "notes": "JEC-3의 피해 최소화를 예방법·행동수칙·의료기관 정보 제공으로 구체화. 의학 용어 쉬운 전달 = 정보 접근성."
+  },
+  {
+    "code": "IRG-2", "title": "신종 감염병의 보도",
+    "full_text": "발생 원인이나 감염 경로 등이 불확실한 신종 감염병의 보도는 현재 의학적으로 밝혀진 것과 밝혀지지 않은 것을 명확하게 구분하여 전달한다. 현재의 불확실한 상황에 대해 의과학 분야 전문가의 의견을 제시하며, 추측, 과장 보도를 하지 않는다. 감염병 발생 최초 보도 시 질병관리본부를 포함한 보건당국에 사실여부를 확인하고 보도하며, 정보원 명기를 원칙으로 한다.",
+    "source": "감염병보도준칙", "article_number": "기본원칙 2", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (감염병 보도)",
+    "parent_code_id": "JEC-1", "domain": "infectious_disease_reporting", "locale": "ko-KR",
+    "notes": "JEC-1(진실 추구)의 검증·정확성을 신종 감염병 불확실성 맥락으로 구체화. 밝혀진 것/밝혀지지 않은 것 구분 = JEC-2 요소 포함.",
+    "junction": [{"parent_code_id": "JEC-2", "context_hint": "정보원 명기·투명성 맥락에서 롤업 시 보조 경로"}]
+  },
+  {
+    "code": "IRG-3", "title": "감염 가능성에 대한 보도",
+    "full_text": "감염 가능성은 전문가의 의견이나 연구결과 등 과학적 근거를 바탕으로 보도한다. 감염병의 발생률, 증가율, 치명률 등 백분율 보도 시 실제 수치를 함께 전달한다. 감염의 규모를 보도할 때는 지역, 기간, 단위 등을 정확히 전달하고 환자수, 의심환자수 등을 구분해 보도한다.",
+    "source": "감염병보도준칙", "article_number": "기본원칙 3", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (감염병 보도)",
+    "parent_code_id": "JEC-1", "domain": "infectious_disease_reporting", "locale": "ko-KR",
+    "notes": "JEC-1의 '정확한 사실을 종합적이고 포괄적인 맥락으로 전달'을 감염병 통계 보도로 구체화. 백분율+실제 수치 병기, 환자 유형 구분."
+  },
+  {
+    "code": "IRG-4", "title": "감염병 연구 결과 보도",
+    "full_text": "감염병의 새로운 연구결과 보도 시 학술지 발행기관이나 발표한 연구자의 관점이 연구기관, 의료계, 제약 회사의 특정 이익과 관련이 있는지, 정부의 입장을 일방적으로 지지하는지 확인한다. 감염병 관련 연구결과가 전체 연구중의 중간 단계인지, 최종 연구결과물인지 여부를 확인한 후 보도한다.",
+    "source": "감염병보도준칙", "article_number": "기본원칙 4", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (감염병 보도)",
+    "parent_code_id": "JEC-5", "domain": "infectious_disease_reporting", "locale": "ko-KR",
+    "notes": "JEC-5(독립적 보도)의 '모든 권력으로부터 독립'을 감염병 연구 보도의 이해상충 검증으로 구체화. 제약회사·정부 이익 관련성 확인.",
+    "junction": [{"parent_code_id": "JEC-1", "context_hint": "연구 단계 확인(중간/최종) 정확성 맥락에서 롤업 시 보조 경로"}]
+  },
+  {
+    "code": "IRG-5", "title": "감염인에 대한 취재·보도",
+    "full_text": "불확실한 감염병의 경우, 기자를 매개로 한 전파의 우려가 있기 때문에 감염인을 직접 대면 취재하지 않는다. 감염인은 취재만으로도 차별 및 낙인이 발생할 수 있으므로 감염인과 가족의 개인정보를 보호하고 사생활을 존중한다. 감염인에 대한 사진이나 영상을 취재·보도에 활용할 경우 본인 동의없이 사용하지 않는다.",
+    "source": "감염병보도준칙", "article_number": "기본원칙 5", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (감염병 보도)",
+    "parent_code_id": "JEC-3", "domain": "infectious_disease_reporting", "locale": "ko-KR",
+    "notes": "JEC-3(인권 존중)의 '개인의 인권과 존엄성을 침해하지 않도록'을 감염인 취재로 구체화. 낙인·차별 방지, 동의 없는 촬영 금지."
+  },
+  {
+    "code": "IRG-6", "title": "의료기관 내 감염 보도",
+    "full_text": "의료기관 내 감염 확산에 대한 취재·보도 시, 치료환경에 대한 불안감 및 혼란을 고려해 원인과 현장 상황에 대해 감염전문가의 자문과 확인이 필요하다.",
+    "source": "감염병보도준칙", "article_number": "기본원칙 6", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (감염병 보도)",
+    "parent_code_id": "JEC-1", "domain": "infectious_disease_reporting", "locale": "ko-KR",
+    "notes": "JEC-1의 검증 원칙을 의료기관 내 감염 보도의 전문가 자문 의무로 구체화."
+  },
+  {
+    "code": "IRG-7", "title": "보도 시 주의해야 할 표현",
+    "full_text": "기사 제목에 패닉, 대혼란, 대란, 공포, 창궐 등 과장된 표현 사용을 삼간다. 기사 본문에 자극적인 수식어의 사용을 삼간다. 오인이 우려되는 다른 감염병과의 비교를 삼간다.",
+    "source": "감염병보도준칙", "article_number": "기본원칙 7", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (감염병 보도)",
+    "parent_code_id": "JEC-1", "domain": "infectious_disease_reporting", "locale": "ko-KR",
+    "notes": "JEC-1의 '의도와 기술방식이 진실을 가리지 않도록'을 감염병 보도의 과장·자극적 표현 금지로 구체화. 구체적 금지 표현 예시 포함."
+  },
+  {
+    "code": "IRG-R1", "title": "권고: 특별취재팀 구성",
+    "full_text": "감염병 발생시, 각 언론사는 특별취재팀을 구성해 감염병에 대한 충분한 사전 교육을 받지 않은 기자들이 무분별하게 현장에 접근하는 일이 없도록 해야 한다.",
+    "source": "감염병보도준칙", "article_number": "권고사항 1", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (감염병 보도)",
+    "parent_code_id": "JEC-8", "domain": "infectious_disease_reporting", "locale": "ko-KR",
+    "notes": "JEC-8의 절차 윤리를 특별취재팀 구성·사전 교육으로 구체화."
+  },
+  {
+    "code": "IRG-R2", "title": "권고: 보건당국 특별대책반 구성",
+    "full_text": "감염병 발생시, 보건당국은 언론인을 포함한 특별대책반(T/F)를 구성해, 관련 정보가 국민들에게 신속하고 정확하게 전달되도록 해야 하고, 위험 지역 접근취재 시 공동취재단을 구성해 기자들의 안전 및 방역에 대비해야 한다.",
+    "source": "감염병보도준칙", "article_number": "권고사항 2", "tier": 3,
+    "tier_rationale": "도메인 특화 규범 (감염병 보도)",
+    "parent_code_id": "JEC-8", "domain": "infectious_disease_reporting", "locale": "ko-KR",
+    "notes": "JEC-8의 절차 윤리를 보건당국-언론 협력 체계(공동취재단)로 구체화."
+  }
+]

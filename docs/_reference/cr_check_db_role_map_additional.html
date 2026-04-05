@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CR-Check DB 구축 — 마일스톤 해설서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&family=Noto+Serif+KR:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --font-sans: 'Noto Sans KR', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-serif: 'Noto Serif KR', Georgia, serif;
+    --font-mono: 'JetBrains Mono', monospace;
+    --bg: #fafaf8;
+    --bg-card: #ffffff;
+    --bg-easy: #f0f7f4;
+    --bg-pro: #f2f0f7;
+    --bg-tag: #eef1f5;
+    --text: #1c1c1e;
+    --text-sub: #636366;
+    --text-dim: #aeaeb2;
+    --border: #e5e5e5;
+    --accent-easy: #2d8a5e;
+    --accent-pro: #5b4cad;
+    --accent-week: #c0392b;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161618;
+      --bg-card: #1e1e20;
+      --bg-easy: #1a2e24;
+      --bg-pro: #211e30;
+      --bg-tag: #2a2a2e;
+      --text: #e5e5e7;
+      --text-sub: #a1a1a6;
+      --text-dim: #636366;
+      --border: #333336;
+      --accent-easy: #5ec48e;
+      --accent-pro: #9b8ee0;
+      --accent-week: #e8735a;
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font-sans); color: var(--text); background: var(--bg); padding: 2rem 1.5rem; max-width: 780px; margin: 0 auto; line-height: 1.75; font-size: 15px; }
+
+  header { margin-bottom: 2.5rem; }
+  h1 { font-family: var(--font-serif); font-size: 24px; font-weight: 600; letter-spacing: -0.02em; margin-bottom: 0.4rem; }
+  .header-sub { font-size: 13px; color: var(--text-sub); line-height: 1.6; }
+  .header-sub strong { color: var(--text); font-weight: 500; }
+
+  .purpose-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 1.2rem 1.4rem; margin-bottom: 2.5rem; box-shadow: var(--shadow-sm); }
+  .purpose-box h2 { font-size: 14px; font-weight: 600; margin-bottom: 0.6rem; letter-spacing: 0.02em; text-transform: uppercase; color: var(--text-sub); }
+  .purpose-box p { font-size: 14px; color: var(--text-sub); }
+  .purpose-box em { font-style: normal; color: var(--text); font-weight: 500; }
+
+  .week-section { margin-bottom: 2.5rem; }
+  .week-header { display: flex; align-items: center; gap: 10px; margin-bottom: 1.2rem; padding-bottom: 0.6rem; border-bottom: 2px solid var(--border); }
+  .week-label { font-size: 12px; font-weight: 600; color: #fff; background: var(--accent-week); padding: 2px 10px; border-radius: 4px; letter-spacing: 0.05em; }
+  .week-title { font-family: var(--font-serif); font-size: 18px; font-weight: 600; }
+
+  .milestone { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 1.2rem; box-shadow: var(--shadow-sm); overflow: hidden; }
+  .m-header { padding: 1rem 1.2rem; cursor: pointer; user-select: none; display: flex; align-items: center; gap: 10px; transition: background 0.15s; }
+  .m-header:hover { background: var(--bg-tag); }
+  .m-chevron { font-size: 10px; color: var(--text-dim); transition: transform 0.2s; display: inline-block; width: 14px; }
+  .m-chevron.open { transform: rotate(90deg); }
+  .m-tag { font-family: var(--font-mono); font-size: 11px; font-weight: 500; background: var(--bg-tag); color: var(--text-sub); padding: 2px 8px; border-radius: 4px; }
+  .m-name { font-size: 15px; font-weight: 500; flex: 1; }
+  .m-day { font-size: 11px; color: var(--text-dim); }
+
+  .m-body { display: none; padding: 0 1.2rem 1.2rem; }
+  .m-body.open { display: block; }
+
+  .m-summary { font-size: 13px; color: var(--text-sub); margin-bottom: 1rem; padding-bottom: 0.8rem; border-bottom: 1px dashed var(--border); }
+
+  .explain-tabs { display: flex; gap: 6px; margin-bottom: 0.8rem; }
+  .tab-btn { font-size: 12px; font-weight: 500; padding: 5px 14px; border-radius: 6px; border: none; cursor: pointer; transition: all 0.15s; }
+  .tab-easy { background: var(--bg-easy); color: var(--accent-easy); }
+  .tab-easy.active { background: var(--accent-easy); color: #fff; }
+  .tab-pro { background: var(--bg-pro); color: var(--accent-pro); }
+  .tab-pro.active { background: var(--accent-pro); color: #fff; }
+
+  .explain-panel { display: none; border-radius: 10px; padding: 1rem 1.2rem; font-size: 14px; line-height: 1.8; }
+  .explain-panel.active { display: block; }
+  .panel-easy { background: var(--bg-easy); }
+  .panel-pro { background: var(--bg-pro); }
+  .explain-panel h4 { font-size: 13px; font-weight: 600; margin-bottom: 0.5rem; letter-spacing: 0.02em; }
+  .panel-easy h4 { color: var(--accent-easy); }
+  .panel-pro h4 { color: var(--accent-pro); }
+  .explain-panel p { margin-bottom: 0.6rem; }
+  .explain-panel p:last-child { margin-bottom: 0; }
+  .analogy { font-family: var(--font-serif); font-style: italic; color: var(--text); display: block; margin: 0.4rem 0 0.6rem; padding-left: 0.8rem; border-left: 2px solid var(--accent-easy); }
+  .term { font-family: var(--font-mono); font-size: 12px; background: var(--bg-tag); padding: 1px 5px; border-radius: 3px; }
+
+  footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-dim); text-align: right; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>CR-Check DB 구축 — 마일스톤 해설서</h1>
+  <p class="header-sub">
+    기획자 <strong>Gamnamu</strong>가 각 마일스톤의 기술적 의미를 파악하고, 감독·승인 판단을 내리기 위한 해설 문서.<br>
+    각 작업에 대해 <strong style="color:var(--accent-easy)">쉬운 설명</strong>(비유 중심)과 <strong style="color:var(--accent-pro)">전공자 설명</strong>(엄밀한 정의)을 병기.
+  </p>
+</header>
+
+<div class="purpose-box">
+  <h2>이 DB를 왜 구축하는가?</h2>
+  <p>
+    <em>목적 1 — 정확한 인용:</em> AI가 기사 분석 시 언론윤리규범을 "기억에 의존해서 대충" 인용하는 게 아니라, DB에서 원문을 글자 그대로 가져와서 인용하도록 만든다.<br>
+    <em>목적 2 — 분석의 깊이:</em> "이 기사는 문제가 있다" 수준이 아니라, "어떤 보도관행 패턴에 해당하고, 어떤 윤리규범의 몇 조 몇 항을 위반하며, 상위 원칙은 무엇인지"까지 구조적으로 추론하게 한다.
+  </p>
+</div>
+
+<!-- ============ WEEK 1 ============ -->
+<div class="week-section">
+  <div class="week-header">
+    <span class="week-label">WEEK 1</span>
+    <span class="week-title">DB 기반 구축</span>
+  </div>
+
+  <!-- M1 -->
+  <div class="milestone" id="m1">
+    <div class="m-header" onclick="toggleM('m1')">
+      <span class="m-chevron" id="ch-m1">&#9654;</span>
+      <span class="m-tag">M1</span>
+      <span class="m-name">전체 스키마 생성</span>
+      <span class="m-day">Day 1</span>
+    </div>
+    <div class="m-body" id="bd-m1">
+      <p class="m-summary">supabase/migrations/ 폴더에 Migration SQL 파일을 생성한다. 마스터 플랜 섹션 6.1에 정의된 모든 테이블, 뷰, 함수를 한 번에 생성.</p>
+      <div class="explain-tabs">
+        <button class="tab-btn tab-easy active" onclick="showTab('m1','easy')">🌱 쉬운 설명</button>
+        <button class="tab-btn tab-pro" onclick="showTab('m1','pro')">🔬 전공자 설명</button>
+      </div>
+      <div class="explain-panel panel-easy active" id="m1-easy">
+        <h4>도서관 건물을 짓는 단계</h4>
+        <p>데이터베이스의 스키마란, 도서관 건물의 설계도와 같습니다. "이 방에는 소설책을 놓고, 저 방에는 참고서를 놓겠다"처럼, 어떤 종류의 정보를 어디에 어떤 형태로 저장할지를 미리 정하는 것이에요.</p>
+        <span class="analogy">비유: 아직 책은 한 권도 없는, 빈 책장만 있는 도서관을 세우는 단계. 책장의 칸 수, 라벨, 분류 체계를 먼저 만든다.</span>
+        <p>Migration 파일이란, 이 설계도를 실제 건물(DB)에 적용하는 "시공 명령서"입니다. 한 번 실행하면 빈 데이터베이스에 모든 방(테이블)과 통로(관계)가 생깁니다.</p>
+      </div>
+      <div class="explain-panel panel-pro" id="m1-pro">
+        <h4>DDL Migration — 전체 스키마 일괄 생성</h4>
+        <p>Supabase CLI의 Migration 시스템을 사용하여 <span class="term">CREATE TABLE</span>, <span class="term">CREATE VIEW</span>, <span class="term">CREATE FUNCTION</span> 문을 포함하는 SQL 파일을 <span class="term">supabase/migrations/</span> 디렉토리에 생성한다. <span class="term">supabase start</span> 시 로컬 Docker PostgreSQL 인스턴스에 자동 적용되며, <span class="term">supabase db push</span>로 클라우드에 배포한다.</p>
+        <p>핵심 테이블: <span class="term">patterns</span>(보도관행 패턴), <span class="term">ethics_codes</span>(윤리규범, 버전 관리 포함), <span class="term">pattern_ethics_relations</span>(패턴↔규범 관계), <span class="term">pattern_relations</span>(패턴 간 관계). 벡터 컬럼은 <span class="term">vector(1536)</span> 타입으로 pgvector extension을 활용한다. 앙상블 검증에서 합의된 <span class="term">is_citable BOOLEAN</span> 컬럼과 재귀 CTE 기반 <span class="term">get_ethics_for_patterns()</span> 함수가 포함된다.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- M2 -->
+  <div class="milestone" id="m2">
+    <div class="m-header" onclick="toggleM('m2')">
+      <span class="m-chevron" id="ch-m2">&#9654;</span>
+      <span class="m-tag">M2</span>
+      <span class="m-name">시드 데이터 입력</span>
+      <span class="m-day">Day 2</span>
+    </div>
+    <div class="m-body" id="bd-m2">
+      <p class="m-summary">패턴 ~102개, 규범 ~160개, 관계 데이터를 DB에 입력한다. 2-패스 삽입 패턴(1차 NULL → 2차 code→id UPDATE)으로 parent 참조 문제를 해결.</p>
+      <div class="explain-tabs">
+        <button class="tab-btn tab-easy active" onclick="showTab('m2','easy')">🌱 쉬운 설명</button>
+        <button class="tab-btn tab-pro" onclick="showTab('m2','pro')">🔬 전공자 설명</button>
+      </div>
+      <div class="explain-panel panel-easy active" id="m2-easy">
+        <h4>빈 도서관에 책을 채우는 단계</h4>
+        <p>M1에서 빈 책장을 만들었으니, 이제 실제 책(데이터)을 넣는 단계입니다. "보도관행 패턴" 카드 102장과 "윤리규범" 카드 160장을 각각의 서랍에 넣어요.</p>
+        <span class="analogy">비유: 그런데 어떤 카드에는 "나의 부모 카드는 3번이야"라고 적혀 있어요. 문제는 3번 카드가 아직 서랍에 안 들어갔을 수도 있다는 것. 그래서 1차로 "부모 칸은 비워두고" 모든 카드를 일단 넣은 뒤, 2차로 "이제 3번 카드가 어디 있는지 찾아서 부모 칸을 채워넣는" 두 번의 작업을 하는 겁니다. 이것이 "2-패스 삽입"이에요.</span>
+        <p><span class="term">is_citable</span>이란, "이 규범 조항은 리포트에서 인용해도 되는 것인가?"를 표시하는 깃발이에요. 서문이나 부칙처럼 인용할 의미가 없는 조항에는 "인용 불가"라고 표시합니다.</p>
+      </div>
+      <div class="explain-panel panel-pro" id="m2-pro">
+        <h4>시드 데이터 INSERT — FK 순환 참조 해결을 위한 2-패스 패턴</h4>
+        <p><span class="term">ethics_codes</span> 테이블의 <span class="term">parent_code_id</span>는 자기 참조(self-referencing) FK다. JSON 소스(<span class="term">ethics_codes_mapping.json</span>)에서 parent는 문자열 코드("JEC-8")로 표현되지만, DB 컬럼은 <span class="term">BIGINT</span> FK다. 따라서:</p>
+        <p>1차 패스: 모든 레코드를 <span class="term">parent_code_id = NULL</span>로 INSERT → 각 레코드에 auto-generated <span class="term">id</span>가 부여됨.<br>
+        2차 패스: <span class="term">UPDATE ethics_codes SET parent_code_id = (SELECT id FROM ethics_codes WHERE code = :parent_code)</span>로 문자열 코드를 실제 id로 매핑.</p>
+        <p><span class="term">is_citable</span> 컬럼은 <span class="term">get_ethics_for_patterns()</span> 함수의 WHERE 절에서 필터로 사용되어, 서문/부칙 등 인용 부적합 조항이 벡터 검색 결과와 롤업 인용에서 제외된다.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 관계 데이터 -->
+  <div class="milestone" id="rel">
+    <div class="m-header" onclick="toggleM('rel')">
+      <span class="m-chevron" id="ch-rel">&#9654;</span>
+      <span class="m-tag">—</span>
+      <span class="m-name">관계 데이터 구축 (Stage 1)</span>
+      <span class="m-day">Day 3</span>
+    </div>
+    <div class="m-body" id="bd-rel">
+      <p class="m-summary">명시적 교차참조 15건을 시드로 넣고, 임베딩 유사도 + LLM 추출로 30~40건까지 확장한다.</p>
+      <div class="explain-tabs">
+        <button class="tab-btn tab-easy active" onclick="showTab('rel','easy')">🌱 쉬운 설명</button>
+        <button class="tab-btn tab-pro" onclick="showTab('rel','pro')">🔬 전공자 설명</button>
+      </div>
+      <div class="explain-panel panel-easy active" id="rel-easy">
+        <h4>패턴들 사이의 "관계 지도"를 그리는 단계</h4>
+        <p>102개의 보도관행 패턴 카드가 서랍에 들어갔는데, 이 카드들 중 일부는 서로 연관돼 있어요. 예를 들어 "낚시성 제목"과 "클릭 어뷰징"은 자주 함께 나타나죠.</p>
+        <span class="analogy">비유: 도서관의 "관련 도서 추천" 시스템을 만드는 것과 같아요. 사서(사람)가 이미 알고 있는 15개의 연결("이 책을 읽었으면 저 책도 읽어보세요")을 먼저 등록하고, 나머지는 AI가 두 가지 방법으로 찾아냅니다.</span>
+        <p><strong>방법 1 — 임베딩 유사도:</strong> 각 패턴 카드의 설명을 숫자 목록(벡터)으로 변환해요. "낚시성 제목"의 숫자 목록과 "과장 보도"의 숫자 목록이 비슷하면, 두 패턴은 관련이 있다고 판단합니다. 이건 마치 두 곡의 음악 파형을 비교해서 "비슷한 느낌의 노래"를 찾는 것과 같아요.</p>
+        <p><strong>방법 2 — LLM 추출:</strong> Claude에게 102개 패턴 전체를 보여주고 "서로 관련 있는 패턴 쌍을 찾아줘"라고 요청하는 거예요. AI가 문맥을 이해하고 "이 둘은 함께 나타나면 더 큰 문제를 시사한다"같은 관계를 추출합니다.</p>
+        <p>두 방법의 <strong>교집합</strong>(둘 다 "관련 있다"고 한 것)은 높은 확신으로 바로 등록하고, <strong>합집합</strong>(한쪽만 "관련 있다"고 한 것)은 Gamnamu가 눈으로 검수해서 결정합니다. 최종적으로 30~40개의 관계가 확보됩니다.</p>
+      </div>
+      <div class="explain-panel panel-pro" id="rel-pro">
+        <h4>패턴 간 관계 확장 — 임베딩 유사도 매트릭스 + LLM 기반 구조화 추출</h4>
+        <p><span class="term">pattern_relations</span> 테이블에 관계 유형(<span class="term">co_occurs</span>, <span class="term">escalates_to</span>, <span class="term">variant_of</span>, <span class="term">inferred_by</span>)과 출처(<span class="term">manual</span>, <span class="term">embedding_similarity</span>, <span class="term">llm_extracted</span>), 신뢰도(<span class="term">confidence FLOAT</span>), 검증 여부(<span class="term">verified BOOLEAN</span>)를 저장한다.</p>
+        <p><strong>임베딩 유사도 매트릭스:</strong> ~102개 패턴의 <span class="term">description_embedding</span>으로 102×102 코사인 유사도 행렬을 계산. 대각선과 이미 알려진 15건을 제외한 상위 유사도 쌍을 후보로 추출한다. threshold는 골든셋 기반으로 경험적 결정.</p>
+        <p><strong>LLM 기반 추출:</strong> 102개 패턴의 <span class="term">code</span>, <span class="term">name</span>, <span class="term">description</span>을 컨텍스트로 제공하고, 구조화된 JSON 응답(source_code, target_code, relation_type, reasoning)을 요청. Few-shot 예시로 관계 유형의 의미를 명확히 지정.</p>
+        <p><strong>앙상블 합의:</strong> 두 방법의 교집합은 <span class="term">confidence: 0.9</span>+, <span class="term">verified: true</span>로 즉시 INSERT. 합집합-교집합(한쪽만 탐지)은 <span class="term">confidence: 0.5~0.7</span>, <span class="term">verified: false</span>로 INSERT 후 수동 검수 대상.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- M3 -->
+  <div class="milestone" id="m3">
+    <div class="m-header" onclick="toggleM('m3')">
+      <span class="m-chevron" id="ch-m3">&#9654;</span>
+      <span class="m-tag">M3</span>
+      <span class="m-name">임베딩 생성 + 모델 벤치마크</span>
+      <span class="m-day">Day 4</span>
+    </div>
+    <div class="m-body" id="bd-m3">
+      <p class="m-summary">패턴·규범 텍스트를 벡터로 변환(임베딩)하고, OpenAI vs 대안 모델의 검색 정확도(Recall@10)를 비교한다. 기사 청킹 프로토타이핑 포함.</p>
+      <div class="explain-tabs">
+        <button class="tab-btn tab-easy active" onclick="showTab('m3','easy')">🌱 쉬운 설명</button>
+        <button class="tab-btn tab-pro" onclick="showTab('m3','pro')">🔬 전공자 설명</button>
+      </div>
+      <div class="explain-panel panel-easy active" id="m3-easy">
+        <h4>책에 GPS 좌표를 붙이고, 내비게이션을 테스트하는 단계</h4>
+        <p><strong>임베딩이란?</strong> 텍스트를 1,536개의 숫자로 이루어진 "GPS 좌표"로 변환하는 것이에요. 비슷한 의미의 텍스트는 비슷한 좌표를 갖게 됩니다.</p>
+        <span class="analogy">비유: "무죄추정 원칙 위반"이라는 기사 문장과, "피의자는 유죄 판결 확정 전까지 무죄로 추정된다"는 규범 문장이 있을 때 — 단어는 다르지만 의미가 비슷하죠? 임베딩은 이 두 문장을 비슷한 GPS 좌표에 놓아서, "가까이 있는 걸 찾아라"고 하면 서로 찾을 수 있게 합니다.</span>
+        <p><strong>벤치마크란?</strong> 여러 내비게이션 앱(OpenAI, Voyage AI, Upstage 등)을 놓고 "어떤 앱이 정답을 가장 잘 찾는지" 테스트하는 거예요. 골든 데이터셋 26건의 기사를 검색어로 넣어보고, 정답 패턴이 상위 10개 결과 안에 들어오는 비율(Recall@10)을 비교합니다.</p>
+        <p><strong>기사 청킹이란?</strong> 긴 기사를 300~500자짜리 의미 있는 덩어리로 나누는 작업이에요. 한국 뉴스 기사는 한 문장마다 줄바꿈하는 경우가 많아서, 그냥 나누면 문맥이 끊깁니다. 그래서 짧은 문장들을 의미 단위로 합치는 "병합 청킹"을 써야 해요.</p>
+      </div>
+      <div class="explain-panel panel-pro" id="m3-pro">
+        <h4>벡터 임베딩 생성 + 경량 IR 벤치마크 + 청킹 프로토타이핑</h4>
+        <p><strong>임베딩 생성:</strong> ~262개 엔티티(패턴 ~102 + 규범 ~160)의 텍스트 필드를 OpenAI <span class="term">text-embedding-3-small</span>(1536차원)로 배치 임베딩. 결과를 각 테이블의 <span class="term">description_embedding</span> / <span class="term">text_embedding</span> 컬럼에 <span class="term">UPDATE</span>.</p>
+        <p><strong>벤치마크:</strong> 골든셋 26건의 <span class="term">article_key_text</span>를 쿼리로, <span class="term">expected_patterns</span>를 정답으로 사용한 Information Retrieval 평가. <span class="term">Recall@K</span> = (상위 K개 결과에 포함된 정답 패턴 수) / (전체 정답 패턴 수). OpenAI, Voyage AI <span class="term">voyage-3</span>, Upstage <span class="term">solar-embedding-1-large</span>, BAAI <span class="term">bge-m3</span>를 비교. 특히 법률/규범 문체 vs 뉴스 문체의 도메인 갭 처리 능력이 핵심 평가 항목.</p>
+        <p><strong>기사 청킹:</strong> 한국 온라인 뉴스의 1문장 줄바꿈 관행에 대응하는 의미 기반 병합 청킹을 프로토타이핑. 전처리(캡션·바이라인·광고 제거) → 100자 미만 단락 병합 → 300~500자 블록 생성. 다양한 매체의 HTML 소스로 견고성 검증. 이 청킹 결과가 M4에서 RAG 파이프라인의 입력으로 사용된다.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ WEEK 2 ============ -->
+<div class="week-section">
+  <div class="week-header">
+    <span class="week-label">WEEK 2</span>
+    <span class="week-title">Phase 0 완성 + Phase 1</span>
+  </div>
+
+  <!-- M4 -->
+  <div class="milestone" id="m4">
+    <div class="m-header" onclick="toggleM('m4')">
+      <span class="m-chevron" id="ch-m4">&#9654;</span>
+      <span class="m-tag">M4</span>
+      <span class="m-name">1.5회 RAG 파이프라인 구현</span>
+      <span class="m-day">Day 5–6</span>
+    </div>
+    <div class="m-body" id="bd-m4">
+      <p class="m-summary">기사 → 청킹 → 임베딩 → 벡터검색(패턴 후보) → Haiku(패턴 확정) → 규범 정밀조회 → Sonnet(보고서). 핵심 분석 흐름 전체를 구현.</p>
+      <div class="explain-tabs">
+        <button class="tab-btn tab-easy active" onclick="showTab('m4','easy')">🌱 쉬운 설명</button>
+        <button class="tab-btn tab-pro" onclick="showTab('m4','pro')">🔬 전공자 설명</button>
+      </div>
+      <div class="explain-panel panel-easy active" id="m4-easy">
+        <h4>기사를 분석하는 "두 명의 전문가" 시스템을 만드는 단계</h4>
+        <p>이것이 CR-Check의 심장부예요. 기사가 들어오면 이런 과정을 거칩니다:</p>
+        <span class="analogy">비유: 병원 진료와 같아요. ① 접수(기사 스크래핑) → ② 기초 검사(청킹 + 임베딩) → ③ 1차 진료(Haiku가 "어디가 아픈지" 패턴 후보를 찾음) → ④ 환자 차트 확인(확정된 패턴에 해당하는 규범만 DB에서 정밀 조회) → ⑤ 전문의 진단(Sonnet이 규범 원문을 바탕으로 상세 분석 보고서 작성).</span>
+        <p><strong>"1.5회"란?</strong> AI를 두 번 부르는데, 첫 번째(Haiku)는 가볍고 빠르게 "후보 선정"만 하고, 두 번째(Sonnet)는 정밀하게 "최종 보고서"를 씁니다. 그 사이에 DB 조회가 들어가서, Sonnet에게는 "확정된 패턴에 연결된 규범만" 정확하게 전달됩니다. 이 덕분에 AI가 "컨텍스트에 없어서 규범을 못 찾는" 문제가 구조적으로 해소돼요.</p>
+        <p><strong>왜 두 단계로 나누나?</strong> Haiku는 저렴하고 빠르지만 분석 깊이가 얕아요. Sonnet은 깊지만 비싸요. 먼저 Haiku로 범위를 좁히고, Sonnet은 좁혀진 범위에서만 깊이 파는 구조이기 때문에 비용과 품질의 균형을 잡습니다.</p>
+      </div>
+      <div class="explain-panel panel-pro" id="m4-pro">
+        <h4>Hybrid RAG — 벡터 검색 + 관계형 정밀 조회 + 2-Stage LLM 호출</h4>
+        <p>핵심 함수 2개가 파이프라인의 뼈대를 구성한다:</p>
+        <p>① <span class="term">search_pattern_candidates(query_embedding, threshold=0.5, count=10)</span> — 기사 청크의 임베딩으로 <span class="term">patterns</span> 테이블에서 코사인 유사도 검색. Top-K + 느슨한 threshold 혼합으로 recall을 확보하되, LLM(Haiku)이 precision을 담당하는 "LLM as filter" 구조.</p>
+        <p>② <span class="term">get_ethics_for_patterns(confirmed_pattern_ids BIGINT[])</span> — Haiku가 확정한 패턴 ID 배열을 입력으로, <span class="term">pattern_ethics_relations</span> JOIN + 재귀 CTE로 직접 연결 규범 + parent chain 상위 규범을 함께 반환. <span class="term">is_citable = TRUE</span>인 활성 규범만 필터링.</p>
+        <p>Haiku에게는 패턴 후보(코드+설명)만 제공하여 토큰을 절약하고, Sonnet에게는 확정 패턴 + 정확한 규범 원문 컨텍스트를 제공하여 Silent Miss(컨텍스트에 없어서 인용 불가)를 구조적으로 해소한다. 백엔드에서 Haiku 출력의 패턴 코드가 DB에 실제 존재하는지 밸리데이션하여 환각 차단.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- M5 -->
+  <div class="milestone" id="m5">
+    <div class="m-header" onclick="toggleM('m5')">
+      <span class="m-chevron" id="ch-m5">&#9654;</span>
+      <span class="m-tag">M5</span>
+      <span class="m-name">결정론적 인용 + 메타 패턴 추론</span>
+      <span class="m-day">Day 7</span>
+    </div>
+    <div class="m-body" id="bd-m5">
+      <p class="m-summary">AI가 규범을 "외워서 쓰는" 대신 식별자만 출력하고, 백엔드가 DB 원문을 삽입. 메타 패턴(외부 압력·상업적 동기)은 다른 패턴의 조합으로 추론.</p>
+      <div class="explain-tabs">
+        <button class="tab-btn tab-easy active" onclick="showTab('m5','easy')">🌱 쉬운 설명</button>
+        <button class="tab-btn tab-pro" onclick="showTab('m5','pro')">🔬 전공자 설명</button>
+      </div>
+      <div class="explain-panel panel-easy active" id="m5-easy">
+        <h4>정확한 인용의 비밀 + 숨겨진 문제를 추리하는 탐정</h4>
+        <p><strong>결정론적 인용이란?</strong> AI에게 "규범 원문을 직접 써라"고 하면, 가끔 원문과 조금 다르게(환각) 씁니다. 이것이 CR-Check 초기 버전의 핵심 문제였어요.</p>
+        <span class="analogy">비유: 시험에서 교과서 내용을 인용해야 할 때, (A) 기억에 의존해서 쓰기 vs (B) "교과서 37쪽 3번째 문단을 보세요"라고 페이지 번호만 적고, 채점관이 직접 교과서를 펼쳐서 해당 문장을 복사·붙여넣기하는 방식. CR-Check은 (B)를 채택한 것이에요. AI는 <span class="term">&lt;cite ref="JCE-3"/&gt;</span>처럼 번호표만 출력하고, 컴퓨터가 DB에서 정확한 원문을 가져와 끼워넣습니다.</span>
+        <p><strong>메타 패턴이란?</strong> "외부 압력"이나 "상업적 동기"는 기사 텍스트에 직접 드러나지 않아요. 하지만 "익명 단일 취재원 + 이념 편향 + 반론권 미보장"이 함께 나타나면 "외부 압력이 있었을 가능성"을 추론할 수 있죠. 이것은 마치 탐정이 단서들의 조합으로 범인을 추리하는 것과 같아요. 단, "~의 가능성이 있다" 수준으로만 표현하고 단정은 절대 금지합니다.</p>
+      </div>
+      <div class="explain-panel panel-pro" id="m5-pro">
+        <h4>Deterministic Quoting + 메타 패턴 하이브리드 추론 파이프라인</h4>
+        <p><strong>CitationResolver:</strong> Sonnet은 규범 인용 시 <span class="term">&lt;cite ref="{ethics_code}"/&gt;</span> 태그만 출력한다. 백엔드의 <span class="term">CitationResolver</span> 모듈이 정규식으로 cite 태그를 파싱하고, <span class="term">ethics_codes</span> 테이블의 <span class="term">full_text</span>로 치환한다. 동시에 <span class="term">analysis_ethics_snapshot</span> 테이블에 인용 시점의 규범 원문을 스냅샷으로 저장하여, 규범 개정 후에도 과거 리포트의 인용 근거를 보존한다.</p>
+        <p><strong>메타 패턴 추론 (1-4-1 외부 압력, 1-4-2 상업적 동기):</strong> 3단계 하이브리드 파이프라인. Step 1(규칙 기반): Haiku 확정 패턴 중 메타 패턴 관련 지표 수를 카운트, 2개 미만이면 추론 건너뜀. Step 2(LLM 기반): Sonnet에 관련 지표 목록 + 기사 전체 맥락을 제공하여 확신도(낮음/중간/높음) 판단. Step 3(가드레일): 지표 수 × 확신도 매트릭스에 따라 표현 수위를 결정("일부 징후" → "구조적 문제 가능성" → "강한 의심"). 단정적 표현은 프롬프트 수준에서 차단.</p>
+        <p>추론 규칙은 <span class="term">pattern_relations</span>의 <span class="term">inferred_by</span> 관계를 동적 조회하여 구성하므로, 코드 수정 없이 관계 데이터만으로 규칙을 갱신할 수 있다.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- M6 -->
+  <div class="milestone" id="m6">
+    <div class="m-header" onclick="toggleM('m6')">
+      <span class="m-chevron" id="ch-m6">&#9654;</span>
+      <span class="m-tag">M6</span>
+      <span class="m-name">Phase 1 아카이빙 통합 + 배포</span>
+      <span class="m-day">Day 8–9</span>
+    </div>
+    <div class="m-body" id="bd-m6">
+      <p class="m-summary">RAG 파이프라인을 기존 FastAPI 백엔드에 통합, 분석 결과를 DB에 저장하고 공개 URL로 공유 가능하게 만든다. Dev Set 26건 E2E 테스트 + Reserved Test Set 73건 최종 평가.</p>
+      <div class="explain-tabs">
+        <button class="tab-btn tab-easy active" onclick="showTab('m6','easy')">🌱 쉬운 설명</button>
+        <button class="tab-btn tab-pro" onclick="showTab('m6','pro')">🔬 전공자 설명</button>
+      </div>
+      <div class="explain-panel panel-easy active" id="m6-easy">
+        <h4>모든 부품을 조립하고, 실전 시험을 치르는 단계</h4>
+        <p>M1~M5에서 만든 모든 부품(DB, 임베딩, 파이프라인, 인용 시스템)을 기존 CR-Check 앱에 연결하는 단계예요.</p>
+        <span class="analogy">비유: 자동차 엔진(RAG 파이프라인)을 만들었으니, 이제 차체(기존 웹앱)에 장착하고, 시험 주행을 하는 거예요. 먼저 연습 코스(Dev Set 26건)에서 달려보고, 진짜 시험 도로(Reserved Test Set 73건 — 지금까지 한 번도 본 적 없는 기사들)에서 최종 성적을 확인합니다.</span>
+        <p>분석 결과는 DB에 저장되고, <span class="term">/report/{id}</span> 형태의 고유 URL로 누구나 볼 수 있게 됩니다. 로그인은 필요 없어요 — 전 Phase 익명 운영이니까요.</p>
+      </div>
+      <div class="explain-panel panel-pro" id="m6-pro">
+        <h4>엔드투엔드 통합 — DatabaseManager + 기존 main.py 수정 + 성능 평가</h4>
+        <p><span class="term">DatabaseManager</span> 클래스를 구현하여 <span class="term">supabase-py</span> 클라이언트를 래핑. 리포지토리 패턴(<span class="term">PatternRepository</span>, <span class="term">EthicsLookup</span>, <span class="term">CitationResolver</span> 등)을 통해 Supabase 직접 호출을 추상화.</p>
+        <p>기존 <span class="term">main.py</span>의 정적 JSON 매핑 경로를 RAG 파이프라인으로 교체. <span class="term">articles</span> 테이블에 URL 중복 방지 + 메타데이터 저장, <span class="term">analysis_results</span> 테이블에 리포트 저장 + 공개 URL(<span class="term">/report/{id}</span>) 제공.</p>
+        <p><strong>평가 체계:</strong> Dev Set 26건으로 <span class="term">Recall@K</span>(벡터검색), <span class="term">Pattern Precision</span>(Haiku 확정), <span class="term">Citation Accuracy</span>(인용 정확도), <span class="term">Faithfulness</span>(컨텍스트 충실도)를 측정. threshold 튜닝 후 Reserved Test Set 73건으로 최종 hold-out 평가. 이 73건은 프롬프트 튜닝 과정에서 한 번도 참조되지 않았으므로, 과적합 없는 실전 성능 지표가 된다.</p>
+        <p>예상 레이턴시: 스크래핑(1s) + 임베딩(1s) + DB검색(0.1s) + LLM 2회(5~10s) ≈ 10~15초. Vercel/Railway 30초 제한 대비 필요(앙상블 보류 사항).</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ WEEK 3 ============ -->
+<div class="week-section">
+  <div class="week-header">
+    <span class="week-label">WEEK 3</span>
+    <span class="week-title">Phase 2 — 통계 대시보드</span>
+  </div>
+
+  <div class="milestone" id="p2d">
+    <div class="m-header" onclick="toggleM('p2d')">
+      <span class="m-chevron" id="ch-p2d">&#9654;</span>
+      <span class="m-tag">—</span>
+      <span class="m-name">통계 함수 + API + 대시보드 UI</span>
+      <span class="m-day">Day 10–12</span>
+    </div>
+    <div class="m-body" id="bd-p2d">
+      <p class="m-summary">축적된 분석 결과를 집계하여 "어떤 매체에서 어떤 패턴이 가장 많이 발견되는지" 등의 통계를 대시보드로 시각화.</p>
+      <div class="explain-tabs">
+        <button class="tab-btn tab-easy active" onclick="showTab('p2d','easy')">🌱 쉬운 설명</button>
+        <button class="tab-btn tab-pro" onclick="showTab('p2d','pro')">🔬 전공자 설명</button>
+      </div>
+      <div class="explain-panel panel-easy active" id="p2d-easy">
+        <h4>분석 결과를 "성적표"로 보여주는 단계</h4>
+        <p>M6까지는 한 기사씩 분석하는 시스템이었어요. 이제는 "지금까지 분석한 모든 기사"를 모아서 통계를 내는 단계입니다.</p>
+        <span class="analogy">비유: 학교 시험 채점이 끝나면, 각 학생의 성적뿐 아니라 "어떤 문제를 가장 많이 틀렸는지", "학급 평균은 얼마인지"를 정리한 통계 리포트를 만들잖아요? 그것과 같습니다. "어떤 뉴스 매체에서 어떤 유형의 문제가 가장 자주 발견되는지", "시간에 따라 개선되고 있는지" 같은 추이를 그래프로 보여줍니다.</span>
+        <p>이 대시보드는 CR-Check의 궁극적 목표인 "시민이 언론 생태계를 눈으로 확인하고, 개선을 촉구할 수 있는 도구"를 실현하는 단계입니다.</p>
+      </div>
+      <div class="explain-panel panel-pro" id="p2d-pro">
+        <h4>집계 함수 + REST API + Next.js 15 대시보드</h4>
+        <p>Supabase에 집계 함수(RPC)를 구현하여, <span class="term">analysis_results</span> + <span class="term">patterns</span> 조인으로 매체별/패턴별/시기별 통계를 산출한다. FastAPI에 <span class="term">/api/stats/</span> 엔드포인트를 추가하여 프론트엔드에서 호출.</p>
+        <p>Next.js 15 App Router 기반 대시보드 페이지에서 차트 라이브러리(recharts 등)를 활용한 시각화 구현. 익명 운영 원칙에 따라 인증 없이 접근 가능. 데이터 규모가 작으므로(초기 수백 건 수준) 실시간 집계로 충분하며, 캐싱은 Phase 2 운영 3개월 후 필요 시 도입.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  CR-Check DB 구축 마일스톤 해설서 — 2026-03-26 생성<br>
+  원본: <code>docs/_reference/cr_check_db_role_map.html</code> 기반
+</footer>
+
+<script>
+function toggleM(id) {
+  const bd = document.getElementById('bd-' + id);
+  const ch = document.getElementById('ch-' + id);
+  bd.classList.toggle('open');
+  ch.classList.toggle('open');
+}
+function showTab(mid, type) {
+  const easy = document.getElementById(mid + '-easy');
+  const pro = document.getElementById(mid + '-pro');
+  const parent = easy.parentElement;
+  const tabs = parent.querySelectorAll('.tab-btn');
+
+  easy.classList.remove('active');
+  pro.classList.remove('active');
+  tabs.forEach(t => t.classList.remove('active'));
+
+  if (type === 'easy') {
+    easy.classList.add('active');
+    tabs[0].classList.add('active');
+  } else {
+    pro.classList.add('active');
+    tabs[1].classList.add('active');
+  }
+}
+</script>
+</body>
+</html>
