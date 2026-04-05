@@ -38,38 +38,97 @@ export function ResultViewer({ result, onReset }: ResultViewerProps) {
 
     // Helper to highlight ethics codes
     const highlightEthics = (text: string) => {
-      // Regex to match various ethics codes followed by optional quote
-      // Includes: 언론윤리헌장, 한국기자협회 강령, 언론윤리강령/실천요강, 신문윤리강령/실천요강, etc.
-      const ethicsPattern = /(?:언론윤리헌장|한국기자협회\s*강령|언론윤리(?:강령|실천요강)|신문윤리(?:강령|실천요강)|자살보도\s*윤리강령|인권보도준칙|자살예방\s*보도준칙|재난보도준칙|선거여론조사\s*보도준칙)/;
+      // 1단계: 〔규범명〕 + 뒤따르는 '인용 내용' 패턴 감지
+      //   〔규범명〕은(는) '인용 내용'고/라고 ...
+      const citationPattern = /(〔[^〕]+〕)((?:[^']*)'([^']+)')/g;
 
-      // Split by the pattern, capturing the code name and following content up to the end of the quote if present
-      // We look for the pattern, followed by non-newline characters, optionally ending with a quote
-      const parts = text.split(/((?:언론윤리헌장|한국기자협회\s*강령|언론윤리(?:강령|실천요강)|신문윤리(?:강령|실천요강)|자살보도\s*윤리강령|인권보도준칙|자살예방\s*보도준칙|재난보도준칙|선거여론조사\s*보도준칙)[^"\n]*(?:"[^"]*")?)/g);
+      // 2단계: 〔규범명〕만 단독으로 나오는 경우 (인용 없이 언급만)
+      const ruleOnlyPattern = /〔([^〕]+)〕/g;
 
-      return parts.map((part, idx) => {
-        if (ethicsPattern.test(part)) {
-          return (
-            <span key={idx} className="text-[#4682b4] font-sans font-normal">
-              {part}
-            </span>
-          );
+      // 먼저 전체 인용 패턴(규범명+인용)을 처리
+      const parts: (string | JSX.Element)[] = [];
+      let lastIndex = 0;
+      let match;
+
+      // Reset regex
+      citationPattern.lastIndex = 0;
+
+      while ((match = citationPattern.exec(text)) !== null) {
+        // 매치 이전의 일반 텍스트
+        if (match.index > lastIndex) {
+          parts.push(text.slice(lastIndex, match.index));
         }
-        // Handle bold text within normal text
-        if (part.includes('**')) {
-          const boldParts = part.split(/(\*\*.*?\*\*)/g);
-          return (
-            <span key={idx}>
-              {boldParts.map((bp, bIdx) => {
+
+        const ruleName = match[1]; // 〔규범명〕
+        const connector = match[2]; // 은(는) '인용내용'
+        const quoteContent = match[3]; // 인용 내용 (따옴표 안)
+
+        // 규범명 스타일: 고딕, weight 400, 100% size, 검정
+        parts.push(
+          <span key={`rule-${match.index}`}
+            style={{
+              fontFamily: '"Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif',
+              fontWeight: 400,
+              opacity: 0.9,
+              fontSize: '1em',
+            }}>
+            {ruleName.replace(/[〔〕]/g, '')}
+          </span>
+        );
+
+        // 연결어 (은, 는, 이, 가 등) + 따옴표 앞 텍스트
+        const beforeQuote = connector.slice(0, connector.indexOf("'"));
+        parts.push(beforeQuote);
+
+        // 인용 내용 스타일: 명조(본문과 동일), rgb(70,130,180)
+        parts.push(
+          <span key={`cite-${match.index}`}
+            style={{ color: 'rgb(70, 130, 180)' }}
+            className="font-serif">
+            &lsquo;{quoteContent}&rsquo;
+          </span>
+        );
+
+        lastIndex = match.index + match[0].length;
+      }
+
+      // 남은 텍스트 처리 (〔규범명〕만 단독 등장하는 경우 포함)
+      if (lastIndex < text.length) {
+        const remaining = text.slice(lastIndex);
+        // 단독 규범명 패턴 처리
+        const remainParts = remaining.split(/(〔[^〕]+〕)/g);
+        remainParts.forEach((part, idx) => {
+          if (part.startsWith('〔') && part.endsWith('〕')) {
+            parts.push(
+              <span key={`rule-solo-${lastIndex}-${idx}`}
+                style={{
+                  fontFamily: '"Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif',
+                  fontWeight: 400,
+                  opacity: 0.9,
+                  fontSize: '1em',
+                }}>
+                {part.replace(/[〔〕]/g, '')}
+              </span>
+            );
+          } else if (part) {
+            // bold 처리 유지
+            if (part.includes('**')) {
+              const boldParts = part.split(/(\*\*.*?\*\*)/g);
+              boldParts.forEach((bp, bIdx) => {
                 if (bp.startsWith('**') && bp.endsWith('**')) {
-                  return <strong key={bIdx} className="text-navy-900 font-bold">{bp.slice(2, -2)}</strong>;
+                  parts.push(<strong key={`b-${lastIndex}-${idx}-${bIdx}`} className="text-navy-900 font-bold">{bp.slice(2, -2)}</strong>);
+                } else if (bp) {
+                  parts.push(bp);
                 }
-                return <span key={bIdx}>{bp}</span>;
-              })}
-            </span>
-          );
-        }
-        return <span key={idx}>{part}</span>;
-      });
+              });
+            } else {
+              parts.push(part);
+            }
+          }
+        });
+      }
+
+      return parts.length > 0 ? parts : [text];
     };
 
     for (let i = 0; i < lines.length; i++) {
@@ -99,14 +158,16 @@ export function ResultViewer({ result, onReset }: ResultViewerProps) {
           </h3>
         );
       }
-      // H3
+      // H3 (### 중간제목)
       else if (line.startsWith('### ')) {
         const text = line.replace('### ', '');
-        const isTarget = text.includes('문제점 분석') || text.includes('종합 평가');
         elements.push(
           <h4 key={key++}
-            className={`text-navy-700 mt-4 mb-2 font-semibold text-lg ${isTarget ? 'font-sans' : 'font-serif'}`}
-            style={isTarget ? { fontFamily: '"Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif' } : undefined}>
+            className="text-navy-700 mt-4 mb-2 font-semibold"
+            style={{
+              fontFamily: '"Pretendard", "Malgun Gothic", "Apple SD Gothic Neo", sans-serif',
+              fontSize: '1.1em',
+            }}>
             {text}
           </h4>
         );

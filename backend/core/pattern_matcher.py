@@ -34,7 +34,7 @@ logger = logging.getLogger(__name__)
 # ── 설정 ─────────────────────────────────────────────────────────
 
 EMBEDDING_MODEL = "text-embedding-3-small"
-SONNET_MODEL = "claude-sonnet-4-6"
+SONNET_MODEL = "claude-sonnet-4-5-20250929"
 VECTOR_THRESHOLD = float(os.environ.get("VECTOR_THRESHOLD", "0.2"))
 VECTOR_MATCH_COUNT = 7
 
