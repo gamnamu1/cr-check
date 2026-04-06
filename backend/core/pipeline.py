@@ -19,12 +19,18 @@ from dataclasses import dataclass, field
 from .chunker import chunk_article, Chunk
 from .pattern_matcher import (
     match_patterns_solo,
-    match_patterns_2call,  # deprecated 2-Call (비교용)
-    match_patterns,  # deprecated 1-Call (비교용)
     PatternMatchResult,
 )
+# [DEPRECATED] 2-Call/1-Call 레거시는 pattern_matcher_legacy로 분리됨.
+# 비교 실험이 필요할 때만 아래 주석을 해제하여 사용.
+# from .pattern_matcher_legacy import (
+#     match_patterns_2call,  # deprecated 2-Call (Haiku → Sonnet)
+#     match_patterns,        # deprecated 1-Call (Sonnet 단독)
+# )
 from .report_generator import generate_report, ReportResult
-from .citation_resolver import resolve_citations
+# [DEPRECATED] cite 태그 후치환 비활성화 (Phase β). Sonnet이 규범을 직접 서술.
+# 복원이 필요하면 아래 주석을 해제하세요.
+# from .citation_resolver import resolve_citations
 from .meta_pattern_inference import check_meta_patterns
 from .db import _get_supabase_config
 
@@ -146,9 +152,13 @@ def analyze_article(
                 }
             )
 
-        # [Phase β] cite 태그 후치환 비활성화 — Sonnet이 규범을 직접 서술하므로 불필요
-        # 복원이 필요하면 아래 주석을 해제하세요.
-        # --- 결정론적 인용 후처리 (비활성화) ---
+        # ─────────────────────────────────────────────────────────
+        # _DEPRECATED_ [Phase β] cite 태그 후치환 비활성화
+        # Sonnet이 〔규범명〕은 '인용'… 형식으로 규범을 직접 서술하므로
+        # CitationResolver 후처리가 불필요해짐. 코드는 보존(분리·격리만).
+        # 복원이 필요하면 위의 `from .citation_resolver import resolve_citations`
+        # 와 함께 아래 블록의 주석을 해제하세요.
+        # ─────────────────────────────────────────────────────────
         # pre_citation_reports = {rt: rr.reports.get(rt, "") for rt in ["comprehensive", "journalist", "student"]}
         # hallucinated_refs_log = {}
         # for report_type in ["comprehensive", "journalist", "student"]:

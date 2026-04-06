@@ -34,6 +34,10 @@ export interface AnalysisResult {
     severity: string;
     reasoning: string;
   }>;
+  // ★ Phase D 추가 (URL 공유 + 캐시 메타)
+  share_id?: string;
+  analyzed_at?: string;
+  is_cached?: boolean;
 }
 
 export type AnalysisPhase = 'scanning' | 'analyzing' | 'complete';
