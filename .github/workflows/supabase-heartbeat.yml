@@ -1,0 +1,43 @@
+name: Supabase Heartbeat
+
+# 7일 비활성 시 Supabase 무료 티어 프로젝트가 일시정지되는 것을 방지하기 위해
+# 주 2회 (월, 목 UTC 00:00) 간단한 SELECT 쿼리를 보낸다.
+# 수동 실행도 가능하도록 workflow_dispatch 트리거를 함께 등록.
+
+on:
+  schedule:
+    # UTC 기준 매주 월요일·목요일 00:00
+    - cron: '0 0 * * 1,4'
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_KEY" ]; then
+            echo "ERROR: SUPABASE_URL 또는 SUPABASE_KEY 시크릿이 설정되지 않았습니다."
+            exit 1
+          fi
+
+          echo "Pinging Supabase REST API..."
+          HTTP_CODE=$(curl -s -o /tmp/response.json -w "%{http_code}" \
+            -H "apikey: $SUPABASE_KEY" \
+            -H "Authorization: Bearer $SUPABASE_KEY" \
+            "$SUPABASE_URL/rest/v1/patterns?select=id&limit=1")
+
+          echo "HTTP status: $HTTP_CODE"
+          echo "Response body:"
+          cat /tmp/response.json
+          echo ""
+
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✓ Heartbeat 성공"
+          else
+            echo "✗ Heartbeat 실패 (HTTP $HTTP_CODE)"
+            exit 1
+          fi
