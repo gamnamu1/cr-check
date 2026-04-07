@@ -20,15 +20,25 @@ _LOCAL_SERVICE_KEY = (
 
 
 def _get_supabase_config() -> tuple[str, str]:
-    """Supabase URL + service key를 반환. 로컬 우선."""
+    """Supabase URL + service key를 반환. 로컬/클라우드 자동 분기."""
     local_url = "http://127.0.0.1:54321"
     sb_url = os.environ.get("SUPABASE_URL", "")
 
-    # SUPABASE_LOCAL=1 이면 로컬 강제, 또는 URL이 localhost면 로컬
-    if os.environ.get("SUPABASE_LOCAL") or "127.0.0.1" in sb_url or "localhost" in sb_url:
+    # 1. SUPABASE_LOCAL=1 → 로컬 강제
+    if os.environ.get("SUPABASE_LOCAL"):
         return local_url, _LOCAL_SERVICE_KEY
 
-    # 로컬 실행 여부 확인
+    # 2. SUPABASE_URL이 명시적 클라우드 URL이면 → 즉시 반환 (로컬 체크 생략)
+    if sb_url and "127.0.0.1" not in sb_url and "localhost" not in sb_url:
+        cloud_key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
+        if not cloud_key:
+            raise ValueError(
+                "SUPABASE_URL이 클라우드 URL로 설정되었으나 "
+                "SUPABASE_SERVICE_ROLE_KEY가 비어 있습니다."
+            )
+        return sb_url, cloud_key
+
+    # 3. URL 미설정 또는 로컬 URL → 로컬 시도 후 클라우드 폴백
     try:
         r = httpx.get(
             f"{local_url}/rest/v1/patterns?select=id&limit=1",
