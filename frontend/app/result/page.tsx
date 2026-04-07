@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ResultViewer } from "@/components/ResultViewer";
+import { CachedBanner } from "@/components/CachedBanner";
 import type { AnalysisResult } from "@/types";
 
 export default function ResultPage() {
@@ -34,5 +35,12 @@ export default function ResultPage() {
     return null; // Or a loading spinner
   }
 
-  return <ResultViewer result={result} onReset={handleReset} />;
+  return (
+    <>
+      {result.is_cached === true && result.analyzed_at && (
+        <CachedBanner analyzedAt={result.analyzed_at} />
+      )}
+      <ResultViewer result={result} onReset={handleReset} />
+    </>
+  );
 }

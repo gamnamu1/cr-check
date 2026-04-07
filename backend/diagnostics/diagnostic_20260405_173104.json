@@ -1,0 +1,99 @@
+{
+  "timestamp": "20260405_173104",
+  "total_seconds": 13.03,
+  "checkpoint_1_chunks": {
+    "chunk_count": 2,
+    "avg_chunk_length": 412.0,
+    "chunks_preview": [
+      {
+        "index": 0,
+        "length": 465,
+        "preview": "유상임 과학기술정보통신부 장관이 13일 “전시 사변 또는 이에 준하는 국가 비상사태 시에도 국민의 기본권리인 통신 서비스 이용을 광범위하게 제한"
+      },
+      {
+        "index": 1,
+        "length": 359,
+        "preview": "통신을 확보하기 위해 과기정통부 장관이 전기통신사업자에게 전기통신업무를 제한하거나 정지할 수 있도록 하고 통신 서비스 이용 우선순위를 정하고 있"
+      }
+    ]
+  },
+  "checkpoint_2_vector": {
+    "candidate_count": 13,
+    "vector_candidates": [
+      {
+        "pattern_code": "1-1-1",
+        "pattern_name": "사실 검증 부실",
+        "similarity": 0.4317
+      },
+      {
+        "pattern_code": "1-8-1",
+        "pattern_name": "소셜미디어 활용 윤리",
+        "similarity": 0.4281
+      },
+      {
+        "pattern_code": "1-1-2",
+        "pattern_name": "이차 자료 의존",
+        "similarity": 0.4227
+      },
+      {
+        "pattern_code": "1-7-3",
+        "pattern_name": "과장과 맥락 왜곡",
+        "similarity": 0.42
+      },
+      {
+        "pattern_code": "1-3-1",
+        "pattern_name": "관점 다양성 부족",
+        "similarity": 0.418
+      },
+      {
+        "pattern_code": "1-1-5",
+        "pattern_name": "데이터 및 통계 오용",
+        "similarity": 0.4141
+      },
+      {
+        "pattern_code": "1-6-2",
+        "pattern_name": "전문성 부족",
+        "similarity": 0.4137
+      },
+      {
+        "pattern_code": "1-1-3",
+        "pattern_name": "오보 관리 부실",
+        "similarity": 0.4136
+      },
+      {
+        "pattern_code": "1-7-5",
+        "pattern_name": "차별·혐오 표현",
+        "similarity": 0.4125
+      },
+      {
+        "pattern_code": "1-3-2",
+        "pattern_name": "편향적 보도",
+        "similarity": 0.4118
+      },
+      {
+        "pattern_code": "1-6-1",
+        "pattern_name": "기사의 심층성 부족",
+        "similarity": 0.4117
+      },
+      {
+        "pattern_code": "1-3-4",
+        "pattern_name": "갈등 조장 프레이밍",
+        "similarity": 0.41
+      },
+      {
+        "pattern_code": "1-5-4",
+        "pattern_name": "사법 절차 존중 위반",
+        "similarity": 0.4085
+      }
+    ]
+  },
+  "checkpoint_3_pattern": {
+    "overall_assessment": "(가) 국회 현안질의에서 과기정통부 장관의 발언을 직접 인용하여 전달한 보도로, 비상계엄 당시 통신 서비스 제한 논란에 대한 공식 입장을 전달하는 공익적 가치가 있다. 법 조항(전기통신사업법 85조)을 구체적으로 인용하고 장관의 발언을 직접 인용하여 사실 전달에 충실하다. (나) 비상계엄 당시 실제로 네이버 카페 등 접속 장애가 발생한 원인에 대한 독자적 취재나 검증이 없고, 장관의 해명을 일방적으로 전달하는 데 그쳤다. 반대 입장(접속 장애가 정부 개입이었다는 주장 측)의 목소리나 전문가 분석이 전혀 없어 균형성이 부족하다. 종합: (가)와 (나)가 비슷하나, 국회 현안질의 보도라는 특성상 장관 발언 전달이 주목적이고 법 조항까지 구체적으로 인용한 점에서 (가)가 다소 강하다.",
+    "haiku_detections": [],
+    "validated_pattern_codes": [],
+    "hallucinated_codes": [],
+    "haiku_raw_response": "```json\n{\n  \"overall_assessment\": \"(가) 국회 현안질의에서 과기정통부 장관의 발언을 직접 인용하여 전달한 보도로, 비상계엄 당시 통신 서비스 제한 논란에 대한 공식 입장을 전달하는 공익적 가치가 있다. 법 조항(전기통신사업법 85조)을 구체적으로 인용하고 장관의 발언을 직접 인용하여 사실 전달에 충실하다. (나) 비상계엄 당시 실제로 네이버 카페 등 접속 장애가 발생한 원인에 대한 독자적 취재나 검증이 없고, 장관의 해명을 일방적으로 전달하는 데 그쳤다. 반대 입장(접속 장애가 정부 개입이었다는 주장 측)의 목소리나 전문가 분석이 전혀 없어 균형성이 부족하다. 종합: (가)와 (나)가 비슷하나, 국회 현안질의 보도라는 특성상 장관 발언 전달이 주목적이고 법 조항까지 구체적으로 인용한 점에서 (가)가 다소 강하다.\",\n  \"detections\": []\n}\n```"
+  },
+  "checkpoint_4_ethics": {},
+  "checkpoint_5_report": {}
+}
