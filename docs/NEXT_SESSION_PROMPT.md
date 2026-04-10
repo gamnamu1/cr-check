@@ -1,19 +1,27 @@
-# 다음 세션 첫 프롬프트 (Claude.ai에 전달)
+# 다음 세션 첫 프롬프트
 
----
+## CR-Check 이어서 작업합니다
 
-CR-Check 프로젝트의 리포트 품질 개선 작업을 이어서 진행하려고 해. 현재 상태를 파악하기 위해 아래 세션 컨텍스트 문서를 먼저 읽어줘.
+세션 컨텍스트를 읽어주세요: `docs/SESSION_CONTEXT_2026-04-05_v22.md`
 
-docs/SESSION_CONTEXT_2026-04-05_v21.md
+### 오늘 진행할 작업
 
-지난 세션에서 Phase α(버그 수정) + Phase β(인용 구조 전환) + 임베딩 생성까지 완료하여 리포트 품질이 기존 시스템 수준으로 회복됐어. 이번 세션에서는 Phase γ(미세 조정)를 진행하려고 해. 우선순위는:
+**작업 0 (즉시): Supabase heartbeat 설정**
 
-1. 조항 번호 표시 통일 — 리포트에서 "JEC-7", "HSD-1" 같은 내부 코드가 노출되는 부분을 "언론윤리헌장 제7조" 같은 한국어 표현으로 통일
-2. 규범 매핑 정비 — pattern_ethics_relations 테이블에서 무관한 규범 연결 제거
-3. WIP→main 분리 커밋
+Supabase 무료 플랜이 7일 비활성 시 일시중지되므로, GitHub Actions 크론잡을 설정해야 합니다.
+`.github/workflows/supabase-heartbeat.yml` 파일을 생성해주세요.
 
-세션 컨텍스트를 읽고 현재 상태를 파악한 후 대기해줘.
+요구사항:
+- 주 2회(월·목 UTC 09:00) 실행
+- Supabase REST API로 `patterns` 테이블에 간단한 SELECT 쿼리 1건
+- GitHub Secrets: `SUPABASE_URL`, `SUPABASE_KEY` 사용
+- `workflow_dispatch`로 수동 실행도 가능하게
+- 실행 결과를 로그로 출력
 
----
+생성 후 main 브랜치에 직접 push해주세요 (이건 인프라 설정이므로 main에 바로 적용).
+단, GitHub Secrets 등록은 제가 직접 하겠습니다. 어떤 값을 넣어야 하는지 알려주세요.
 
-# 참고: GitHub PAT 만료일이 2026-04-16으로 임박. WIP→main 커밋 전에 갱신 필요 여부 확인할 것.
+**작업 1: Phase D 설계 검토**
+
+세션 컨텍스트의 "Phase D" 섹션을 참고하여, Phase D 작업 범위와 구체적 작업 목록을 제안해주세요.
+실행은 제 승인 후에 진행합니다.
