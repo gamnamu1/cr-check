@@ -1,0 +1,147 @@
+{
+  "timestamp": "20260406_222917",
+  "total_seconds": 212.22,
+  "checkpoint_1_chunks": {
+    "chunk_count": 4,
+    "avg_chunk_length": 501.5,
+    "chunks_preview": [
+      {
+        "index": 0,
+        "length": 467,
+        "preview": "2-0 완승, 2주 연속 우승 따냈는데…안세영에 '좋지 않은' 소식 전해졌다 2025-01-20 12:38 add remove print lin"
+      },
+      {
+        "index": 1,
+        "length": 453,
+        "preview": "2게임에서도 특유의 철벽 수비로 15-6까지 격차를 벌렸다. 특히 9-18로 뒤진 상황에서 마지막 힘을 다해 태국의 초추웡의 날카로운 공격을 모"
+      },
+      {
+        "index": 2,
+        "length": 466,
+        "preview": "안세영은 지난해 파리올림픽에서 금메달을 딴 이후 김택규 회장이 이끌어온 배드민턴협회와 배드민턴대표팀 운영의 문제를 폭로하는 '작심 발언'을 했다"
+      },
+      {
+        "index": 3,
+        "length": 620,
+        "preview": "법원은 기존 선거운영위원회의 결정에 중대한 절차적 하자가 있는 만큼 입후보 불허 조처의 효력을 임시로라도 정지해야 한다고 판단했다. 후보 자격을"
+      }
+    ]
+  },
+  "checkpoint_2_vector": {
+    "candidate_count": 15,
+    "vector_candidates": [
+      {
+        "pattern_code": "1-6-3",
+        "pattern_name": "현장성 부족",
+        "similarity": 0.3471
+      },
+      {
+        "pattern_code": "1-1-4",
+        "pattern_name": "사실과 의견 혼재",
+        "similarity": 0.3467
+      },
+      {
+        "pattern_code": "1-1-1",
+        "pattern_name": "사실 검증 부실",
+        "similarity": 0.3263
+      },
+      {
+        "pattern_code": "1-3-4",
+        "pattern_name": "갈등 조장 프레이밍",
+        "similarity": 0.3145
+      },
+      {
+        "pattern_code": "1-3-5",
+        "pattern_name": "보도 회피와 물타기",
+        "similarity": 0.3088
+      },
+      {
+        "pattern_code": "1-5-4",
+        "pattern_name": "사법 절차 존중 위반",
+        "similarity": 0.3031
+      },
+      {
+        "pattern_code": "1-6-1",
+        "pattern_name": "기사의 심층성 부족",
+        "similarity": 0.3028
+      },
+      {
+        "pattern_code": "1-2-2",
+        "pattern_name": "책임 회피 표현",
+        "similarity": 0.275
+      },
+      {
+        "pattern_code": "1-7-1",
+        "pattern_name": "사실과 의견을 뒤섞는 주관적 술어",
+        "similarity": 0.2688
+      },
+      {
+        "pattern_code": "1-5-3",
+        "pattern_name": "명예와 평판 훼손",
+        "similarity": 0.2675
+      },
+      {
+        "pattern_code": "1-3-2",
+        "pattern_name": "편향적 보도",
+        "similarity": 0.2573
+      },
+      {
+        "pattern_code": "1-1-5",
+        "pattern_name": "데이터 및 통계 오용",
+        "similarity": 0.2406
+      },
+      {
+        "pattern_code": "1-5-2",
+        "pattern_name": "개인정보 및 신원 보호 위반",
+        "similarity": 0.2358
+      },
+      {
+        "pattern_code": "1-1-2",
+        "pattern_name": "이차 자료 의존",
+        "similarity": 0.2171
+      },
+      {
+        "pattern_code": "1-8-2",
+        "pattern_name": "디지털 플랫폼 특유 문제",
+        "similarity": 0.2044
+      }
+    ]
+  },
+  "checkpoint_3_pattern": {
+    "overall_assessment": "(가) 안세영의 2주 연속 우승이라는 스포츠 성과를 신속하게 보도하고, 배드민턴협회장 선거라는 관련 이슈를 함께 다루어 맥락을 제공하려 한 시도가 있다. (나) 그러나 제목에서 '좋지 않은 소식'이라는 표현은 기자의 주관적 판단이며, 안세영 본인이 이를 '불쾌'하게 여길 것이라는 추측을 사실처럼 제시했다. 또한 본문에서 '안세영 입장에선 불쾌할 수 있는 소식'이라고 단정하면서도 안세영 본인의 입장이나 반응은 전혀 확인하지 않았다. 종합: (나)가 더 강하다. 타인의 심리를 확인 없이 단정하고, 기자의 해석을 사실처럼 제시한 것이 핵심 문제다.",
+    "haiku_detections": [
+      {
+        "pattern_code": "1-1-4",
+        "matched_text": "안세영 입장에선 불쾌할 수 있는 소식 / 안세영에게 '좋지 않은' 소식도 함께 전해졌다",
+        "severity": "medium",
+        "reasoning": "안세영 본인에게 직접 확인하지 않고, 김택규 회장의 출마 소식을 '불쾌할 수 있는' '좋지 않은' 소식으로 규정한 것은 기자의 추측이다. 당사자 외에는 확인할 수 없는 심리 상태를 임의로 해석해 단정했다. 1-7-1(추측을 사실처럼)과 구분 — 문제는 표현의 모호함이 아니라 타인의 내면을 확인 없이 단정한 것이다."
+      }
+    ],
+    "validated_pattern_codes": [
+      "1-1-4"
+    ],
+    "hallucinated_codes": [],
+    "haiku_raw_response": "```json\n{\n  \"overall_assessment\": \"(가) 안세영의 2주 연속 우승이라는 스포츠 성과를 신속하게 보도하고, 배드민턴협회장 선거라는 관련 이슈를 함께 다루어 맥락을 제공하려 한 시도가 있다. (나) 그러나 제목에서 '좋지 않은 소식'이라는 표현은 기자의 주관적 판단이며, 안세영 본인이 이를 '불쾌'하게 여길 것이라는 추측을 사실처럼 제시했다. 또한 본문에서 '안세영 입장에선 불쾌할 수 있는 소식'이라고 단정하면서도 안세영 본인의 입장이나 반응은 전혀 확인하지 않았다. 종합: (나)가 더 강하다. 타인의 심리를 확인 없이 단정하고, 기자의 해석을 사실처럼 제시한 것이 핵심 문제다.\",\n  \"detections\": [\n    {\n      \"matched_text\": \"안세영 입장에선 불쾌할 수 있는 소식 / 안세영에게 '좋지 않은' 소식도 함께 전해졌다\",\n      \"reasoning\": \"안세영 본인에게 직접 확인하지 않고, 김택규 회장의 출마 소식을 '불쾌할 수 있는' '좋지 않은' 소식으로 규정한 것은 기자의 추측이다. 당사자 외에는 확인할 수 없는 심리 상태를 임의로 해석해 단정했다. 1-7-1(추측을 사실처럼)과 구분 — 문제는 표현의 모호함이 아니라 타인의 내면을 확인 없이 단정한 것이다.\",\n      \"severity\": \"medium\",\n      \"pattern_code\": \"1-1-4\"\n    }\n  ]\n}\n```"
+  },
+  "checkpoint_4_ethics": {
+    "ethics_ref_count": 0,
+    "patterns_without_ethics": [
+      "1-1-4"
+    ],
+    "ethics_refs": []
+  },
+  "checkpoint_5_report": {
+    "pre_citation_reports": {
+      "comprehensive": "리포트 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+      "journalist": "리포트 생성 중 오류가 발생했습니다.",
+      "student": "리포트 생성 중 오류가 발생했습니다."
+    },
+    "post_citation_reports": {
+      "comprehensive": "리포트 생성 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+      "journalist": "리포트 생성 중 오류가 발생했습니다.",
+      "student": "리포트 생성 중 오류가 발생했습니다."
+    },
+    "hallucinated_refs_per_report": {},
+    "sonnet_raw_response": ""
+  }
+}

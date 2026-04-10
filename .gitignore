@@ -66,3 +66,4 @@ frontend/out/
 frontend/node_modules/
 frontend/.env*.local
 !frontend/lib/
+.playwright-mcp/

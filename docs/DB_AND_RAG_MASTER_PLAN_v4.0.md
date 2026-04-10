@@ -117,7 +117,32 @@ Phase 3: 커뮤니티 (익명 피드백)
 
 ### Phase 1~3
 
-- Phase 1: 아카이빙 + 공개 URL 공유 (2-3일)
+### Phase D: 아카이빙 통합 (난이도 낮음, 반나절~1일)
+
+**v22 기준 변경 사항:**
+- `citation_resolver.py`가 비활성화(Phase β)되었으므로, 관련 아카이빙 로직 제거
+- 진단 JSON 덤프(`backend/diagnostics/`)를 아카이빙 체계에 통합할지 결정
+- deprecated 코드 정리 (비교용 보존 원칙은 유지)
+- `analysis_results` 테이블 스키마 설계 시작 (Phase F-2에서 본격 구현)
+
+### Phase E: 클라우드 배포 (난이도 중간, 1~2일)
+
+**v22 기준 변경 사항:**
+- `pattern_matcher.py`의 모델이 Sonnet 4.5(`claude-sonnet-4-5-20250929`)로 변경됨
+- 프로덕션 DB에 `scripts/generate_embeddings.py` 실행 필수 (401건)
+- 프로덕션 DB에 매핑 정비 마이그레이션(`20260405000000_cleanup_...`) 적용 필요
+- Railway(BE) + Vercel(FE) 배포 설정, 환경변수(API 키, Supabase URL) 확인
+- Supabase heartbeat GitHub Actions 크론잡 설정 (7일 비활성 방지)
+
+### Phase F-2: 리포트 링크 공유 기능 (난이도 중간, 1~2일)
+
+현재 결과 페이지가 sessionStorage 기반이라 URL 공유 불가.
+링크 공유를 위해:
+1. Supabase에 `analysis_results` 테이블 생성 (기사 메타 + 3종 리포트 + 패턴 결과, UUID 기반)
+2. `/result/[id]` 동적 라우팅 — Supabase에서 결과 불러와 렌더링
+3. OG 메타 태그 — 카카오톡/페이스북/X 미리보기용 서버사이드 메타 생성
+
+### Phase 2~3 (향후)
 - Phase 2: 통계 대시보드 (5-7일)
 - Phase 3: 커뮤니티 — 익명 피드백 (향후)
 
