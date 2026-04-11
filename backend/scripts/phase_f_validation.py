@@ -83,10 +83,15 @@ def load_blind_subset(path: Path) -> list[dict]:
     for i, item in enumerate(raw):
         if not isinstance(item, dict):
             raise ValueError(f"항목 {i}이 dict가 아닙니다: {type(item).__name__}")
-        if "id" not in item or "url" not in item:
-            raise ValueError(f"항목 {i}에 id 또는 url 필드가 누락되었습니다")
-        # allowlist: id + url 만 복사. label은 무시.
-        items.append({"id": str(item["id"]), "url": str(item["url"])})
+        # Reserved Test Set v2 스키마: id/candidate_id + url/source_url 폴백
+        item_id = item.get("id") or item.get("candidate_id")
+        item_url = item.get("url") or item.get("source_url")
+        if not item_id:
+            raise ValueError(f"항목 {i}에 id/candidate_id 필드가 누락되었습니다")
+        if not item_url:
+            raise ValueError(f"항목 {i}에 url/source_url 필드가 누락되었습니다")
+        # allowlist: id + url 만 복사. label 관련 필드는 메모리 진입 금지.
+        items.append({"id": str(item_id), "url": str(item_url)})
     logger.info(f"블라인드 로딩 완료: {len(items)}건 (label 필드 미참조)")
     return items
 

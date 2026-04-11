@@ -48,11 +48,19 @@ def load_injected_with_labels(path: Path) -> dict[str, dict]:
 
     이 함수는 의도적으로 label 필드를 포함한 전체 객체를 로드한다.
     집계 단계에서만 호출되며, 실행 단계에서는 이 함수를 사용하지 않는다.
+
+    Reserved Test Set v2 스키마: id 필드가 없으면 candidate_id 폴백.
+    label 필드들(cr_category_*, is_true_negative, 등)은 최상위에 flat.
     """
     if not path.exists():
         raise FileNotFoundError(f"주입 파일 없음: {path}")
     raw = json.loads(path.read_text(encoding="utf-8"))
-    by_id = {item["id"]: item for item in raw}
+    by_id: dict[str, dict] = {}
+    for item in raw:
+        key = item.get("id") or item.get("candidate_id")
+        if key is None:
+            continue
+        by_id[str(key)] = item
     logger.info(f"주입 파일 로드 (label 포함): {len(by_id)}건 — {path}")
     return by_id
 
@@ -61,7 +69,12 @@ def load_injected_with_labels(path: Path) -> dict[str, dict]:
 def join_results_with_labels(
     results: list[dict], injected_by_id: dict[str, dict]
 ) -> list[dict]:
-    """실행 결과와 주입 파일 label을 id로 조인."""
+    """실행 결과와 주입 파일 label을 id로 조인.
+
+    Reserved Test Set v2 스키마는 label 필드가 flat top-level이므로 injected
+    전체를 label로 취급한다. source/difficulty_estimate/is_true_negative를
+    joined dict의 top-level에도 노출하여 compute_metrics의 그룹화 집계를 단순화.
+    """
     joined: list[dict] = []
     missing: list[str] = []
     for result in results:
@@ -74,8 +87,11 @@ def join_results_with_labels(
             {
                 "id": item_id,
                 "url": result.get("url"),
-                "label": injected.get("label", {}),
+                "label": injected,  # v2: flat — injected 전체가 label 맥락
                 "analysis": result.get("analysis", {}),
+                "source": injected.get("source"),
+                "difficulty": injected.get("difficulty_estimate"),
+                "is_tn": bool(injected.get("is_true_negative")),
             }
         )
     if missing:
@@ -106,41 +122,84 @@ def _extract_detected_codes(analysis: dict) -> set[str]:
 
 
 def _extract_expected_codes(label: dict) -> set[str]:
-    """label dict에서 기대 패턴 코드 집합을 추출.
+    """Reserved Test Set v2 스키마 대응.
 
-    주입 파일 스키마가 확정되지 않았으므로 여러 키 이름을 허용.
+    - cr_category_primary + cr_category_secondary를 합쳐 기대 코드 집합 생성
+    - is_true_negative == True인 경우 빈 set 반환 (TN 기대: 탐지 0건)
     """
-    for key in ("expected_patterns", "expected_codes", "gold_patterns", "patterns"):
-        value = label.get(key)
-        if value:
-            if isinstance(value, list):
-                return {
-                    str(p["code"] if isinstance(p, dict) and "code" in p else p)
-                    for p in value
-                }
-    return set()
+    if label.get("is_true_negative") is True:
+        return set()
+    codes: set[str] = set()
+    primary = label.get("cr_category_primary")
+    if primary:
+        codes.add(str(primary))
+    secondary = label.get("cr_category_secondary") or []
+    for c in secondary:
+        if c:
+            codes.add(str(c))
+    return codes
+
+
+def _bucket_by(
+    per_item: list[dict], key: str
+) -> dict[str, dict]:
+    """per_item을 특정 키로 그룹화."""
+    bucket: dict[str, dict] = {}
+    for m in per_item:
+        bucket_key = m.get(key) or "unknown"
+        if bucket_key not in bucket:
+            bucket[bucket_key] = {
+                "count": 0,
+                "tp_total": 0,
+                "fp_total": 0,
+                "fn_total": 0,
+                "ids": [],
+            }
+        bucket[bucket_key]["count"] += 1
+        bucket[bucket_key]["tp_total"] += m["tp"]
+        bucket[bucket_key]["fp_total"] += m["fp"]
+        bucket[bucket_key]["fn_total"] += m["fn"]
+        bucket[bucket_key]["ids"].append(m["id"])
+    return bucket
 
 
 def compute_metrics(joined: list[dict]) -> dict:
-    """건별 정밀도/재현율 + 매크로 평균 계산.
+    """건별 정밀도/재현율 + 매크로 평균 + 카테고리 분류 집계.
 
-    주입 파일의 label 스키마가 확정되지 않은 단계이므로, expected 필드명은
-    `_extract_expected_codes`가 여러 후보를 시도한다. 실제 스키마 확정 후
-    필요 시 이 함수를 미세 조정.
+    Reserved Test Set v2 대응:
+    - TN(is_true_negative=True)은 기대 set이 비어있으므로 precision/recall 정의 불가.
+      별도의 tn_correct 플래그로 "탐지 0건 여부"를 기록.
+    - TP 건만 precision/recall 매크로 평균에 포함.
+    - by_source / by_difficulty / tn_analysis 카테고리 집계 추가.
     """
     per_item: list[dict] = []
     for entry in joined:
         expected = _extract_expected_codes(entry["label"])
         detected = _extract_detected_codes(entry["analysis"])
+        is_tn = entry.get("is_tn", False)
         tp = len(expected & detected)
         fp = len(detected - expected)
         fn = len(expected - detected)
-        precision = tp / (tp + fp) if (tp + fp) > 0 else None
-        recall = tp / (tp + fn) if (tp + fn) > 0 else None
+
+        if is_tn:
+            # TN: 기대는 빈 set, 탐지 0건이 정상. precision/recall 정의 불가.
+            precision: float | None = None
+            recall: float | None = None
+            tn_correct: bool | None = len(detected) == 0
+            misclassified = False  # TP 관점의 오분류와 구분
+        else:
+            precision = tp / (tp + fp) if (tp + fp) > 0 else None
+            recall = tp / (tp + fn) if (tp + fn) > 0 else None
+            tn_correct = None
+            misclassified = tp == 0 and (fp + fn) > 0
+
         per_item.append(
             {
                 "id": entry["id"],
                 "url": entry["url"],
+                "source": entry.get("source"),
+                "difficulty": entry.get("difficulty"),
+                "is_tn": is_tn,
                 "expected": sorted(expected),
                 "detected": sorted(detected),
                 "tp": tp,
@@ -148,13 +207,16 @@ def compute_metrics(joined: list[dict]) -> dict:
                 "fn": fn,
                 "precision": precision,
                 "recall": recall,
-                "misclassified": tp == 0 and (fp + fn) > 0,
+                "tn_correct": tn_correct,
+                "misclassified": misclassified,
             }
         )
 
-    # 매크로 평균 (per-item 평균)
-    valid_p = [m["precision"] for m in per_item if m["precision"] is not None]
-    valid_r = [m["recall"] for m in per_item if m["recall"] is not None]
+    # 매크로 평균 (TP만, TN 제외)
+    tp_items = [m for m in per_item if not m["is_tn"]]
+    tn_items = [m for m in per_item if m["is_tn"]]
+    valid_p = [m["precision"] for m in tp_items if m["precision"] is not None]
+    valid_r = [m["recall"] for m in tp_items if m["recall"] is not None]
     avg_precision = sum(valid_p) / len(valid_p) if valid_p else None
     avg_recall = sum(valid_r) / len(valid_r) if valid_r else None
     f1 = (
@@ -163,8 +225,36 @@ def compute_metrics(joined: list[dict]) -> dict:
         else None
     )
 
+    # 카테고리 분류 집계
+    by_source = _bucket_by(per_item, "source")
+    by_difficulty = _bucket_by(per_item, "difficulty")
+
+    # TN 분석: 탐지 0건이 정답. 어떤 TN이 오탐되었는지 별도 리포트.
+    tn_analysis: dict = {
+        "total_tn": len(tn_items),
+        "correct_tn": sum(1 for m in tn_items if m["tn_correct"] is True),
+        "fp_tn_count": sum(1 for m in tn_items if m["tn_correct"] is False),
+        "fp_tn_details": [
+            {
+                "id": m["id"],
+                "detected": m["detected"],
+                "fp_count": len(m["detected"]),
+            }
+            for m in tn_items
+            if m["tn_correct"] is False
+        ],
+    }
+
     return {
+        "interpretation_note": (
+            "이 집계 결과는 파이프라인의 절대 성능 지표가 아닌, 프로덕션 동작 관찰 "
+            "일지이다. Reserved Test Set의 label은 신문윤리위 결정과 Gamnamu 큐레이션 "
+            "판단을 반영하며, 모델의 상이한 판단이 반드시 오류를 의미하지 않는다. "
+            "시민 사용자의 비판적 독해가 최종 판단 레이어임을 전제한다."
+        ),
         "total": len(per_item),
+        "tp_count": len(tp_items),
+        "tn_count": len(tn_items),
         "valid_precision_count": len(valid_p),
         "valid_recall_count": len(valid_r),
         "aggregate": {
@@ -172,6 +262,9 @@ def compute_metrics(joined: list[dict]) -> dict:
             "recall_macro": avg_recall,
             "f1_macro": f1,
         },
+        "by_source": by_source,
+        "by_difficulty": by_difficulty,
+        "tn_analysis": tn_analysis,
         "per_item": per_item,
         "misclassified_ids": [m["id"] for m in per_item if m["misclassified"]],
     }
