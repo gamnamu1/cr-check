@@ -75,9 +75,18 @@ def load_blind_subset(path: Path) -> list[dict]:
             f"(CLI는 Pool 디렉토리에 직접 접근하지 않습니다.)"
         )
     raw = json.loads(path.read_text(encoding="utf-8"))
+    # 최상위 형식 정규화: list 또는 {"candidates": [...]} 둘 다 허용
+    if isinstance(raw, dict):
+        if "candidates" in raw and isinstance(raw["candidates"], list):
+            raw = raw["candidates"]
+        else:
+            raise ValueError(
+                "주입 파일이 dict이지만 'candidates' 리스트를 찾을 수 없습니다"
+            )
     if not isinstance(raw, list):
         raise ValueError(
-            f"주입 파일 최상위는 리스트여야 합니다 (받음: {type(raw).__name__})"
+            f"주입 파일 최상위는 리스트 또는 candidates 키를 포함한 dict여야 "
+            f"합니다 (받음: {type(raw).__name__})"
         )
     items: list[dict] = []
     for i, item in enumerate(raw):

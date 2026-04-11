@@ -55,6 +55,20 @@ def load_injected_with_labels(path: Path) -> dict[str, dict]:
     if not path.exists():
         raise FileNotFoundError(f"주입 파일 없음: {path}")
     raw = json.loads(path.read_text(encoding="utf-8"))
+    # 최상위 형식 정규화: list 또는 {"candidates": [...]} 둘 다 허용
+    # (metadata 등 기타 wrapper 필드는 무시)
+    if isinstance(raw, dict):
+        if "candidates" in raw and isinstance(raw["candidates"], list):
+            raw = raw["candidates"]
+        else:
+            raise ValueError(
+                "주입 파일이 dict이지만 'candidates' 리스트를 찾을 수 없습니다"
+            )
+    if not isinstance(raw, list):
+        raise ValueError(
+            f"주입 파일 최상위는 리스트 또는 candidates 키를 포함한 dict여야 "
+            f"합니다 (받음: {type(raw).__name__})"
+        )
     by_id: dict[str, dict] = {}
     for item in raw:
         key = item.get("id") or item.get("candidate_id")
