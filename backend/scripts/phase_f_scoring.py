@@ -22,7 +22,15 @@ from __future__ import annotations
 import argparse
 import json
 import logging
+import re
+from functools import lru_cache
 from pathlib import Path
+
+# 〔규범 마커〕 정규식 — 〔 와 〕 사이의 모든 문자 (줄바꿈 제외)
+ETHICS_MARKER_RE = re.compile(r"〔([^〕]+)〕")
+
+# 매핑 사전 경로 — generate_ethics_to_pattern_map.py가 생성
+ETHICS_MAP_PATH = Path(__file__).resolve().parent / "ethics_to_pattern_map.json"
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s"
@@ -113,26 +121,72 @@ def join_results_with_labels(
     return joined
 
 
-def _extract_detected_codes(analysis: dict) -> set[str]:
-    """analysis 응답에서 탐지된 패턴 코드 집합을 추출.
+def _to_category_level(code: str) -> str:
+    """소분류 코드(1-1-1)를 대분류 코드(1-1)로 축소.
 
-    analysis_results 스키마는 detected_patterns 필드를 가짐 (v25 기준).
-    항목은 dict 또는 str 양쪽 형식을 허용.
+    Reserved Test Set v2의 cr_category_primary/secondary는 2-level
+    ("1-1" 형식)이지만, DB의 patterns.code는 소분류 3-level("1-1-1" 형식)이다.
+    비교 시 같은 계층으로 맞춘다.
+
+    예:
+        "1-1-1" → "1-1"
+        "1-3-4" → "1-3"
+        "1-1"   → "1-1"  (이미 2-level이면 그대로)
     """
-    detected = analysis.get("detected_patterns") or analysis.get(
-        "detected_categories"
+    parts = code.split("-")
+    if len(parts) >= 3:
+        return "-".join(parts[:2])
+    return code
+
+
+@lru_cache(maxsize=1)
+def _load_ethics_map() -> dict[str, list[str]]:
+    """generate_ethics_to_pattern_map.py가 만든 정적 사전을 로드 (1회 캐시)."""
+    if not ETHICS_MAP_PATH.exists():
+        logger.warning(f"ethics_to_pattern_map.json 없음: {ETHICS_MAP_PATH}")
+        return {}
+    return json.loads(ETHICS_MAP_PATH.read_text(encoding="utf-8"))
+
+
+def _extract_detected_codes(analysis: dict) -> tuple[set[str], set[str]]:
+    """v25 아키텍처: reports 본문의 〔규범 마커〕 → 패턴 코드 집합 변환.
+
+    `/analyze` 응답 JSON에는 detected_patterns 구조 필드가 없다.
+    대신 Sonnet 4.6이 3종 리포트 본문에 〔규범명 제N조 M항〕 결정론적 마커로
+    인용을 삽입한다 (report_generator.py _SONNET_SYSTEM_PROMPT L221-235).
+
+    3종 리포트 본문을 합친 뒤 정규식으로 마커를 추출하고, 정적 매핑 사전
+    (`ethics_to_pattern_map.json`)을 통해 패턴 코드 set으로 변환한다.
+
+    Returns:
+        (matched_codes, unmapped_markers) — 매핑 성공한 코드 집합과
+        사전에 없는 마커 문자열 집합. 후자는 compute_metrics에서 집계.
+    """
+    reports = analysis.get("reports", {})
+    if not isinstance(reports, dict):
+        return set(), set()
+
+    # 3종 리포트 본문을 합쳐 마커 추출 — 중복은 set이 흡수
+    combined = "\n".join(
+        str(reports.get(k, "") or "")
+        for k in ("comprehensive", "journalist", "student")
     )
-    if not detected:
-        return set()
+    markers = ETHICS_MARKER_RE.findall(combined)
+    if not markers:
+        return set(), set()
+
+    ethics_map = _load_ethics_map()
     codes: set[str] = set()
-    for p in detected:
-        if isinstance(p, dict):
-            code = p.get("pattern_code") or p.get("code")
-            if code:
+    unmapped: set[str] = set()
+    for marker in markers:
+        # 공백 정규화: 연속 공백/탭/개행 → 단일 공백
+        normalized = " ".join(marker.strip().split())
+        if normalized in ethics_map:
+            for code in ethics_map[normalized]:
                 codes.add(str(code))
-        elif isinstance(p, str):
-            codes.add(p)
-    return codes
+        else:
+            unmapped.add(normalized)
+    return codes, unmapped
 
 
 def _extract_expected_codes(label: dict) -> set[str]:
@@ -187,9 +241,14 @@ def compute_metrics(joined: list[dict]) -> dict:
     - by_source / by_difficulty / tn_analysis 카테고리 집계 추가.
     """
     per_item: list[dict] = []
+    all_unmapped: set[str] = set()
     for entry in joined:
         expected = _extract_expected_codes(entry["label"])
-        detected = _extract_detected_codes(entry["analysis"])
+        detected_raw, unmapped = _extract_detected_codes(entry["analysis"])
+        all_unmapped.update(unmapped)
+        # 3-level 소분류(1-1-1) → 2-level 대분류(1-1)로 정규화
+        # expected는 이미 2-level이므로 detected만 축소하면 set 연산 가능
+        detected = {_to_category_level(c) for c in detected_raw}
         is_tn = entry.get("is_tn", False)
         tp = len(expected & detected)
         fp = len(detected - expected)
@@ -216,6 +275,7 @@ def compute_metrics(joined: list[dict]) -> dict:
                 "is_tn": is_tn,
                 "expected": sorted(expected),
                 "detected": sorted(detected),
+                "detected_raw": sorted(detected_raw),
                 "tp": tp,
                 "fp": fp,
                 "fn": fn,
@@ -279,6 +339,7 @@ def compute_metrics(joined: list[dict]) -> dict:
         "by_source": by_source,
         "by_difficulty": by_difficulty,
         "tn_analysis": tn_analysis,
+        "unmapped_markers": sorted(all_unmapped),
         "per_item": per_item,
         "misclassified_ids": [m["id"] for m in per_item if m["misclassified"]],
     }
