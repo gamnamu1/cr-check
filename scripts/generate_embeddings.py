@@ -41,6 +41,7 @@ def fetch_patterns(conn):
             SELECT id, code, description
             FROM patterns
             WHERE is_meta_pattern = FALSE AND hierarchy_level = 3
+              AND description_embedding IS NULL
             ORDER BY code
         """)
         return cur.fetchall()
@@ -53,6 +54,7 @@ def fetch_ethics_codes(conn):
             SELECT id, code, title, full_text, length(full_text) AS text_len
             FROM ethics_codes
             WHERE is_citable = TRUE AND is_active = TRUE
+              AND text_embedding IS NULL
             ORDER BY code
         """)
         return cur.fetchall()
