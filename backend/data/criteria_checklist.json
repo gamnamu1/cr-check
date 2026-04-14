@@ -86,6 +86,26 @@
           ],
           "ethics_code_refs": [
             {
+              "code": "EPG-16",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "EPG-23",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-3-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
               "code": "PCP-3-2",
               "relation_type": "violates",
               "strength": "strong"
@@ -96,7 +116,7 @@
               "strength": "strong"
             },
             {
-              "code": "JEC-1",
+              "code": "PCP-3-5",
               "relation_type": "violates",
               "strength": "strong"
             }
@@ -191,17 +211,27 @@
           ],
           "ethics_code_refs": [
             {
-              "code": "PCP-10-4",
-              "relation_type": "violates",
-              "strength": "strong"
-            },
-            {
               "code": "JCE-8",
               "relation_type": "violates",
               "strength": "strong"
             },
             {
               "code": "JCP-2-10",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-2",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            },
+            {
+              "code": "PCP-10-4",
               "relation_type": "violates",
               "strength": "strong"
             }
@@ -426,17 +456,17 @@
           ],
           "ethics_code_refs": [
             {
-              "code": "JEC-2",
-              "relation_type": "violates",
-              "strength": "strong"
-            },
-            {
               "code": "JCE-5",
               "relation_type": "violates",
               "strength": "strong"
             },
             {
               "code": "JCP-2-4",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-2",
               "relation_type": "violates",
               "strength": "strong"
             },
@@ -544,6 +574,16 @@
               "strength": "strong"
             },
             {
+              "code": "JEC-4",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-6",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            },
+            {
               "code": "PCE-4",
               "relation_type": "related_to",
               "strength": "moderate"
@@ -636,7 +676,27 @@
           ],
           "ethics_code_refs": [
             {
-              "code": "JEC-2",
+              "code": "JEC-6",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            },
+            {
+              "code": "PCP-10-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-3-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-3-2",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-4-1",
               "relation_type": "violates",
               "strength": "strong"
             }
@@ -696,7 +756,17 @@
           "red_flags": [],
           "ethics_code_refs": [
             {
-              "code": "JEC-1",
+              "code": "JEC-5",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-1-1",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            },
+            {
+              "code": "PCP-3-2",
               "relation_type": "violates",
               "strength": "strong"
             }
@@ -711,9 +781,24 @@
           "red_flags": [],
           "ethics_code_refs": [
             {
-              "code": "JEC-1",
+              "code": "JEC-5",
               "relation_type": "violates",
               "strength": "strong"
+            },
+            {
+              "code": "JEC-8",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-1-2",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-10-7",
+              "relation_type": "related_to",
+              "strength": "moderate"
             }
           ]
         }
@@ -748,6 +833,16 @@
           "red_flags": [],
           "ethics_code_refs": [
             {
+              "code": "HRG-2-1",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            },
+            {
+              "code": "HRG-2-1c",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
               "code": "JCE-6",
               "relation_type": "violates",
               "strength": "strong"
@@ -758,14 +853,9 @@
               "strength": "strong"
             },
             {
-              "code": "HRG-2-1c",
+              "code": "JEC-3",
               "relation_type": "violates",
               "strength": "strong"
-            },
-            {
-              "code": "HRG-2-1",
-              "relation_type": "related_to",
-              "strength": "moderate"
             }
           ]
         },
@@ -1278,7 +1368,42 @@
           ],
           "ethics_code_refs": [
             {
-              "code": "JEC-4",
+              "code": "HRG-5-2b",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "HRG-8-1c",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "HSD-1",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            },
+            {
+              "code": "IRG-7",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-7",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-1-4",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-10-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-3-1",
               "relation_type": "violates",
               "strength": "strong"
             }
@@ -1373,14 +1498,14 @@
           ],
           "ethics_code_refs": [
             {
-              "code": "JEC-9",
+              "code": "JCE-4",
               "relation_type": "related_to",
               "strength": "moderate"
             },
             {
-              "code": "JCE-4",
+              "code": "JEC-9",
               "relation_type": "related_to",
-              "strength": "moderate"
+              "strength": "weak"
             }
           ]
         },
@@ -1422,6 +1547,21 @@
           "ethics_code_refs": [
             {
               "code": "JEC-9",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            },
+            {
+              "code": "PCP-10-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-3-5",
+              "relation_type": "related_to",
+              "strength": "weak"
+            },
+            {
+              "code": "PCP-3-6",
               "relation_type": "violates",
               "strength": "strong"
             }
