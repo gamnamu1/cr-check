@@ -262,9 +262,14 @@
           "red_flags": [],
           "ethics_code_refs": [
             {
-              "code": "JEC-2",
+              "code": "JEC-1",
               "relation_type": "violates",
               "strength": "strong"
+            },
+            {
+              "code": "JEC-2",
+              "relation_type": "related_to",
+              "strength": "moderate"
             }
           ]
         },
@@ -528,9 +533,14 @@
           "red_flags": [],
           "ethics_code_refs": [
             {
-              "code": "JEC-2",
+              "code": "JEC-4",
               "relation_type": "violates",
               "strength": "strong"
+            },
+            {
+              "code": "JEC-2",
+              "relation_type": "related_to",
+              "strength": "weak"
             }
           ]
         },
@@ -677,8 +687,8 @@
           "ethics_code_refs": [
             {
               "code": "JEC-6",
-              "relation_type": "related_to",
-              "strength": "moderate"
+              "relation_type": "violates",
+              "strength": "strong"
             },
             {
               "code": "PCP-10-1",
@@ -883,9 +893,14 @@
           ],
           "ethics_code_refs": [
             {
-              "code": "JEC-4",
+              "code": "JEC-3",
               "relation_type": "violates",
               "strength": "strong"
+            },
+            {
+              "code": "JEC-4",
+              "relation_type": "related_to",
+              "strength": "weak"
             }
           ]
         },
@@ -1069,6 +1084,11 @@
               "code": "JEC-1",
               "relation_type": "related_to",
               "strength": "moderate"
+            },
+            {
+              "code": "PCE-7",
+              "relation_type": "related_to",
+              "strength": "moderate"
             }
           ]
         },
@@ -1236,8 +1256,8 @@
             },
             {
               "code": "JEC-9",
-              "relation_type": "related_to",
-              "strength": "moderate"
+              "relation_type": "violates",
+              "strength": "strong"
             }
           ]
         },
@@ -1505,7 +1525,7 @@
             {
               "code": "JEC-9",
               "relation_type": "related_to",
-              "strength": "weak"
+              "strength": "moderate"
             }
           ]
         },
