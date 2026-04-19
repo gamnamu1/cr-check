@@ -75,3 +75,5 @@ frontend/.env*.local
 backend/diagnostics/phase_f/injected/
 docs/_archive_superseded/
 backend/diagnostics/phase_f/
+docs/_scratch/
+docs/_scratch/
