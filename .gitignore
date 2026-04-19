@@ -73,3 +73,5 @@ frontend/.env*.local
 # Gamnamu가 Pool에서 수동 선별한 서브셋 파일을 이 경로에 배치한다.
 # CLI 실수 커밋 방지를 위해 전체 디렉토리를 untracked.
 backend/diagnostics/phase_f/injected/
+docs/_archive_superseded/
+backend/diagnostics/phase_f/
