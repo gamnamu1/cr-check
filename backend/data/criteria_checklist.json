@@ -85,9 +85,41 @@
             "···전문가들은 입을 모은다"
           ],
           "ethics_code_refs": [
-            "newspaper_ethics_practice_3_2",
-            "newspaper_ethics_practice_3_4",
-            "journalism_ethics_charter_1"
+            {
+              "code": "EPG-16",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "EPG-23",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-3-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-3-2",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-3-4",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-3-5",
+              "relation_type": "violates",
+              "strength": "strong"
+            }
           ]
         },
         {
@@ -132,8 +164,26 @@
             "사실 확인"
           ],
           "ethics_code_refs": [
-            "newspaper_ethics_practice_3_1",
-            "newspaper_ethics_practice_3_2"
+            {
+              "code": "PCP-3-1",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            },
+            {
+              "code": "PCP-3-2",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            },
+            {
+              "code": "JCP-2-1",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            },
+            {
+              "code": "JCE-4",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            }
           ]
         },
         {
@@ -160,7 +210,31 @@
             "비례성의 원칙"
           ],
           "ethics_code_refs": [
-            "newspaper_ethics_practice_3_1"
+            {
+              "code": "JCE-8",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JCP-2-10",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-2",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            },
+            {
+              "code": "PCP-10-4",
+              "relation_type": "violates",
+              "strength": "strong"
+            }
           ]
         },
         {
@@ -187,7 +261,16 @@
           ],
           "red_flags": [],
           "ethics_code_refs": [
-            "journalism_ethics_charter_2"
+            {
+              "code": "JEC-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-2",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            }
           ]
         },
         {
@@ -285,8 +368,16 @@
             "20대 표심, A후보에게로 급격히 쏠려"
           ],
           "ethics_code_refs": [
-            "newspaper_ethics_practice_3_1",
-            "journalism_ethics_charter_1"
+            {
+              "code": "PCP-3-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            }
           ]
         }
       ]
@@ -329,8 +420,16 @@
             "로 알려졌다"
           ],
           "ethics_code_refs": [
-            "kja_ethics_3",
-            "newspaper_ethics_practice_3_4"
+            {
+              "code": "PCP-5-2",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-3-4",
+              "relation_type": "violates",
+              "strength": "strong"
+            }
           ]
         },
         {
@@ -361,7 +460,26 @@
             "~라는 전망이다"
           ],
           "ethics_code_refs": [
-            "journalism_ethics_charter_2"
+            {
+              "code": "JCE-5",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JCP-2-4",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-2",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCE-4",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            }
           ]
         },
         {
@@ -382,9 +500,7 @@
             }
           ],
           "red_flags": [],
-          "ethics_code_refs": [
-            "kja_ethics_1"
-          ]
+          "ethics_code_refs": []
         }
       ]
     },
@@ -416,7 +532,16 @@
           ],
           "red_flags": [],
           "ethics_code_refs": [
-            "journalism_ethics_charter_2"
+            {
+              "code": "JEC-4",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-2",
+              "relation_type": "related_to",
+              "strength": "weak"
+            }
           ]
         },
         {
@@ -448,7 +573,31 @@
           ],
           "red_flags": [],
           "ethics_code_refs": [
-            "journalism_ethics_charter_2"
+            {
+              "code": "JCE-2",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JCP-2-2",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-4",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-6",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            },
+            {
+              "code": "PCE-4",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            }
           ]
         },
         {
@@ -489,7 +638,16 @@
             "A 사건 이후 B 현상이 발생했다"
           ],
           "ethics_code_refs": [
-            "journalism_ethics_charter_1"
+            {
+              "code": "JEC-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JCE-2",
+              "relation_type": "violates",
+              "strength": "strong"
+            }
           ]
         },
         {
@@ -527,7 +685,31 @@
             "A진영vs B진영"
           ],
           "ethics_code_refs": [
-            "journalism_ethics_charter_2"
+            {
+              "code": "JEC-6",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-10-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-3-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-3-2",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-4-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            }
           ]
         },
         {
@@ -552,7 +734,21 @@
             "무엇을 보도할 것인가"
           ],
           "ethics_code_refs": [
-            "journalism_ethics_charter_2"
+            {
+              "code": "JCE-2",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCE-2",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            }
           ]
         }
       ]
@@ -569,7 +765,21 @@
           "diagnostic_questions": [],
           "red_flags": [],
           "ethics_code_refs": [
-            "journalism_ethics_charter_1"
+            {
+              "code": "JEC-5",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-1-1",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            },
+            {
+              "code": "PCP-3-2",
+              "relation_type": "violates",
+              "strength": "strong"
+            }
           ]
         },
         {
@@ -580,7 +790,26 @@
           "diagnostic_questions": [],
           "red_flags": [],
           "ethics_code_refs": [
-            "journalism_ethics_charter_1"
+            {
+              "code": "JEC-5",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-8",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-1-2",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-10-7",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            }
           ]
         }
       ]
@@ -613,7 +842,31 @@
           ],
           "red_flags": [],
           "ethics_code_refs": [
-            "journalism_ethics_charter_4"
+            {
+              "code": "HRG-2-1",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            },
+            {
+              "code": "HRG-2-1c",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JCE-6",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JCP-2-5",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-3",
+              "relation_type": "violates",
+              "strength": "strong"
+            }
           ]
         },
         {
@@ -639,7 +892,16 @@
             "OOO 남편"
           ],
           "ethics_code_refs": [
-            "journalism_ethics_charter_4"
+            {
+              "code": "JEC-3",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-4",
+              "relation_type": "related_to",
+              "strength": "weak"
+            }
           ]
         },
         {
@@ -665,7 +927,11 @@
             "1-7-4. 차별/혐오 표현"
           ],
           "ethics_code_refs": [
-            "journalism_ethics_charter_4"
+            {
+              "code": "JEC-4",
+              "relation_type": "violates",
+              "strength": "strong"
+            }
           ]
         },
         {
@@ -713,8 +979,21 @@
             "관계자에 따르면"
           ],
           "ethics_code_refs": [
-            "newspaper_ethics_practice_3_9",
-            "journalism_ethics_charter_4"
+            {
+              "code": "PCP-3-9",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-4-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-3",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            }
           ]
         }
       ]
@@ -764,7 +1043,11 @@
             "한국 청년 실업률이 x%에 달한다"
           ],
           "ethics_code_refs": [
-            "journalism_ethics_charter_1"
+            {
+              "code": "JEC-1",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            }
           ]
         },
         {
@@ -797,7 +1080,16 @@
             "충격"
           ],
           "ethics_code_refs": [
-            "journalism_ethics_charter_1"
+            {
+              "code": "JEC-1",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            },
+            {
+              "code": "PCE-7",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            }
           ]
         },
         {
@@ -831,7 +1123,11 @@
             "책상머리 기사"
           ],
           "ethics_code_refs": [
-            "journalism_ethics_charter_1"
+            {
+              "code": "JEC-1",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            }
           ]
         }
       ]
@@ -871,7 +1167,21 @@
             "누가 말했는지"
           ],
           "ethics_code_refs": [
-            "journalism_ethics_charter_2"
+            {
+              "code": "PCE-4",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-4",
+              "relation_type": "violates",
+              "strength": "strong"
+            }
           ]
         },
         {
@@ -939,8 +1249,16 @@
             "총성 없는 전투"
           ],
           "ethics_code_refs": [
-            "newspaper_ethics_practice_10_1",
-            "journalism_ethics_charter_9"
+            {
+              "code": "PCP-10-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-9",
+              "relation_type": "violates",
+              "strength": "strong"
+            }
           ]
         },
         {
@@ -983,8 +1301,16 @@
             "경악"
           ],
           "ethics_code_refs": [
-            "newspaper_ethics_practice_10_1",
-            "journalism_ethics_charter_9"
+            {
+              "code": "PCP-10-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-9",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            }
           ]
         },
         {
@@ -1019,7 +1345,11 @@
             "손목을 그어"
           ],
           "ethics_code_refs": [
-            "newspaper_ethics_practice_10_1"
+            {
+              "code": "PCP-10-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            }
           ]
         },
         {
@@ -1057,7 +1387,46 @@
             "절름발이 정책"
           ],
           "ethics_code_refs": [
-            "journalism_ethics_charter_4"
+            {
+              "code": "HRG-5-2b",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "HRG-8-1c",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "HSD-1",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            },
+            {
+              "code": "IRG-7",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-7",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-1-4",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-10-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-3-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            }
           ]
         },
         {
@@ -1100,7 +1469,16 @@
             "격랑에 빠진다"
           ],
           "ethics_code_refs": [
-            "journalism_ethics_charter_1"
+            {
+              "code": "PCE-4",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "JEC-2",
+              "relation_type": "violates",
+              "strength": "strong"
+            }
           ]
         }
       ]
@@ -1139,7 +1517,16 @@
             "OO역 칼부림 피해자, SNS에 남긴 마지막 글"
           ],
           "ethics_code_refs": [
-            "journalism_ethics_charter_9"
+            {
+              "code": "JCE-4",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            },
+            {
+              "code": "JEC-9",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            }
           ]
         },
         {
@@ -1178,7 +1565,26 @@
             "관련기사"
           ],
           "ethics_code_refs": [
-            "journalism_ethics_charter_9"
+            {
+              "code": "JEC-9",
+              "relation_type": "related_to",
+              "strength": "moderate"
+            },
+            {
+              "code": "PCP-10-1",
+              "relation_type": "violates",
+              "strength": "strong"
+            },
+            {
+              "code": "PCP-3-5",
+              "relation_type": "related_to",
+              "strength": "weak"
+            },
+            {
+              "code": "PCP-3-6",
+              "relation_type": "violates",
+              "strength": "strong"
+            }
           ]
         }
       ]
