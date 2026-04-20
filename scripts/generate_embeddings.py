@@ -15,6 +15,7 @@ import os
 import sys
 import time
 import argparse
+import re
 
 import psycopg2
 from openai import OpenAI
@@ -25,6 +26,11 @@ EMBEDDING_MODEL = "text-embedding-3-small"
 EMBEDDING_DIM = 1536
 SHORT_TEXT_THRESHOLD = 30
 MAX_RETRIES = 3
+
+
+def _mask_db_url(url: str) -> str:
+    """Redact password between user-info colon and '@' in postgres URL."""
+    return re.sub(r'(://[^/:@]+):[^@]*@', r'\1:***@', url)
 
 
 def connect_db(db_url):
@@ -173,7 +179,7 @@ def main():
     client = OpenAI(api_key=api_key)
 
     # Connect to DB
-    print(f"Connecting to: {args.db_url}")
+    print(f"Connecting to: {_mask_db_url(args.db_url)}")
     conn = connect_db(args.db_url)
 
     # Fetch data
