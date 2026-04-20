@@ -131,14 +131,30 @@ def verify_embeddings(conn):
     """Verify embedding counts and dimensions."""
     results = {}
     with conn.cursor() as cur:
-        cur.execute(
-            "SELECT count(*) FROM patterns WHERE description_embedding IS NOT NULL"
-        )
+        cur.execute("""
+            SELECT count(*) FROM patterns
+            WHERE is_meta_pattern = FALSE AND hierarchy_level = 3
+        """)
+        results["patterns_target"] = cur.fetchone()[0]
+
+        cur.execute("""
+            SELECT count(*) FROM ethics_codes
+            WHERE is_citable = TRUE AND is_active = TRUE
+        """)
+        results["ethics_target"] = cur.fetchone()[0]
+
+        cur.execute("""
+            SELECT count(*) FROM patterns
+            WHERE is_meta_pattern = FALSE AND hierarchy_level = 3
+              AND description_embedding IS NOT NULL
+        """)
         results["patterns_with_embedding"] = cur.fetchone()[0]
 
-        cur.execute(
-            "SELECT count(*) FROM ethics_codes WHERE text_embedding IS NOT NULL"
-        )
+        cur.execute("""
+            SELECT count(*) FROM ethics_codes
+            WHERE is_citable = TRUE AND is_active = TRUE
+              AND text_embedding IS NOT NULL
+        """)
         results["ethics_with_embedding"] = cur.fetchone()[0]
 
         cur.execute("""
@@ -247,14 +263,14 @@ def main():
     # Verify
     print(f"\n--- Verification ---")
     v = verify_embeddings(conn)
-    print(f"  Patterns with embedding: {v['patterns_with_embedding']}/28")
-    print(f"  Ethics codes with embedding: {v['ethics_with_embedding']}/373")
+    print(f"  Patterns with embedding: {v['patterns_with_embedding']}/{v['patterns_target']}")
+    print(f"  Ethics codes with embedding: {v['ethics_with_embedding']}/{v['ethics_target']}")
     print(f"  Pattern embedding dims: {v['pattern_dims']}")
     print(f"  Ethics embedding dims: {v['ethics_dims']}")
 
     all_ok = (
-        v["patterns_with_embedding"] == len(pattern_updates)
-        and v["ethics_with_embedding"] == len(ethics_updates)
+        v["patterns_with_embedding"] == v["patterns_target"]
+        and v["ethics_with_embedding"] == v["ethics_target"]
         and v["pattern_dims"] == EMBEDDING_DIM
         and v["ethics_dims"] == EMBEDDING_DIM
         and not p_fail
