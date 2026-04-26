@@ -52,7 +52,7 @@
       "candidate_id": "A-01",
       "expected_patterns": [
         {
-          "pattern_id": "1-1-5",
+          "pattern_id": "1-5",
           "pattern_name": "데이터 및 통계 오용",
           "sub_types": [
             "선거 여론조사 관련 특수 문제",
@@ -62,7 +62,7 @@
           "rationale": "한국갤럽 여론조사에서 오차범위 내 정당 지지도를 '우위'로 서열화하고, 하위표본 표본오차를 전체 표본오차로 잘못 적용한 이중 위반"
         },
         {
-          "pattern_id": "1-1-1",
+          "pattern_id": "1-1",
           "pattern_name": "사실 검증 부실",
           "sub_types": [
             "맥락 정보 생략"
@@ -112,7 +112,7 @@
       "candidate_id": "A-06",
       "expected_patterns": [
         {
-          "pattern_id": "1-1-1",
+          "pattern_id": "1-1",
           "pattern_name": "사실 검증 부실",
           "sub_types": [
             "취재원 이력·자격 검증 실패",
@@ -121,7 +121,7 @@
           "rationale": "패트릭 무어를 그린피스 '창립자'로 소개했으나 그린피스가 공식 부인하는 이력. 취재원 사실 확인 부실"
         },
         {
-          "pattern_id": "1-2-1",
+          "pattern_id": "2-1",
           "pattern_name": "취재원 투명성 결여",
           "sub_types": [
             "취재원 이력의 투명한 공개 실패"
@@ -171,7 +171,7 @@
       "candidate_id": "B2-10",
       "expected_patterns": [
         {
-          "pattern_id": "1-1-1",
+          "pattern_id": "1-1",
           "pattern_name": "사실 검증 부실",
           "sub_types": [
             "팩트체크 기사의 사실 정확성 문제",
@@ -180,7 +180,7 @@
           "rationale": "팩트체크 형식이나 건강보험 상호주의에 대한 국가별 제도 차이의 선택적 제시. 메타검증 대상"
         },
         {
-          "pattern_id": "1-1-5",
+          "pattern_id": "1-5",
           "pattern_name": "데이터 및 통계 오용",
           "sub_types": [
             "선택적 데이터 제시",
@@ -224,7 +224,7 @@
       "candidate_id": "B-11",
       "expected_patterns": [
         {
-          "pattern_id": "1-3-1",
+          "pattern_id": "3-1",
           "pattern_name": "관점 다양성 부족",
           "sub_types": [
             "단일 관점 편향",
@@ -233,7 +233,7 @@
           "rationale": "'정치 판사'와 '민주당과 협공' 프레이밍으로 사법부를 정치적 동기에 의한 것으로 단정. 반론·다른 관점 부재"
         },
         {
-          "pattern_id": "1-7-3",
+          "pattern_id": "7-3",
           "pattern_name": "과장과 맥락 왜곡",
           "sub_types": [
             "단정적 용어 사용",
@@ -242,7 +242,7 @@
           "rationale": "'정치 판사', '협공', '무너뜨렸다' 등 강한 가치판단·전투적 표현으로 사법부를 폄하"
         },
         {
-          "pattern_id": "1-3-4",
+          "pattern_id": "3-4",
           "pattern_name": "갈등 조장 프레이밍",
           "sub_types": [
             "이분법적 대결 구도 조장",
@@ -300,7 +300,7 @@
       "candidate_id": "B2-14",
       "expected_patterns": [
         {
-          "pattern_id": "1-3-1",
+          "pattern_id": "3-1",
           "pattern_name": "관점 다양성 부족",
           "sub_types": [
             "단일 관점 편향",
@@ -309,7 +309,7 @@
           "rationale": "나경원의 '망언 콘서트', '비겁한 연막작전쇼' 등 공격적 발언만 전달하고 상대측 반론 없이 일방 보도"
         },
         {
-          "pattern_id": "1-7-2",
+          "pattern_id": "7-2",
           "pattern_name": "헤드라인 윤리 문제",
           "sub_types": [
             "따옴표 저널리즘"
@@ -359,7 +359,7 @@
       "candidate_id": "E-11",
       "expected_patterns": [
         {
-          "pattern_id": "1-1-4",
+          "pattern_id": "1-4",
           "pattern_name": "사실과 의견 혼재",
           "sub_types": [
             "의견의 사실화",
@@ -368,7 +368,7 @@
           "rationale": "'북한이 시켰나'는 의견/의혹을 사실 보도에 혼재. 합법 집회를 간첩 혐의와 무관하게 연결"
         },
         {
-          "pattern_id": "1-7-2",
+          "pattern_id": "7-2",
           "pattern_name": "헤드라인 윤리 문제",
           "sub_types": [
             "편향적 프레이밍",
@@ -377,7 +377,7 @@
           "rationale": "'북한이 시켰나' '간첩 배출' 등 이념적 프레이밍의 자극적 제목"
         },
         {
-          "pattern_id": "1-3-4",
+          "pattern_id": "3-4",
           "pattern_name": "갈등 조장 프레이밍",
           "sub_types": [
             "이분법적 대결 구도 조장"
@@ -434,7 +434,7 @@
       "candidate_id": "A2-13",
       "expected_patterns": [
         {
-          "pattern_id": "1-4-2",
+          "pattern_id": "4-2",
           "pattern_name": "상업적 동기에 의한 왜곡",
           "sub_types": [
             "기사형 광고",
@@ -478,7 +478,7 @@
       "candidate_id": "B-15",
       "expected_patterns": [
         {
-          "pattern_id": "1-4-1",
+          "pattern_id": "4-1",
           "pattern_name": "외부 압력에 의한 왜곡",
           "sub_types": [
             "편집 독립성 침해"
@@ -486,7 +486,7 @@
           "rationale": "경영진에 의한 내부 편집권 침해이나, 119개 패턴 중 가장 근접한 코드로 적용. 매일신문 내부 평기자들이 경영진의 편집 독립성 침해에 대해 성명을 발표한 사안을 보도"
         },
         {
-          "pattern_id": "1-3-1",
+          "pattern_id": "3-1",
           "pattern_name": "관점 다양성 부족",
           "sub_types": [
             "편향된 취재원 구성"
@@ -529,7 +529,7 @@
       "candidate_id": "B-01",
       "expected_patterns": [
         {
-          "pattern_id": "1-5-2",
+          "pattern_id": "5-2",
           "pattern_name": "개인정보 및 신원 보호 위반",
           "sub_types": [
             "성적 지향 무단 노출",
@@ -538,7 +538,7 @@
           "rationale": "'이태원 게이클럽'을 명시하여 확진자의 성적 지향을 사실상 아웃팅"
         },
         {
-          "pattern_id": "1-7-5",
+          "pattern_id": "7-5",
           "pattern_name": "차별·혐오 표현",
           "sub_types": [
             "특정 집단 부정적 프레이밍"
@@ -588,7 +588,7 @@
       "candidate_id": "A-11",
       "expected_patterns": [
         {
-          "pattern_id": "1-7-4",
+          "pattern_id": "7-4",
           "pattern_name": "자극적·선정적 표현",
           "sub_types": [
             "자살 사건의 자극적 묘사",
@@ -597,7 +597,7 @@
           "rationale": "'28층서 투신' 등 자살 방법·장소를 구체적으로 적시하고 선정적 제목 사용"
         },
         {
-          "pattern_id": "1-5-2",
+          "pattern_id": "5-2",
           "pattern_name": "개인정보 및 신원 보호 위반",
           "sub_types": [
             "미성년자 신원 추정 가능 정보 노출"
@@ -647,7 +647,7 @@
       "candidate_id": "A-17",
       "expected_patterns": [
         {
-          "pattern_id": "1-5-2",
+          "pattern_id": "5-2",
           "pattern_name": "개인정보 및 신원 보호 위반",
           "sub_types": [
             "성범죄 관련자 신상정보 무단 노출"
@@ -655,7 +655,7 @@
           "rationale": "유튜버가 공개한 성폭행 가해자의 이름·사진을 기사에 그대로 게재"
         },
         {
-          "pattern_id": "1-5-3",
+          "pattern_id": "5-3",
           "pattern_name": "명예와 평판 훼손",
           "sub_types": [
             "명예·신용 훼손"
@@ -691,7 +691,7 @@
       "candidate_id": "E-12",
       "expected_patterns": [
         {
-          "pattern_id": "1-7-5",
+          "pattern_id": "7-5",
           "pattern_name": "차별·혐오 표현",
           "sub_types": [
             "특정 집단 부정적 프레이밍"
@@ -699,7 +699,7 @@
           "rationale": "외국인 노동자 범죄율 0.0012%임에도 범죄와 연결짓는 제목으로 편견 조장"
         },
         {
-          "pattern_id": "1-7-2",
+          "pattern_id": "7-2",
           "pattern_name": "헤드라인 윤리 문제",
           "sub_types": [
             "편향적 프레이밍"
@@ -749,7 +749,7 @@
       "candidate_id": "A2-03",
       "expected_patterns": [
         {
-          "pattern_id": "1-7-4",
+          "pattern_id": "7-4",
           "pattern_name": "자극적·선정적 표현",
           "sub_types": [
             "사건 현장에 대한 상세한 묘사",
@@ -758,7 +758,7 @@
           "rationale": "'산 채로 불탄 마지막'이라는 자극적 제목과 폭격 피해자가 불에 타는 영상을 여과 없이 게재"
         },
         {
-          "pattern_id": "1-6-1",
+          "pattern_id": "6-1",
           "pattern_name": "기사의 심층성 부족",
           "sub_types": [
             "맥락 없는 사실 나열"
@@ -808,7 +808,7 @@
       "candidate_id": "B2-09",
       "expected_patterns": [
         {
-          "pattern_id": "1-7-3",
+          "pattern_id": "7-3",
           "pattern_name": "과장과 맥락 왜곡",
           "sub_types": [
             "과장된 표현",
@@ -817,7 +817,7 @@
           "rationale": "'들썩'이라는 과장 표현으로 부동산 투기 심리를 자극하는 프레이밍"
         },
         {
-          "pattern_id": "1-6-1",
+          "pattern_id": "6-1",
           "pattern_name": "기사의 심층성 부족",
           "sub_types": [
             "현상 중심 파편화",
@@ -861,7 +861,7 @@
       "candidate_id": "A2-05",
       "expected_patterns": [
         {
-          "pattern_id": "1-7-5",
+          "pattern_id": "7-5",
           "pattern_name": "차별·혐오 표현",
           "sub_types": [
             "차별적 관용구 사용",
@@ -870,7 +870,7 @@
           "rationale": "'외국인 이모'라는 호칭은 외국인 가사노동자를 성별·국적 기반으로 차별하는 표현"
         },
         {
-          "pattern_id": "1-7-2",
+          "pattern_id": "7-2",
           "pattern_name": "헤드라인 윤리 문제",
           "sub_types": [
             "편향적 프레이밍"
@@ -913,7 +913,7 @@
       "candidate_id": "E-15",
       "expected_patterns": [
         {
-          "pattern_id": "1-7-5",
+          "pattern_id": "7-5",
           "pattern_name": "차별·혐오 표현",
           "sub_types": [
             "특정 집단 부정적 프레이밍"
@@ -921,7 +921,7 @@
           "rationale": "여성혐오적 발언을 비판적 맥락에서도 여과 없이 그대로 인용하여 혐오 표현 유통"
         },
         {
-          "pattern_id": "1-7-2",
+          "pattern_id": "7-2",
           "pattern_name": "헤드라인 윤리 문제",
           "sub_types": [
             "따옴표 저널리즘"
@@ -978,7 +978,7 @@
       "candidate_id": "B-08",
       "expected_patterns": [
         {
-          "pattern_id": "1-7-4",
+          "pattern_id": "7-4",
           "pattern_name": "자극적·선정적 표현",
           "sub_types": [
             "낚시성 제목"
@@ -986,7 +986,7 @@
           "rationale": "'충격 결과 나왔다'와 말줄임표('…')를 결합한 전형적 클릭베이트 제목"
         },
         {
-          "pattern_id": "1-7-2",
+          "pattern_id": "7-2",
           "pattern_name": "헤드라인 윤리 문제",
           "sub_types": [
             "낚시성 제목",
@@ -1030,7 +1030,7 @@
       "candidate_id": "D-01",
       "expected_patterns": [
         {
-          "pattern_id": "1-1-1",
+          "pattern_id": "1-1",
           "pattern_name": "사실 검증 부실",
           "sub_types": [
             "AI 생성 콘텐츠의 사실 검증 실패"
@@ -1038,7 +1038,7 @@
           "rationale": "AI(퍼플렉시티)가 생성한 기사에서 현직 대통령을 '전 대통령'으로 오표기. 사진 캡션은 정확, 본문은 오류"
         },
         {
-          "pattern_id": "1-8-2",
+          "pattern_id": "8-2",
           "pattern_name": "디지털 플랫폼 특유 문제",
           "sub_types": [
             "AI 생성 콘텐츠의 품질 관리 소홀"
@@ -1081,7 +1081,7 @@
       "candidate_id": "D-02",
       "expected_patterns": [
         {
-          "pattern_id": "1-1-1",
+          "pattern_id": "1-1",
           "pattern_name": "사실 검증 부실",
           "sub_types": [
             "AI 생성 콘텐츠의 사실 검증 실패"
@@ -1089,7 +1089,7 @@
           "rationale": "AI 생성 기사로 추정되나 동일한 '전 대통령' 환각 오류. 기사 내 현직/전직 혼재"
         },
         {
-          "pattern_id": "1-2-3",
+          "pattern_id": "2-3",
           "pattern_name": "기자명·출처 표기 부실",
           "sub_types": [
             "AI 사용 미고지"
@@ -1097,7 +1097,7 @@
           "rationale": "AI 생성 기사로 추정되나 기자명만 표기하고 AI 사용 사실 미고지. 투명성 위반"
         },
         {
-          "pattern_id": "1-8-2",
+          "pattern_id": "8-2",
           "pattern_name": "디지털 플랫폼 특유 문제",
           "sub_types": [
             "AI 생성 콘텐츠의 품질 관리 소홀"
@@ -1147,7 +1147,7 @@
       "candidate_id": "D-04",
       "expected_patterns": [
         {
-          "pattern_id": "1-8-2",
+          "pattern_id": "8-2",
           "pattern_name": "디지털 플랫폼 특유 문제",
           "sub_types": [
             "포털 환경 악용"
@@ -1155,7 +1155,7 @@
           "rationale": "과거 눈물 사진을 썸네일로 사용하고 자극적 제목으로 포털 클릭 유도. 전형적 포털 어뷰징"
         },
         {
-          "pattern_id": "1-7-4",
+          "pattern_id": "7-4",
           "pattern_name": "자극적·선정적 표현",
           "sub_types": [
             "낚시성 제목"
@@ -1163,7 +1163,7 @@
           "rationale": "'좋지 않은 소식'이라는 모호한 표현으로 심각한 불행을 암시하나 실제는 협회 인사 뉴스"
         },
         {
-          "pattern_id": "1-7-2",
+          "pattern_id": "7-2",
           "pattern_name": "헤드라인 윤리 문제",
           "sub_types": [
             "제목-본문 불일치"
