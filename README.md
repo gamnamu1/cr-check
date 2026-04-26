@@ -15,7 +15,7 @@
 - 📊 **3종 리포트**: 시민용, 기자용, 학생용(초등 4~5학년 눈높이) 리포트 생성
 - 🔗 **공유 URL**: 분석 결과를 고유 링크로 공유 (`/report/{share_id}`)
 - 🚫 **NO SCORING**: 점수·등급 없이 서술형 비평만 제공 — "관점을 제시하는 도구"
-- 🧠 **Hybrid RAG**: 벡터 검색 + 관계형 DB로 119개 보도관행 패턴 식별, 14개 윤리규범 정확 인용
+- 🧠 **Hybrid RAG**: 벡터 검색 + 관계형 DB로 38개 보도관행 패턴 식별, 375개 윤리규범 조항 DB 정확 인용 (Phase H에서 119개 패턴으로 세분화 진행 중)
 
 ## 기술 스택
 
@@ -28,8 +28,6 @@
 | AI (리포트 생성) | Claude Sonnet 4.6 (3종 리포트 + 〔〕규범 인용) |
 | AI (임베딩) | OpenAI text-embedding-3-small (1536차원) |
 | 배포 | Railway (BE) + Vercel (FE) |
-
-
 ## 분석 파이프라인
 
 ```
@@ -38,7 +36,7 @@ POST /analyze { url }
   ② 캐시 미스 → 기사 스크래핑 → 시맨틱 청킹 (300~500자, 노이즈 제거)
   ③ OpenAI 임베딩 → Supabase 벡터 검색 (패턴 후보)
   ④ Phase 1: Sonnet 4.5 Solo (패턴 식별 + Devil's Advocate CoT)
-  ⑤ DB 검증 → 메타패턴 추론 → 윤리코드 조회 (재귀 CTE + REST 폴백)
+  ⑤ DB 검증 → 윤리코드 조회 (재귀 CTE + REST 폴백) [메타패턴 추론: 비활성화]
   ⑥ Phase 2: Sonnet 4.6 (3종 리포트 생성, 〔〕마커 자연 인용)
   ⑦ DB 저장 (articles + analysis_results + share_id 발급)
 ```
