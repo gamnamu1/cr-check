@@ -294,6 +294,136 @@ def _upsert_article(
         return None
 
 
+def _insert_ethics_snapshot(
+    sb_url: str,
+    headers: dict,
+    analysis_id: int,
+    ethics_refs: list,
+) -> None:
+    """analysis_ethics_snapshot에 핵심 규범 스냅샷을 배치 INSERT.
+
+    1차: violates + (strong|moderate). 1건 이상이면 이를 사용.
+    2차: 1차가 0건이면 related_to + (strong|moderate)로 fallback.
+    둘 다 0건이면 건너뜀. 실패해도 logger.warning만 남기고 반환.
+    """
+    # 1. 스냅샷 대상 필터 (primary 우선, fallback reference)
+    primary = [
+        r for r in ethics_refs
+        if getattr(r, "relation_type", "") == "violates"
+        and getattr(r, "strength", "") in ("strong", "moderate")
+    ]
+    if primary:
+        targets = primary
+    else:
+        targets = [
+            r for r in ethics_refs
+            if getattr(r, "relation_type", "") == "related_to"
+            and getattr(r, "strength", "") in ("strong", "moderate")
+        ]
+
+    if not targets:
+        logger.info("스냅샷 대상 규범 0건, 건너뜀")
+        return
+
+    # 2. ethics_code 기준 중복 제거 (등장 순서 유지)
+    seen: set[str] = set()
+    unique_targets: list = []
+    for r in targets:
+        code = getattr(r, "ethics_code", "")
+        if not code or code in seen:
+            continue
+        seen.add(code)
+        unique_targets.append(r)
+
+    if not unique_targets:
+        logger.info("스냅샷 대상 규범 0건, 건너뜀")
+        return
+
+    codes = [getattr(r, "ethics_code") for r in unique_targets]
+
+    # 3. ethics_codes 배치 SELECT — code → (id, version) 조회
+    try:
+        select_r = httpx.get(
+            f"{sb_url}/rest/v1/ethics_codes",
+            headers=headers,
+            params={
+                "code": f"in.({','.join(codes)})",
+                "select": "id,code,version",
+            },
+            timeout=10,
+        )
+        select_r.raise_for_status()
+        ec_rows = select_r.json()
+    except httpx.HTTPStatusError as e:
+        logger.warning(
+            f"스냅샷 ethics_codes 조회 실패: HTTP {e.response.status_code} - "
+            f"{e.response.text[:300]}"
+        )
+        return
+    except Exception as e:
+        logger.warning(
+            f"스냅샷 ethics_codes 조회 중 예기치 못한 에러 "
+            f"[{type(e).__name__}]: {e}"
+        )
+        return
+
+    if not ec_rows:
+        logger.warning(f"스냅샷 ethics_codes 응답 0건: codes={codes}")
+        return
+
+    # 4. code → (id, version) 매핑
+    code_map: dict[str, tuple[int, int]] = {}
+    for row in ec_rows:
+        code = row.get("code")
+        ec_id = row.get("id")
+        ec_version = row.get("version")
+        if code and ec_id is not None and ec_version is not None:
+            code_map[code] = (ec_id, ec_version)
+
+    # 5. 스냅샷 rows 구성
+    snapshot_rows: list[dict] = []
+    for r in unique_targets:
+        code = getattr(r, "ethics_code", "")
+        if code not in code_map:
+            logger.warning(f"스냅샷 매핑 누락, 건너뜀: code={code}")
+            continue
+        ec_id, ec_version = code_map[code]
+        snapshot_rows.append({
+            "analysis_id": analysis_id,
+            "ethics_code_id": ec_id,
+            "snapshot_full_text": getattr(r, "ethics_full_text", "") or "",
+            "snapshot_version": ec_version,
+        })
+
+    if not snapshot_rows:
+        logger.warning("스냅샷 rows 0건 (모두 매핑 실패), 건너뜀")
+        return
+
+    # 6. 배치 INSERT (Prefer: return=minimal)
+    try:
+        insert_headers = {**headers, "Prefer": "return=minimal"}
+        ins_r = httpx.post(
+            f"{sb_url}/rest/v1/analysis_ethics_snapshot",
+            headers=insert_headers,
+            json=snapshot_rows,
+            timeout=15,
+        )
+        ins_r.raise_for_status()
+        logger.info(
+            f"스냅샷 INSERT 완료: analysis_id={analysis_id}, "
+            f"count={len(snapshot_rows)}"
+        )
+    except httpx.HTTPStatusError as e:
+        logger.warning(
+            f"스냅샷 INSERT 실패: HTTP {e.response.status_code} - "
+            f"{e.response.text[:300]}"
+        )
+    except Exception as e:
+        logger.warning(
+            f"스냅샷 INSERT 중 예기치 못한 에러 [{type(e).__name__}]: {e}"
+        )
+
+
 def save_analysis_result(
     url: str,
     title: str,
@@ -301,6 +431,7 @@ def save_analysis_result(
     journalist: str | None,
     publish_date: str | None,
     result,  # pipeline.AnalysisResult — 순환 import 회피용 untyped
+    ethics_refs: list | None = None,  # report_generator.EthicsReference 리스트 (순환 import 회피)
 ) -> str | None:
     """분석 결과를 DB에 저장하고 share_id를 반환한다.
 
@@ -380,7 +511,31 @@ def save_analysis_result(
                 timeout=15,
             )
             r.raise_for_status()
-            logger.info(f"분석 결과 저장 완료: share_id={share_id}, article_id={article_id}")
+            # Prefer: return=representation 응답에서 analysis_id 추출 (스냅샷 INSERT용)
+            analysis_id: int | None = None
+            try:
+                inserted_rows = r.json()
+                if inserted_rows and isinstance(inserted_rows, list):
+                    analysis_id = inserted_rows[0].get("id")
+            except Exception as e_parse:
+                logger.warning(
+                    f"analysis_id 파싱 실패 (스냅샷 건너뜀) "
+                    f"[{type(e_parse).__name__}]: {e_parse}"
+                )
+            # 스냅샷 INSERT — 실패해도 share_id 반환에 영향 없음
+            if analysis_id is not None and ethics_refs:
+                try:
+                    _insert_ethics_snapshot(
+                        sb_url, headers, analysis_id, ethics_refs,
+                    )
+                except Exception as e_snap:
+                    logger.warning(
+                        f"스냅샷 INSERT 외부 예외 (무시) "
+                        f"[{type(e_snap).__name__}]: {e_snap}"
+                    )
+            logger.info(
+                f"분석 결과 저장 완료: share_id={share_id}, article_id={article_id}"
+            )
             return share_id
         except httpx.HTTPStatusError as e:
             status = e.response.status_code

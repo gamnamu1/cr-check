@@ -62,6 +62,37 @@ class AnalysisResult:
     meta_patterns: list = field(default_factory=list)  # MetaPatternResult 리스트
 
 
+def _infer_article_context(article_text: str, pattern_codes: set) -> str:
+    """
+    기사 원문 키워드로 기사 맥락을 사전 추정.
+    반환값: 'health' | 'disaster' | 'crisis' | 'crime' |
+            'election' | 'military' | 'unification' | 'general'
+
+    TODO (STEP 7): 골든셋 재정비 후 pattern_codes 기반 추론 로직 추가.
+                   현재는 pattern_codes를 사용하지 않음.
+                   예: if any(c.startswith('1-5-f') for c in pattern_codes): return 'election'
+    """
+    text_sample = article_text[:500]
+
+    # 오분류 방지를 위해 복합어·구체적 키워드만 사용
+    health_keywords      = ['감염병', '코로나19', '백신 접종', '역학조사', '질병관리청', '바이러스 확산']
+    disaster_keywords    = ['재난안전', '지진 피해', '대형 화재', '홍수 피해', '구조대원', '특별재난지역']
+    crisis_keywords      = ['극단적 선택', '자해', '유서', '투신', '심리상담']
+    crime_keywords       = ['재판부 판결', '검찰 기소', '구속영장', '피의자 조사']
+    election_keywords    = ['공직선거법', '여론조사 결과', '당선인', '사전투표', '선거운동']
+    military_keywords    = ['국방부', '군사 작전', '북한 도발', '합참']
+    unification_keywords = ['조선민주주의인민공화국', '남북정상', '평화통일', '통일부', '남북관계']
+
+    if any(kw in text_sample for kw in health_keywords):      return 'health'
+    if any(kw in text_sample for kw in disaster_keywords):    return 'disaster'
+    if any(kw in text_sample for kw in crisis_keywords):      return 'crisis'
+    if any(kw in text_sample for kw in crime_keywords):       return 'crime'
+    if any(kw in text_sample for kw in election_keywords):    return 'election'
+    if any(kw in text_sample for kw in military_keywords):    return 'military'
+    if any(kw in text_sample for kw in unification_keywords): return 'unification'
+    return 'general'
+
+
 def analyze_article(
     article_text: str,
     run_sonnet: bool = True,
@@ -135,12 +166,16 @@ def analyze_article(
             if d.pattern_code in pm.validated_pattern_codes
         ]
         try:
+            article_context = _infer_article_context(
+                article_text, pm.validated_pattern_codes
+            )
             rr = generate_report(
                 article_text,
                 pm.validated_pattern_ids,
                 haiku_dicts,
                 overall_assessment=result.overall_assessment,
                 meta_patterns=triggered_meta,
+                article_context=article_context,
             )
         except Exception as e:
             logger.error(f"리포트 생성 최종 실패, 에러 메시지 리포트 반환: {e}")

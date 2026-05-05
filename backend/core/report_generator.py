@@ -80,13 +80,18 @@ def _parse_ethics_rows(rows: list[dict]) -> list[EthicsReference]:
 
 
 def _rpc_get_ethics(
-    pattern_ids: list[int], sb_url: str, headers: dict, timeout: int = 30,
+    pattern_ids: list[int], sb_url: str, headers: dict,
+    article_context: str = 'general',
+    timeout: int = 30,
 ) -> tuple[list[dict], int]:
     """RPC 호출 1회 실행. (rows, http_status) 반환."""
     r = httpx.post(
         f"{sb_url}/rest/v1/rpc/get_ethics_for_patterns",
         headers=headers,
-        json={"confirmed_pattern_ids": pattern_ids},
+        json={
+            "confirmed_pattern_ids": pattern_ids,
+            "article_context": article_context,
+        },
         timeout=timeout,
     )
     r.raise_for_status()
@@ -98,6 +103,7 @@ def fetch_ethics_for_patterns(
     pattern_ids: list[int],
     sb_url: str,
     sb_key: str,
+    article_context: str = 'general',
 ) -> list[EthicsReference]:
     """get_ethics_for_patterns() RPC 호출 (1회 재시도 + 진단 쿼리)."""
     if not pattern_ids:
@@ -113,14 +119,18 @@ def fetch_ethics_for_patterns(
 
     # 1차 시도
     try:
-        rows, status = _rpc_get_ethics(pattern_ids, sb_url, headers)
+        rows, status = _rpc_get_ethics(
+            pattern_ids, sb_url, headers, article_context=article_context,
+        )
         logger.info(f"규범 조회 응답: HTTP {status}, {len(rows)}건")
     except Exception as e:
         logger.error(f"규범 조회 1차 실패 [{type(e).__name__}]: {e}")
         # 네트워크 에러 시 2초 대기 후 1회 재시도
         time.sleep(2)
         try:
-            rows, status = _rpc_get_ethics(pattern_ids, sb_url, headers)
+            rows, status = _rpc_get_ethics(
+                pattern_ids, sb_url, headers, article_context=article_context,
+            )
             logger.info(f"규범 조회 재시도 성공: HTTP {status}, {len(rows)}건")
         except Exception as e2:
             logger.error(f"규범 조회 재시도도 실패 [{type(e2).__name__}]: {e2}")
@@ -133,7 +143,9 @@ def fetch_ethics_for_patterns(
         )
         time.sleep(2)
         try:
-            rows, status = _rpc_get_ethics(pattern_ids, sb_url, headers)
+            rows, status = _rpc_get_ethics(
+                pattern_ids, sb_url, headers, article_context=article_context,
+            )
             logger.info(f"규범 조회 재시도 응답: HTTP {status}, {len(rows)}건")
         except Exception as e:
             logger.error(f"규범 조회 재시도 실패 [{type(e).__name__}]: {e}")
@@ -150,7 +162,7 @@ def fetch_ethics_for_patterns(
                 f"pattern_id,"
                 f"patterns!inner(code),"
                 f"ethics_code_id,"
-                f"ethics_codes!inner(code,title,full_text,tier,is_active,is_citable),"
+                f"ethics_codes!inner(code,title,full_text,tier,is_active,is_citable,applicable_contexts),"
                 f"relation_type,strength,reasoning"
                 f"&pattern_id=in.({ids_csv})"
                 f"&ethics_codes.is_active=eq.true"
@@ -161,11 +173,26 @@ def fetch_ethics_for_patterns(
             fb_r.raise_for_status()
             fb_data = fb_r.json()
             if fb_data:
-                logger.info(f"REST API fallback 성공: {len(fb_data)}건")
                 rows = []
                 for item in fb_data:
                     ec = item.get("ethics_codes", {})
                     p = item.get("patterns", {})
+
+                    # applicable_contexts 필터 (RPC와 동일 의미: NULL/all/일치 시만 포함)
+                    contexts = ec.get("applicable_contexts")
+                    if not (
+                        contexts is None
+                        or "all" in contexts
+                        or article_context in contexts
+                    ):
+                        continue
+
+                    # weak 및 exception_of 제외
+                    if item.get("strength") == "weak":
+                        continue
+                    if item.get("relation_type") == "exception_of":
+                        continue
+
                     rows.append({
                         "pattern_code": p.get("code", ""),
                         "ethics_code": ec.get("code", ""),
@@ -176,6 +203,7 @@ def fetch_ethics_for_patterns(
                         "strength": item.get("strength", ""),
                         "reasoning": item.get("reasoning", ""),
                     })
+                logger.info(f"REST API fallback 성공: {len(rows)}건 (필터링 후)")
             else:
                 logger.warning(f"REST API fallback도 0건: pattern_ids={pattern_ids}")
         except Exception as fb_e:
@@ -185,21 +213,60 @@ def fetch_ethics_for_patterns(
 
 
 def _build_ethics_context(refs: list[EthicsReference]) -> str:
-    """규범 컨텍스트를 tier 역순(구체→포괄)으로 정렬하여 텍스트 생성."""
-    sorted_refs = sorted(refs, key=lambda x: (-x.ethics_tier, x.ethics_code))
+    """규범 컨텍스트를 핵심(violates)/참고(related_to) 두 그룹으로 분리. weak·exception_of 등은 무시."""
+    seen: set[str] = set()
 
-    seen = set()
-    lines = []
-    for ref in sorted_refs:
-        if ref.ethics_code in seen:
+    # STEP 1 — primary: violates + (strong|moderate)
+    primary_candidates = sorted(
+        (
+            r for r in refs
+            if r.relation_type == "violates"
+            and r.strength in ("strong", "moderate")
+        ),
+        key=lambda r: (-r.ethics_tier, r.ethics_code),
+    )
+    primary_lines: list[str] = []
+    for r in primary_candidates:
+        if r.ethics_code in seen:
             continue
-        seen.add(ref.ethics_code)
-        lines.append(
-            f"### {ref.ethics_title} (코드: {ref.ethics_code}, Tier {ref.ethics_tier})\n"
-            f"{ref.ethics_full_text}"
+        seen.add(r.ethics_code)
+        primary_lines.append(
+            f"### {r.ethics_title} (코드: {r.ethics_code}, Tier {r.ethics_tier})\n"
+            f"{r.ethics_full_text}"
         )
 
-    return "\n\n".join(lines)
+    # STEP 2 — reference: related_to + (strong|moderate), seen 공유로 primary 중복 제거
+    reference_candidates = sorted(
+        (
+            r for r in refs
+            if r.relation_type == "related_to"
+            and r.strength in ("strong", "moderate")
+        ),
+        key=lambda r: (-r.ethics_tier, r.ethics_code),
+    )
+    reference_lines: list[str] = []
+    for r in reference_candidates:
+        if r.ethics_code in seen:
+            continue
+        seen.add(r.ethics_code)
+        reference_lines.append(
+            f"### {r.ethics_title} (코드: {r.ethics_code}, Tier {r.ethics_tier})\n"
+            f"{r.ethics_full_text}"
+        )
+
+    # STEP 3 — 출력 조립
+    sections: list[str] = []
+    if primary_lines:
+        sections.append("## 핵심 규범\n\n" + "\n\n".join(primary_lines))
+    if reference_lines:
+        if primary_lines:
+            sections.append("---")
+        sections.append(
+            "## 참고 규범 (직접 인용보다 맥락 이해용)\n\n"
+            + "\n\n".join(reference_lines)
+        )
+
+    return "\n\n".join(sections)
 
 
 # ── Sonnet 프롬프트 (M6 — 3종 리포트) ──────────────────────────
@@ -598,6 +665,7 @@ def generate_report(
     detections: list[dict],
     overall_assessment: str = "",
     meta_patterns: list = None,
+    article_context: str = 'general',
 ) -> ReportResult:
     """확정 패턴으로 규범 조회 후 Sonnet 3종 리포트 생성.
 
@@ -614,7 +682,9 @@ def generate_report(
     sb_url, sb_key = _get_supabase_config()
 
     # 1. 규범 조회
-    ethics_refs = fetch_ethics_for_patterns(pattern_ids, sb_url, sb_key)
+    ethics_refs = fetch_ethics_for_patterns(
+        pattern_ids, sb_url, sb_key, article_context=article_context,
+    )
     ethics_context = _build_ethics_context(ethics_refs)
 
     # 2. detections JSON 문자열
