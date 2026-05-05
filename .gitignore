@@ -77,3 +77,11 @@ docs/_archive_superseded/
 backend/diagnostics/phase_f/
 docs/_scratch/
 docs/_scratch/
+
+# Diagnostics & temp
+backend/diagnostics/
+backend/data/*.bak
+backend/data/*.bak2
+
+# Misc
+skills-lock.json

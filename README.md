@@ -48,7 +48,6 @@ POST /analyze { url }
 - Python 3.11+, Node.js 18+
 - Anthropic API 키, OpenAI API 키
 - Supabase 로컬 또는 클라우드 프로젝트
-
 ### 백엔드
 
 ```bash

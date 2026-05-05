@@ -504,24 +504,23 @@
     },
     {
       "candidate_id": "C-02",
-      "source": "이달의 기자상",
-      "title": "벼랑 끝, 홀로 선 그들 - 2021년 청소년 트랜스젠더 보고서",
-      "publisher": "서울신문",
-      "date": "2021-12",
-      "award_round": "제376회",
-      "award_category": "기획보도 신문·통신부문",
-      "source_url": "https://www.journalist.or.kr/mybbs/bbs.html?mode=view&bbs_code=bbs_4&type=adm&bbs_no=31594",
+      "source": "자체선별",
+      "title": "중동 출신 예멘인 78명 제주에 왜 왔나?",
+      "publisher": "제주일보",
+      "date": "2018-05-02",
+      "source_url": "https://www.jejunews.com/news/articleView.html?idxno=2111931",
       "cr_category_primary": null,
-      "false_positive_risk": "1-3-1",
-      "difficulty_estimate": "hard",
+      "false_positive_risk": "1-3-1, 1-7-5",
+      "difficulty_estimate": "medium",
       "is_complex_pattern": false,
       "is_true_negative": true,
-      "selection_reason": "소수자 인권 보도. 당사자 시각 중심으로 1-3-1 오탐 위험.",
-      "source_round": "1차",
+      "selection_reason": "민감 소재(난민·이슬람)를 다루지만 팩트·행정 취재 중심의 균형 보도. 관점 다양성 부족·혐오 표현 오탐 위험이 있어 난이도 유지.",
+      "reason_summary": "예멘 내전 난민 78명의 제주 무비자 입국 현황과 출입국 행정 대응 실태 보도. 제주무사증제도의 구조적 문제를 사실 중심으로 기술.",
+      "source_round": "C-02 대체 (2026-04-28)",
       "selection_phase": "TN",
-      "selection_role": "소수자 인권보도, 1-3-1 오탐",
-      "ensemble_consensus": "3/5",
-      "article_key_text": ""
+      "selection_role": "민감 소재 균형 보도 TN — 관점 다양성·혐오 표현 오탐 난이도",
+      "ensemble_consensus": "Gamnamu 확정",
+      "article_key_text": "78명의 예멘인들이 한 번에 우리나라에 입국한 것은 보기 드믄 사례로 꼽히고 있다.\n이들이 제주에 올 수 있었던 것은 제주무사증(무비자)입국제도 덕분이다.\n제주특별자치도가 2002년 도입한 제주무사증입국제도는 전 세계 206개 국가 중 시리아·이란·나이지리아 등 11개 국가만 입국을 불허하고 있다."
     },
     {
       "candidate_id": "C-04",
@@ -542,7 +541,7 @@
       "selection_phase": "TN",
       "selection_role": "탐사보도 복합 오탐(익명취재원+피해자관점)",
       "ensemble_consensus": "4/5",
-      "article_key_text": ""
+      "article_key_text": "78명의 예멘인들이 한 번에 우리나라에 입국한 것은 보기 드믄 사례로 꼽히고 있다.\n이들이 제주에 올 수 있었던 것은 제주무사증(무비자)입국제도 덕분이다.\n인도적 차원에서 난민을 수용하고, 보호해야 하지만 제주지역 출입국 환경은 이들을 받아들일 준비가 부족한 실정이다."
     },
     {
       "candidate_id": "C2-01",
