@@ -1,4 +1,7 @@
 # backend/core/meta_pattern_inference.py
+# [DEPRECATED MODULE] 메타 패턴 추론 비활성화 (Phase I, 2026-04-28)
+# 직접 감지 불가 패턴이며 inferred_by 관계 0건 상태에서는 운용하지 않음.
+# 재활성화하려면 pattern_relations inferred_by 데이터 구축 및 벤치마크 검증 후 사용.
 """
 CR-Check — 메타 패턴 추론 모듈
 

@@ -627,6 +627,7 @@ def call_sonnet(
 # ── 메인 함수 ────────────────────────────────────────────────────
 
 def _build_meta_pattern_block(meta_patterns: list) -> str:
+    # [DEPRECATED] 메타 패턴 비활성화로 현재 활성 파이프라인에서는 메타 블록이 주입되지 않음.
     """메타 패턴 발동 시 Sonnet 프롬프트에 주입할 블록을 생성."""
     if not meta_patterns:
         return ""

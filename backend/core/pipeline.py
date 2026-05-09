@@ -31,7 +31,9 @@ from .report_generator import generate_report, ReportResult
 # [DEPRECATED] cite 태그 후치환 비활성화 (Phase β). Sonnet이 규범을 직접 서술.
 # 복원이 필요하면 아래 주석을 해제하세요.
 # from .citation_resolver import resolve_citations
-from .meta_pattern_inference import check_meta_patterns
+# [DEPRECATED] 메타 패턴 추론 비활성화 (Phase I, 2026-04-28)
+# inferred_by 관계 0건. 데이터 없이 운용 불가. 재활성화 시 import와 호출 블록 주석 해제.
+# from .meta_pattern_inference import check_meta_patterns
 from .db import _get_supabase_config
 
 logger = logging.getLogger(__name__)
@@ -139,19 +141,21 @@ def analyze_article(
     result.overall_assessment = pm.suspect_result.overall_assessment if pm.suspect_result else ""
 
     # 2.5 메타 패턴 추론 (Deterministic — DB 동적 조회)
+    # [DEPRECATED] 메타 패턴 추론 비활성화 (Phase I, 2026-04-28)
+    # inferred_by 관계 0건. 데이터 없이 운용 불가. 재활성화 시 주석 해제.
     triggered_meta = []
-    if pm.validated_pattern_codes:
-        try:
-            sb_url, sb_key = _get_supabase_config()
-            meta_results = check_meta_patterns(
-                detected_pattern_codes=list(pm.validated_pattern_codes),
-                sb_url=sb_url,
-                sb_key=sb_key,
-            )
-            triggered_meta = [m for m in meta_results if m.triggered]
-            result.meta_patterns = meta_results
-        except Exception as e:
-            logger.warning(f"메타 패턴 추론 실패, 건너뜀: {e}")
+    # if pm.validated_pattern_codes:
+    #     try:
+    #         sb_url, sb_key = _get_supabase_config()
+    #         meta_results = check_meta_patterns(
+    #             detected_pattern_codes=list(pm.validated_pattern_codes),
+    #             sb_url=sb_url,
+    #             sb_key=sb_key,
+    #         )
+    #         triggered_meta = [m for m in meta_results if m.triggered]
+    #         result.meta_patterns = meta_results
+    #     except Exception as e:
+    #         logger.warning(f"메타 패턴 추론 실패, 건너뜀: {e}")
 
     # 3. 리포트 생성 (Sonnet) — 선택적
     if run_sonnet and pm.validated_pattern_ids:
