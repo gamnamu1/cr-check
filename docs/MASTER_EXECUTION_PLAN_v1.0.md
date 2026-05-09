@@ -646,40 +646,88 @@ structural 패턴은 별도 섹션으로 분리:
 ```
 → 하드코딩 제거, DB 조회로 동적 로드.
 
-### STEP 5-B: 혼동 쌍 DB화
+### STEP 5-B: 혼동 쌍 DB화 ✅ 완료 (2026-05-09)
 
 현재 5개 혼동 쌍이 `_SONNET_SOLO_PROMPT`에 하드코딩되어 있다.
 별도 테이블로 분리하여 관리성을 높인다.
 
 ```sql
--- CLI가 생성, 기획자가 실행
-CREATE TABLE IF NOT EXISTS pattern_confusion_pairs (
-  id         BIGSERIAL PRIMARY KEY,
-  code_a     TEXT NOT NULL,
-  code_b     TEXT NOT NULL,
+-- 실제 실행된 구문 (감리 반영: UNIQUE/CHECK 제약 추가)
+CREATE TABLE IF NOT EXISTS public.pattern_confusion_pairs (
+  id            BIGSERIAL PRIMARY KEY,
+  code_a        TEXT NOT NULL,
+  code_b        TEXT NOT NULL,
   distinction_guide TEXT NOT NULL,
-  is_active  BOOLEAN DEFAULT TRUE,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  is_active     BOOLEAN DEFAULT TRUE,
+  created_at    TIMESTAMPTZ DEFAULT NOW(),
+  CONSTRAINT pattern_confusion_pairs_unique_pair UNIQUE (code_a, code_b),
+  CONSTRAINT pattern_confusion_pairs_distinct_codes CHECK (code_a <> code_b)
 );
 ```
 
-### STEP 5-C: 메타패턴 코드 DEPRECATED 처리
+**실제 실행 결과 (2026-05-09)**
+
+- migration: `supabase/migrations/20260509232754_pattern_confusion_pairs.sql` 생성·실행
+- seed: `supabase/seeds/pattern_confusion_pairs_seed.sql` 생성·실행 (5쌍 INSERT, dollar-quoted string)
+- `pattern_matcher.py` 수정:
+  - `_confusion_pairs_cache` 전역 캐시 변수 추가
+  - `_load_confusion_pairs(sb_url, sb_key)` 함수 추가 (httpx REST, 성공 시에만 캐싱)
+  - `_build_sonnet_solo_prompt(sb_url, sb_key)` 함수 추가 (.replace() 방식, .format() 금지)
+  - `_SONNET_SOLO_PROMPT` 내 DEPRECATED 주석 블록 삭제 → `{confusion_pairs_section}` placeholder 삽입
+  - `match_patterns_solo()` system= 파라미터를 `_build_sonnet_solo_prompt()` 호출로 교체
+- DB 확인: 5개 행 전부 is_active=true, id 오름차순 정상 삽입 확인
+
+### STEP 5-C: 메타패턴 코드 DEPRECATED 처리 ✅ 완료 (2026-05-09)
 
 ```python
-# pipeline.py — check_meta_patterns() 호출 블록 전체:
+# pipeline.py — import 주석 처리 + 호출 블록 전체 주석 처리:
 # [DEPRECATED] 메타 패턴 추론 비활성화 (Phase I, 2026-04-28)
-# inferred_by 관계 0건. 데이터 없이 운용 불가. 재활성화 시 주석 해제.
+# inferred_by 관계 0건. 데이터 없이 운용 불가. 재활성화 시 import와 호출 블록 주석 해제.
+# from .meta_pattern_inference import check_meta_patterns
+# triggered_meta = [] 는 활성 코드로 유지 (generate_report 호출부 보호)
 
-# report_generator.py — _build_meta_pattern_block() 함수 상단:
-# [DEPRECATED] 메타 패턴 비활성화로 이 함수는 현재 호출되지 않음.
+# report_generator.py — _build_meta_pattern_block() 함수 def 바로 다음:
+# [DEPRECATED] 메타 패턴 비활성화로 현재 활성 파이프라인에서는 메타 블록이 주입되지 않음.
 
-# meta_pattern_inference.py — 파일 상단:
+# meta_pattern_inference.py — 파일 최상단:
 # [DEPRECATED MODULE] 메타 패턴 추론 비활성화 (Phase I, 2026-04-28)
+# 직접 감지 불가 패턴이며 inferred_by 관계 0건 상태에서는 운용하지 않음.
+# 재활성화하려면 pattern_relations inferred_by 데이터 구축 및 벤치마크 검증 후 사용.
 ```
 
-### CLI 실행 지시 (STEP 5)
+**실제 실행 결과 (2026-05-09)**
+
+- `pipeline.py`: `from .meta_pattern_inference import check_meta_patterns` import 주석 처리 +
+  `check_meta_patterns()` 호출 블록 전체(try/except 포함) 주석 처리.
+  `triggered_meta = []` 선언은 활성 코드로 유지.
+- `report_generator.py`: `_build_meta_pattern_block()` def 바로 다음 주석 1줄 삽입.
+  함수 본체 및 호출(line 694)은 보존 — pipeline에서 `[]`가 전달되어 실질 비활성화.
+- `meta_pattern_inference.py`: 파일 최상단 3줄 DEPRECATED MODULE 주석 삽입. 모듈 전체 보존.
+- AST 검증: 3개 파일 모두 통과. 활성 호출 잔존: 0건 확인.
+
+### CLI 실행 지시 (STEP 5-A)
+
+> ⚠️ **[v49 업데이트]** 아래 원본 지시는 2026-05-06 세션에서 6인 교차 감리(3라운드)를 거쳐
+> **프롬프트 v3**으로 대폭 정교화됐다. CLI 실행 시에는 반드시 v3 프롬프트를 사용할 것.
+>
+> **v3 프롬프트 주요 변경 사항 (원본 대비):**
+> - `_load_pattern_catalog()`: DB 로드 시 `is_active` 필터 제거, Python 레이어에서 필터링.
+>   inactive 부모도 계층 경로 구성에 활용.
+> - `_build_pattern_catalog_entry()`: description + search_text 병기 (대체 아님).
+>   report_framing NULL fallback 분기 추가 (parent 유무에 따라 다른 문구).
+> - 혼동 쌍: `_SONNET_SOLO_PROMPT` 문자열 바깥 Python 코드 주석으로 보존. STEP 5-B에서 재도입.
+> - structural 예시(3-1): vector few-shot에서 분리 → `## 구조적 패턴 감지 예시` 전용 섹션.
+>   vector/structural 선택 기준을 안내문에서 명시적으로 분리.
+> - 모든 Few-shot 대체 후보에 `pattern_ethics_relations` relation_count 확인 의무.
+>   0건 사용 불가, 강제 매핑 금지.
+> - unmatched_vector_candidates 로그 추가 (STEP 6 임베딩 재생성 전까지 추적용).
+>
+> **v3 프롬프트 전문**: SESSION_CONTEXT_2026-05-06_v49.md 또는
+> 세션 히스토리(2026-05-06 Claude.ai 세션 마감 직전 메시지) 참조.
 
 ```
+[SUPERSEDED — v3 프롬프트로 교체됨. 아래는 원본 보존용.]
+
 다음 작업을 순서대로 수행하라.
 
 1. 다음 파일들을 읽어라:
@@ -903,6 +951,7 @@ Phase G 매핑 복원 재개 — 119개 기준으로 공백 패턴 보완
 | v1.0 | 2026-04-28 | `PHASE_H_EXECUTION_PLAN_v1.0.md` + `PIPELINE_IMPROVEMENT_PLAN_v1.1.md` 실행 순서 기반 완전 통합 |
 | v1.1 | 2026-05-01 | STEP 0-B §6: applicable_contexts 컨텍스트 목록에 `{crime}` 추가, 확정 목록 명시. STEP 4-C: `_infer_article_context()` 함수 'court' 폐기 후 `crime` 포함 9개 컨텍스트로 확장. |
 | v1.2 | 2026-05-03 | STEP 3 완료 기록. §9 실제 실행 결과 반영 (111건 발견·처리, hierarchy_level 필터 정규식 교체, PCP 44.6% 달성). |
+| v1.3 | 2026-05-09 | STEP 5-B 완료 기록. §11 CREATE TABLE 구문에 UNIQUE/CHECK 제약 추가 반영. pattern_matcher.py 실제 변경 내용 기록. STEP 5-C 완료 기록. §11 실제 실행 내용 반영 (import 주석 처리, 호출 블록 주석 처리, triggered_meta=[] 유지, 주석 문구 수정). |
 
 ---
 
