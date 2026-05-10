@@ -627,7 +627,7 @@ RPC 수정 방향:
 > **실행 환경**: Claude Code CLI
 > **주의**: DB에 detection_strategy, report_framing 데이터 입력 완료 전제
 
-### STEP 5-A: 패턴 카탈로그 형식 재설계
+### STEP 5-A: 패턴 카탈로그 형식 재설계 ✅ 완료 (2026-05-08)
 
 **문제**: 119개 패턴이 평면 나열되면 Sonnet attention이 분산된다.
 계층 경로와 report_framing 힌트가 없어 리포트 서술 깊이가 불안정하다.
@@ -778,8 +778,9 @@ CREATE TABLE IF NOT EXISTS public.pattern_confusion_pairs (
 
 ## 12. STEP 6 — 임베딩 재생성
 
-> **선행 조건**: STEP 5 완료 및 기획자 승인
+> **선행 조건**: STEP 5 완료 및 기획자 승인 ✅
 > **실행 환경**: Claude Code CLI
+> **세부 실행 계획**: `docs/STEP6_EMBEDDING_REGEN_PLAN_v9.md` (10차 교차 감리 완료, 2026-05-10)
 
 ### 목표
 
@@ -788,28 +789,29 @@ detection_strategy='structural' 패턴은 임베딩 대상에서 제외.
 
 ### CLI 실행 지시
 
+> ⚠️ **아래 원본 지시는 `docs/STEP6_EMBEDDING_REGEN_PLAN_v9.md`(v9)로 대체됨.**
+> CLI 실행 시에는 반드시 해당 파일의 Phase A~E 순서를 따를 것.
+> 이 섹션의 간략 지시는 참조용으로만 보존한다.
+
 ```
-다음 작업을 순서대로 수행하라.
+[SUPERSEDED — STEP6_EMBEDDING_REGEN_PLAN_v9.md로 교체됨. 아래는 원본 보존용.]
 
 1. scripts/generate_embeddings.py를 읽어라.
-
 2. 임베딩 소스를 description → search_text로 변경하라.
-
-3. 임베딩 대상 필터를 아래로 수정하라:
-   is_active=TRUE AND detection_strategy='vector'
-   (structural 패턴은 임베딩 불필요, is_active=FALSE 패턴 제외)
-
-4. 수정된 스크립트를 실행하라 (level=3 신규 패턴만 대상).
-   기존 38개 상위 패턴 임베딩은 유지 (호환성).
-
+3. 임베딩 대상 필터: is_active=TRUE AND detection_strategy='vector'
+4. 수정된 스크립트를 실행하라 (신규 leaf 패턴만 대상).
 5. 재생성 후 pattern_count, ethics_count를 로그로 출력하라.
-   예상: vector 패턴 수 = 전체 활성 패턴 - structural 패턴 수
 ```
 
 ### 승인 게이트 (STEP 6)
 
-- 임베딩 건수 확인: 신규 119건 중 structural 제외 건수만 생성됐는지
-- 기존 38개 상위 패턴 임베딩 유지 여부 확인
+> 세부 검증 쿼리는 `STEP6_EMBEDDING_REGEN_PLAN_v9.md` Phase D(D-18~D-25) 참조.
+
+- 임베딩 건수 확인: active vector leaf 전원 생성됐는지
+- 벡터 차원: 1536 단일값 확인
+- structural / inactive 패턴 임베딩 미생성 확인
+- RPC 격리 검증: candidate_count ≥ 1 AND 이상 코드 0건
+- 골든셋 TP 스모크 테스트: threshold=0.2/match_count=7 기준 HIT/MISS 로그
 
 ---
 
@@ -952,6 +954,7 @@ Phase G 매핑 복원 재개 — 119개 기준으로 공백 패턴 보완
 | v1.1 | 2026-05-01 | STEP 0-B §6: applicable_contexts 컨텍스트 목록에 `{crime}` 추가, 확정 목록 명시. STEP 4-C: `_infer_article_context()` 함수 'court' 폐기 후 `crime` 포함 9개 컨텍스트로 확장. |
 | v1.2 | 2026-05-03 | STEP 3 완료 기록. §9 실제 실행 결과 반영 (111건 발견·처리, hierarchy_level 필터 정규식 교체, PCP 44.6% 달성). |
 | v1.3 | 2026-05-09 | STEP 5-B 완료 기록. §11 CREATE TABLE 구문에 UNIQUE/CHECK 제약 추가 반영. pattern_matcher.py 실제 변경 내용 기록. STEP 5-C 완료 기록. §11 실제 실행 내용 반영 (import 주석 처리, 호출 블록 주석 처리, triggered_meta=[] 유지, 주석 문구 수정). |
+| v1.4 | 2026-05-10 | STEP 5-A 완료 마커 추가 (§11, 2026-05-08). §12 STEP 6 CLI 지시를 `STEP6_EMBEDDING_REGEN_PLAN_v9.md`로 교체 (10차 교차 감리 완료). |
 
 ---
 
