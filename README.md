@@ -28,6 +28,7 @@
 | AI (리포트 생성) | Claude Sonnet 4.6 (3종 리포트 + 〔〕규범 인용) |
 | AI (임베딩) | OpenAI text-embedding-3-small (1536차원) |
 | 배포 | Railway (BE) + Vercel (FE) |
+
 ## 분석 파이프라인
 
 ```
@@ -48,6 +49,7 @@ POST /analyze { url }
 - Python 3.11+, Node.js 18+
 - Anthropic API 키, OpenAI API 키
 - Supabase 로컬 또는 클라우드 프로젝트
+
 ### 백엔드
 
 ```bash
@@ -96,6 +98,22 @@ cr-check/
 ├── supabase/migrations/    # DB 마이그레이션 (SSoT)
 └── scripts/                # 벤치마크 + 임베딩 생성
 ```
+
+## 개발 방식 — 인간-AI 협업 구조
+
+이 프로젝트는 처음부터 끝까지 **한 명의 기획자와 여러 AI 도구의 협업**으로 구축됐습니다.
+코드 한 줄, 데이터베이스 설계 하나도 기획자의 판단과 승인 없이 자동으로 진행된 것은 없습니다.
+
+| 역할 | 주체 |
+|------|------|
+| 기획·큐레이션·최종 결정 | 기획자, 감나무 |
+| 설계 감독 · 단계별 가이드 | Claude.ai (Claude Sonnet) |
+| 코드 작성 · 실행 | Claude Code CLI |
+| 독립 감리 | Antigravity · Gemini · Manus · Perplexity · ChatGPT · NotebookLM |
+
+감리는 단순 검토가 아닙니다. 동일한 프롬프트를 여러 AI에게 독립적으로 제출하고 결과를 교차 검증하여, 어느 한 AI의 판단에 의존하지 않는 방식으로 운영됩니다.
+
+이 구조 자체가 CR-Project의 실험 중 하나입니다. **단독 개발자도, 대형 팀도 아닌 '한 명 + AI 앙상블'이 공익 도구를 만들 수 있다는 것을 증명하는 과정**이기도 합니다. 이 리포지토리를 포크해서 다른 언어·다른 맥락에 맞게 발전시키는 것을 환영합니다.
 
 ## 라이선스
 
