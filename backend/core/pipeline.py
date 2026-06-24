@@ -28,6 +28,7 @@ from .pattern_matcher import (
 #     match_patterns,        # deprecated 1-Call (Sonnet 단독)
 # )
 from .report_generator import generate_report, ReportResult
+from .verify_citations import verify_report_citations
 # [DEPRECATED] cite 태그 후치환 비활성화 (Phase β). Sonnet이 규범을 직접 서술.
 # 복원이 필요하면 아래 주석을 해제하세요.
 # from .citation_resolver import resolve_citations
@@ -62,6 +63,9 @@ class AnalysisResult:
     sonnet_output_tokens: int = 0
     overall_assessment: str = ""  # Sonnet Solo 판단 근거 (아카이빙용 보존)
     meta_patterns: list = field(default_factory=list)  # MetaPatternResult 리스트
+    # S6: citation_audit JSON. analysis_results.citation_audit 컬럼에 저장된다.
+    # 관측 전용 metadata — 사용자-facing 리포트 본문/프론트 응답에 노출하지 않는다.
+    citation_audit: dict | None = None
 
 
 def _infer_article_context(article_text: str, pattern_codes: set) -> str:
@@ -245,6 +249,28 @@ def analyze_article(
         result.report_result = rr
         result.sonnet_input_tokens = rr.input_tokens
         result.sonnet_output_tokens = rr.output_tokens
+
+        # S6: citation audit — 관측 전용. 실패해도 리포트 본문은 보존된다.
+        try:
+            result.citation_audit = verify_report_citations(
+                rr.reports or {}, rr.ethics_refs or [],
+            )
+        except Exception as e_audit:
+            logger.warning(
+                f"citation audit 외부 예외 — 리포트 보존 [{type(e_audit).__name__}]: {e_audit}"
+            )
+            result.citation_audit = {
+                "version": "wave1_s6_v1",
+                "status": "error",
+                "error": f"{type(e_audit).__name__}: {e_audit}",
+                "summary": {
+                    "allowed_count": 0, "used_total": 0, "used_unique_count": 0,
+                    "matched_total": 0, "unmatched_total": 0, "match_rate": None,
+                },
+                "allowed_citations": [],
+                "reports": {},
+                "notes": ["citation audit failed at pipeline; report preserved"],
+            }
     elif run_sonnet and not pm.validated_pattern_ids:
         result.report_result = ReportResult(
             reports={
