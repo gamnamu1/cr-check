@@ -28,6 +28,7 @@ from .pattern_matcher import (
 #     match_patterns,        # deprecated 1-Call (Sonnet 단독)
 # )
 from .report_generator import generate_report, ReportResult
+from .verify_citations import verify_report_citations
 # [DEPRECATED] cite 태그 후치환 비활성화 (Phase β). Sonnet이 규범을 직접 서술.
 # 복원이 필요하면 아래 주석을 해제하세요.
 # from .citation_resolver import resolve_citations
@@ -62,6 +63,9 @@ class AnalysisResult:
     sonnet_output_tokens: int = 0
     overall_assessment: str = ""  # Sonnet Solo 판단 근거 (아카이빙용 보존)
     meta_patterns: list = field(default_factory=list)  # MetaPatternResult 리스트
+    # S6: citation_audit JSON. analysis_results.citation_audit 컬럼에 저장된다.
+    # 관측 전용 metadata — 사용자-facing 리포트 본문/프론트 응답에 노출하지 않는다.
+    citation_audit: dict | None = None
 
 
 def _infer_article_context(article_text: str, pattern_codes: set) -> str:
@@ -95,6 +99,39 @@ def _infer_article_context(article_text: str, pattern_codes: set) -> str:
     return 'general'
 
 
+def _build_haiku_dicts(pm: PatternMatchResult, include_report_meta: bool = False) -> list[dict]:
+    """확정 패턴 detection을 Phase 2 페이로드(dict 리스트)로 직렬화.
+
+    기본(include_report_meta=False): 기존 4필드(pattern_code, matched_text,
+    severity, reasoning)만 반환한다. 이 4필드만 실제 Sonnet 입력으로 직렬화되므로
+    S5 전까지 Phase 2 입력은 변하지 않는다.
+
+    include_report_meta=True일 때만 pattern_catalog_meta(code → {name,
+    report_framing}) 맵에서 메타를 key-level fallback으로 조회해 pattern_name·
+    report_framing 2필드를 추가한다. 메타 항목 자체가 없거나 일부 키만 빠져 있어도
+    KeyError 없이 기본값(name=pattern_code, report_framing="")으로 흡수한다.
+    이 경로는 S5 프롬프트 개편 시 명시적으로 켜기 위한 휴면 기능이다.
+    """
+    dicts: list[dict] = []
+    for d in pm.haiku_detections:
+        if d.pattern_code not in pm.validated_pattern_codes:
+            continue
+        entry = {
+            "pattern_code": d.pattern_code,
+            "matched_text": d.matched_text,
+            "severity": d.severity,
+            "reasoning": d.reasoning,
+        }
+        if include_report_meta:
+            meta = pm.pattern_catalog_meta.get(d.pattern_code) or {}
+            pattern_name = meta.get("name") or d.pattern_code
+            report_framing = meta.get("report_framing") or ""
+            entry["pattern_name"] = pattern_name
+            entry["report_framing"] = report_framing
+        dicts.append(entry)
+    return dicts
+
+
 def analyze_article(
     article_text: str,
     run_sonnet: bool = True,
@@ -118,7 +155,7 @@ def analyze_article(
         chunks = chunk_article(article_text)
     except Exception as e:
         logger.warning(f"청킹 실패, 전체 텍스트를 단일 청크로 사용: {e}")
-        chunks = [Chunk(text=article_text, start=0, end=len(article_text), length=len(article_text))]
+        chunks = [Chunk(text=article_text, start_idx=0, end_idx=len(article_text))]
 
     result.chunks = chunks
     result.chunk_count = len(chunks)
@@ -159,16 +196,8 @@ def analyze_article(
 
     # 3. 리포트 생성 (Sonnet) — 선택적
     if run_sonnet and pm.validated_pattern_ids:
-        haiku_dicts = [
-            {
-                "pattern_code": d.pattern_code,
-                "matched_text": d.matched_text,
-                "severity": d.severity,
-                "reasoning": d.reasoning,
-            }
-            for d in pm.haiku_detections
-            if d.pattern_code in pm.validated_pattern_codes
-        ]
+        # S5: pattern_name + report_framing을 Phase 2 입력에 포함 (신규 DB 조회 없음 — pm.pattern_catalog_meta 사용).
+        haiku_dicts = _build_haiku_dicts(pm, include_report_meta=True)
         try:
             article_context = _infer_article_context(
                 article_text, pm.validated_pattern_codes
@@ -220,6 +249,28 @@ def analyze_article(
         result.report_result = rr
         result.sonnet_input_tokens = rr.input_tokens
         result.sonnet_output_tokens = rr.output_tokens
+
+        # S6: citation audit — 관측 전용. 실패해도 리포트 본문은 보존된다.
+        try:
+            result.citation_audit = verify_report_citations(
+                rr.reports or {}, rr.ethics_refs or [],
+            )
+        except Exception as e_audit:
+            logger.warning(
+                f"citation audit 외부 예외 — 리포트 보존 [{type(e_audit).__name__}]: {e_audit}"
+            )
+            result.citation_audit = {
+                "version": "wave1_s6_v1",
+                "status": "error",
+                "error": f"{type(e_audit).__name__}: {e_audit}",
+                "summary": {
+                    "allowed_count": 0, "used_total": 0, "used_unique_count": 0,
+                    "matched_total": 0, "unmatched_total": 0, "match_rate": None,
+                },
+                "allowed_citations": [],
+                "reports": {},
+                "notes": ["citation audit failed at pipeline; report preserved"],
+            }
     elif run_sonnet and not pm.validated_pattern_ids:
         result.report_result = ReportResult(
             reports={
