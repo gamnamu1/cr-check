@@ -73,6 +73,9 @@ class PatternMatchResult:
     # STEP 6 임베딩 재생성 전까지 추적용
     unmatched_vector_candidates: list[str] = field(default_factory=list)
     suspect_result: object = None  # SuspectResult (2-Call 모드에서만 사용)
+    # Phase 1 카탈로그 메타 맵 (code → {name, report_framing}). DB 왕복 0회로
+    # _load_pattern_catalog 캐시 결과에서 구성. Phase 2 페이로드 전달용.
+    pattern_catalog_meta: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -170,6 +173,27 @@ def _load_pattern_catalog(sb_url: str, sb_key: str) -> list[dict]:
     return _pattern_catalog_cache
 
 
+def _resolve_report_framing(row: dict) -> str:
+    """report_framing 반환. NULL/빈 값이면 parent 유무에 따라 자동 생성.
+
+    NULL fallback의 단일 출처. 카탈로그 프롬프트(_build_pattern_catalog_entry)와
+    Phase 2 전달용 pattern_catalog_meta 맵이 이 동일 규칙을 공유한다
+    (규칙 신규 발명 금지 — 기존 L225-233 로직을 그대로 반영).
+    """
+    report_framing = (row.get("report_framing") or "").strip()
+    if report_framing:
+        return report_framing
+    code = row["code"]
+    name = row["name"]
+    parent_name = row.get("parent_name")
+    if parent_name:
+        return (
+            f"구체 패턴({code}) '{name}'의 판단 기준을 중심으로 설명하되, "
+            f"필요 시 {parent_name} 맥락으로 확장"
+        )
+    return f"구체 패턴({code}) 지적 → 상위 보도윤리 맥락으로 확장"
+
+
 def _build_pattern_catalog_entry(row: dict) -> str:
     """단일 leaf 패턴의 카탈로그 텍스트 한 블록 생성 (vector·structural 공통).
 
@@ -200,7 +224,6 @@ def _build_pattern_catalog_entry(row: dict) -> str:
     name = row["name"]
     description = (row.get("description") or "").strip()
     search_text = (row.get("search_text") or "").strip()
-    report_framing = (row.get("report_framing") or "").strip()
     parent_name = row.get("parent_name")
     grandparent_name = row.get("grandparent_name")
 
@@ -222,16 +245,8 @@ def _build_pattern_catalog_entry(row: dict) -> str:
     if search_text:
         lines.append(f"주요 어휘: {search_text}")
 
-    # report_framing NULL fallback (parent 유무 분기)
-    if not report_framing:
-        if parent_name:
-            report_framing = (
-                f"구체 패턴({code}) '{name}'의 판단 기준을 중심으로 설명하되, "
-                f"필요 시 {parent_name} 맥락으로 확장"
-            )
-        else:
-            report_framing = f"구체 패턴({code}) 지적 → 상위 보도윤리 맥락으로 확장"
-    lines.append(f"리포트 서술 방향: {report_framing}")
+    # report_framing NULL fallback은 _resolve_report_framing 단일 출처에서 처리
+    lines.append(f"리포트 서술 방향: {_resolve_report_framing(row)}")
 
     return "\n".join(lines)
 
@@ -753,6 +768,15 @@ def match_patterns_solo(
     catalog = _load_pattern_catalog(sb_url, sb_key)
     catalog_text = _build_pattern_list_text(catalog)
 
+    # 카탈로그 캐시 결과에서 Phase 2 전달용 메타 맵 구성 (신규 DB 쿼리 0건)
+    pattern_catalog_meta = {
+        row["code"]: {
+            "name": row["name"],
+            "report_framing": _resolve_report_framing(row),
+        }
+        for row in catalog
+    }
+
     if chunks:
         embeddings, emb_tokens = generate_embeddings(chunks)
     else:
@@ -845,6 +869,7 @@ def match_patterns_solo(
         embedding_tokens=emb_tokens,
         unmatched_vector_candidates=unmatched_vector_candidates,
         suspect_result=suspect,
+        pattern_catalog_meta=pattern_catalog_meta,
     )
 
 

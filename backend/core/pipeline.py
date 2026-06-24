@@ -95,6 +95,39 @@ def _infer_article_context(article_text: str, pattern_codes: set) -> str:
     return 'general'
 
 
+def _build_haiku_dicts(pm: PatternMatchResult, include_report_meta: bool = False) -> list[dict]:
+    """확정 패턴 detection을 Phase 2 페이로드(dict 리스트)로 직렬화.
+
+    기본(include_report_meta=False): 기존 4필드(pattern_code, matched_text,
+    severity, reasoning)만 반환한다. 이 4필드만 실제 Sonnet 입력으로 직렬화되므로
+    S5 전까지 Phase 2 입력은 변하지 않는다.
+
+    include_report_meta=True일 때만 pattern_catalog_meta(code → {name,
+    report_framing}) 맵에서 메타를 key-level fallback으로 조회해 pattern_name·
+    report_framing 2필드를 추가한다. 메타 항목 자체가 없거나 일부 키만 빠져 있어도
+    KeyError 없이 기본값(name=pattern_code, report_framing="")으로 흡수한다.
+    이 경로는 S5 프롬프트 개편 시 명시적으로 켜기 위한 휴면 기능이다.
+    """
+    dicts: list[dict] = []
+    for d in pm.haiku_detections:
+        if d.pattern_code not in pm.validated_pattern_codes:
+            continue
+        entry = {
+            "pattern_code": d.pattern_code,
+            "matched_text": d.matched_text,
+            "severity": d.severity,
+            "reasoning": d.reasoning,
+        }
+        if include_report_meta:
+            meta = pm.pattern_catalog_meta.get(d.pattern_code) or {}
+            pattern_name = meta.get("name") or d.pattern_code
+            report_framing = meta.get("report_framing") or ""
+            entry["pattern_name"] = pattern_name
+            entry["report_framing"] = report_framing
+        dicts.append(entry)
+    return dicts
+
+
 def analyze_article(
     article_text: str,
     run_sonnet: bool = True,
@@ -118,7 +151,7 @@ def analyze_article(
         chunks = chunk_article(article_text)
     except Exception as e:
         logger.warning(f"청킹 실패, 전체 텍스트를 단일 청크로 사용: {e}")
-        chunks = [Chunk(text=article_text, start=0, end=len(article_text), length=len(article_text))]
+        chunks = [Chunk(text=article_text, start_idx=0, end_idx=len(article_text))]
 
     result.chunks = chunks
     result.chunk_count = len(chunks)
@@ -159,16 +192,7 @@ def analyze_article(
 
     # 3. 리포트 생성 (Sonnet) — 선택적
     if run_sonnet and pm.validated_pattern_ids:
-        haiku_dicts = [
-            {
-                "pattern_code": d.pattern_code,
-                "matched_text": d.matched_text,
-                "severity": d.severity,
-                "reasoning": d.reasoning,
-            }
-            for d in pm.haiku_detections
-            if d.pattern_code in pm.validated_pattern_codes
-        ]
+        haiku_dicts = _build_haiku_dicts(pm, include_report_meta=False)  # TODO(S5): True 전환 + 구조적 렌더링 검토
         try:
             article_context = _infer_article_context(
                 article_text, pm.validated_pattern_codes
