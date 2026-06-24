@@ -192,7 +192,8 @@ def analyze_article(
 
     # 3. 리포트 생성 (Sonnet) — 선택적
     if run_sonnet and pm.validated_pattern_ids:
-        haiku_dicts = _build_haiku_dicts(pm, include_report_meta=False)  # TODO(S5): True 전환 + 구조적 렌더링 검토
+        # S5: pattern_name + report_framing을 Phase 2 입력에 포함 (신규 DB 조회 없음 — pm.pattern_catalog_meta 사용).
+        haiku_dicts = _build_haiku_dicts(pm, include_report_meta=True)
         try:
             article_context = _infer_article_context(
                 article_text, pm.validated_pattern_codes
