@@ -234,61 +234,70 @@ def _format_ethics_header(r: EthicsReference) -> str:
     return f"### {r.ethics_title} (Tier {r.ethics_tier})"
 
 
+# 롤업 행 식별자.
+# RPC `get_ethics_for_patterns`의 parent_chain SELECT가 reasoning 컬럼에 강제 주입하는 마커이며,
+# 직접 매핑된 related_to와 parent-chain rollup으로 생성된 related_to를 가르는 유일한 양성 신호다.
+# (둘 다 relation_type="related_to" / strength="moderate"로 내려오므로 relation_type만으로는 구분 불가.)
+_ROLLUP_MARKER = "parent chain rollup"
+
+
 def _build_ethics_context(refs: list[EthicsReference]) -> str:
-    """규범 컨텍스트를 핵심(violates)/참고(related_to) 두 그룹으로 분리. weak·exception_of 등은 무시."""
+    """규범 컨텍스트를 3섹션으로 분할: 직접 적용 / 직접 참고 / 상위 원칙.
+
+    분류 우선순위 (양성 판정만 사용):
+      1. reasoning == _ROLLUP_MARKER → 상위 원칙 (롤업 우선 판정)
+      2. relation_type == "violates" + strength in (strong|moderate) → 직접 적용
+      3. relation_type == "related_to" + strength in (strong|moderate) → 직접 참고
+      그 외(weak / exception_of 등): 무시.
+    """
+    primary_bucket: list[EthicsReference] = []
+    reference_bucket: list[EthicsReference] = []
+    rollup_bucket: list[EthicsReference] = []
+
+    for r in refs:
+        reasoning = (r.reasoning or "").strip()
+        # 롤업 판정을 먼저 한다 — relation_type을 먼저 보면 롤업이 직접 참고로 잘못 빨려든다.
+        if reasoning == _ROLLUP_MARKER:
+            rollup_bucket.append(r)
+        elif r.relation_type == "violates" and r.strength in ("strong", "moderate"):
+            primary_bucket.append(r)
+        elif r.relation_type == "related_to" and r.strength in ("strong", "moderate"):
+            reference_bucket.append(r)
+
+    # 직접 적용/직접 참고는 구체 규범(Tier 4) 우선, 상위 원칙은 상위(Tier 1) 우선.
+    primary_bucket.sort(key=lambda r: (-r.ethics_tier, r.ethics_code))
+    reference_bucket.sort(key=lambda r: (-r.ethics_tier, r.ethics_code))
+    rollup_bucket.sort(key=lambda r: (r.ethics_tier, r.ethics_code))
+
+    # 전역 중복 제거: ethics_code 기준. 같은 코드가 여러 섹션 후보면 먼저 배치된 섹션에만 남는다.
     seen: set[str] = set()
 
-    # STEP 1 — primary: violates + (strong|moderate)
-    primary_candidates = sorted(
-        (
-            r for r in refs
-            if r.relation_type == "violates"
-            and r.strength in ("strong", "moderate")
-        ),
-        key=lambda r: (-r.ethics_tier, r.ethics_code),
-    )
-    primary_lines: list[str] = []
-    for r in primary_candidates:
-        if r.ethics_code in seen:
-            continue
-        seen.add(r.ethics_code)
-        primary_lines.append(
-            f"{_format_ethics_header(r)}\n"
-            f"{r.ethics_full_text}"
-        )
+    def _emit(bucket: list[EthicsReference]) -> list[str]:
+        lines: list[str] = []
+        for r in bucket:
+            if r.ethics_code in seen:
+                continue
+            seen.add(r.ethics_code)
+            lines.append(
+                f"{_format_ethics_header(r)}\n"
+                f"{r.ethics_full_text}"
+            )
+        return lines
 
-    # STEP 2 — reference: related_to + (strong|moderate), seen 공유로 primary 중복 제거
-    reference_candidates = sorted(
-        (
-            r for r in refs
-            if r.relation_type == "related_to"
-            and r.strength in ("strong", "moderate")
-        ),
-        key=lambda r: (-r.ethics_tier, r.ethics_code),
-    )
-    reference_lines: list[str] = []
-    for r in reference_candidates:
-        if r.ethics_code in seen:
-            continue
-        seen.add(r.ethics_code)
-        reference_lines.append(
-            f"{_format_ethics_header(r)}\n"
-            f"{r.ethics_full_text}"
-        )
+    primary_lines = _emit(primary_bucket)
+    reference_lines = _emit(reference_bucket)
+    rollup_lines = _emit(rollup_bucket)
 
-    # STEP 3 — 출력 조립
+    # 빈 섹션의 헤더는 출력하지 않는다.
     sections: list[str] = []
     if primary_lines:
-        sections.append("## 핵심 규범\n\n" + "\n\n".join(primary_lines))
+        sections.append("## 직접 적용 규범(인용 1순위)\n\n" + "\n\n".join(primary_lines))
     if reference_lines:
-        if primary_lines:
-            sections.append("---")
-        sections.append(
-            "## 참고 규범 (직접 인용보다 맥락 이해용)\n\n"
-            + "\n\n".join(reference_lines)
-        )
+        sections.append("## 직접 참고 규범(보조 인용 가능)\n\n" + "\n\n".join(reference_lines))
+    if rollup_lines:
+        sections.append("## 상위 원칙(종합 평가 보조용)\n\n" + "\n\n".join(rollup_lines))
 
-    return "\n\n".join(sections)
+    return "\n\n---\n\n".join(sections)
 
 
 # ── Sonnet 프롬프트 (M6 — 3종 리포트) ──────────────────────────
