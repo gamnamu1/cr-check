@@ -45,6 +45,11 @@ class EthicsReference:
     relation_type: str
     strength: str
     reasoning: str
+    # S2(2026-06-23) DB 계약 확장으로 추가된 정식 인용명 구성 요소.
+    # RPC 12컬럼 응답/REST fallback 양쪽에서 채워지며,
+    # 10컬럼 응답·키 누락 시에는 빈 문자열로 정규화된다.
+    ethics_source: str = ""
+    ethics_article_number: str = ""
 
 
 @dataclass
@@ -74,6 +79,8 @@ def _parse_ethics_rows(rows: list[dict]) -> list[EthicsReference]:
             relation_type=row.get("relation_type", ""),
             strength=row.get("strength", ""),
             reasoning=row.get("reasoning", ""),
+            ethics_source=row.get("ethics_source", "") or "",
+            ethics_article_number=row.get("ethics_article_number", "") or "",
         )
         for row in rows
     ]
@@ -162,7 +169,7 @@ def fetch_ethics_for_patterns(
                 f"pattern_id,"
                 f"patterns!inner(code),"
                 f"ethics_code_id,"
-                f"ethics_codes!inner(code,title,full_text,tier,is_active,is_citable,applicable_contexts),"
+                f"ethics_codes!inner(code,title,source,article_number,full_text,tier,is_active,is_citable,applicable_contexts),"
                 f"relation_type,strength,reasoning"
                 f"&pattern_id=in.({ids_csv})"
                 f"&ethics_codes.is_active=eq.true"
@@ -202,6 +209,8 @@ def fetch_ethics_for_patterns(
                         "relation_type": item.get("relation_type", ""),
                         "strength": item.get("strength", ""),
                         "reasoning": item.get("reasoning", ""),
+                        "ethics_source": ec.get("source", "") or "",
+                        "ethics_article_number": ec.get("article_number", "") or "",
                     })
                 logger.info(f"REST API fallback 성공: {len(rows)}건 (필터링 후)")
             else:
@@ -210,6 +219,19 @@ def fetch_ethics_for_patterns(
             logger.error(f"REST API fallback 실패 [{type(fb_e).__name__}]: {fb_e}")
 
     return _parse_ethics_rows(rows)
+
+
+def _format_ethics_header(r: EthicsReference) -> str:
+    """규범 헤더: 내부 ethics_code 미노출, source+article_number 기반 정식 인용명.
+
+    빈 값 가드: source/article_number가 둘 다 비면 〔〕 자체를 출력하지 않는다.
+    """
+    source = (r.ethics_source or "").strip()
+    article_number = (r.ethics_article_number or "").strip()
+    citation_label = f"{source} {article_number}".strip()
+    if citation_label:
+        return f"### 〔{citation_label}〕 {r.ethics_title} (Tier {r.ethics_tier})"
+    return f"### {r.ethics_title} (Tier {r.ethics_tier})"
 
 
 def _build_ethics_context(refs: list[EthicsReference]) -> str:
@@ -231,7 +253,7 @@ def _build_ethics_context(refs: list[EthicsReference]) -> str:
             continue
         seen.add(r.ethics_code)
         primary_lines.append(
-            f"### {r.ethics_title} (코드: {r.ethics_code}, Tier {r.ethics_tier})\n"
+            f"{_format_ethics_header(r)}\n"
             f"{r.ethics_full_text}"
         )
 
@@ -250,7 +272,7 @@ def _build_ethics_context(refs: list[EthicsReference]) -> str:
             continue
         seen.add(r.ethics_code)
         reference_lines.append(
-            f"### {r.ethics_title} (코드: {r.ethics_code}, Tier {r.ethics_tier})\n"
+            f"{_format_ethics_header(r)}\n"
             f"{r.ethics_full_text}"
         )
 
