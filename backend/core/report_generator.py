@@ -23,6 +23,7 @@ from anthropic import Anthropic
 from dotenv import load_dotenv
 
 from .db import _get_supabase_config
+from .pattern_matcher import _MANDATORY_REVIEW_TARGET_CODES
 
 env_path = Path(__file__).parent.parent / '.env'
 load_dotenv(dotenv_path=env_path)
@@ -661,6 +662,7 @@ def call_sonnet(
     overall_assessment: str,
     ethics_context: str,
     meta_pattern_block: str = "",
+    frame_pattern_block: str = "",
 ) -> tuple[str, int, int]:
     """Sonnet을 호출하여 3종 리포트 생성. (raw_text, input_tokens, output_tokens)."""
     client = Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
@@ -680,6 +682,10 @@ def call_sonnet(
     # 메타 패턴 발동 시에만 블록 추가
     if meta_pattern_block:
         user_message += f"\n{meta_pattern_block}\n"
+
+    # 프레임 효과 대상 패턴(4-3-b/3-4-a/3-4-b/6-2-d) 확정 시에만 블록 추가
+    if frame_pattern_block:
+        user_message += f"\n{frame_pattern_block}\n"
 
     user_message += f"""
 ## 기사 전문
@@ -743,6 +749,34 @@ def _build_meta_pattern_block(meta_patterns: list) -> str:
 - student(학생용): "이런 점을 생각해볼까요?" — 질문 형식 유도"""
 
 
+def _build_frame_effect_block(detected_codes: set) -> str:
+    """사회적 약자·소수자 프레이밍 패턴 탐지 시 Sonnet 프롬프트에 주입할 블록.
+
+    T2의 필수 검토 대상(_MANDATORY_REVIEW_TARGET_CODES)과 동일한 4개 패턴
+    (4-3-b/3-4-a/3-4-b/6-2-d) 중 하나라도 이번 분석에서 확정됐을 때만 발동한다.
+    탐지되지 않은 기사에는 이 블록 자체가 생성되지 않는다(빈 문자열 반환).
+    """
+    triggered = _MANDATORY_REVIEW_TARGET_CODES & detected_codes
+    if not triggered:
+        return ""
+
+    return f"""## 프레임 효과 서술 지시 (차별·낙인·대립 구도 패턴 탐지됨: {', '.join(sorted(triggered))})
+
+이 기사에서 사회적 약자·소수자 관련 프레이밍 패턴이 확정됐습니다. 관련 핵심
+지적에 한해, "무엇이 빠졌다/틀렸다"에서 끝나지 말고 그 서술이 독자의 인식에
+남기는 프레임을 설명하세요. 다음 네 질문 중 최소 두 가지를 본문에서 다루세요:
+
+① 누구의 목소리가 중심화되고 누구의 목소리가 배제되는가
+② 누가 '시민·정상·공공질서'의 바깥으로 밀려나는가
+③ 제목과 인용 배치가 어떤 낙인 효과를 만드는가
+④ 어떤 대안 제목·추가 취재 질문이 가능했는가
+
+이 지시는 위에 나열된 패턴이 확정된 핵심 지적에만 적용합니다. 다른 핵심
+지적(예: 취재원 편중, 사실과 의견 혼재)까지 프레임 효과 언어로 억지로 바꾸지
+마세요. 윤리규범 인용은 반드시 위 「관련 윤리규범」 섹션에 제공된 것만
+사용합니다(기존 규칙과 동일)."""
+
+
 def generate_report(
     article_text: str,
     pattern_ids: list[int],
@@ -777,6 +811,10 @@ def generate_report(
     # 2.5 메타 패턴 프롬프트 블록 (조건부)
     meta_block = _build_meta_pattern_block(meta_patterns or [])
 
+    # 2.6 프레임 효과 프롬프트 블록 (조건부 — 대상 4패턴 확정 시에만)
+    _detected_codes = {d.get("pattern_code") for d in detections if d.get("pattern_code")}
+    frame_block = _build_frame_effect_block(_detected_codes)
+
     # 3. Sonnet 호출 (3종 JSON 반환) + 재시도 로직
     max_retries = 5
 
@@ -785,6 +823,7 @@ def generate_report(
             raw_text, in_tok, out_tok = call_sonnet(
                 article_text, detections_json, overall_assessment, ethics_context,
                 meta_pattern_block=meta_block,
+                frame_pattern_block=frame_block,
             )
             result_json = _robust_json_parse(raw_text)
 
