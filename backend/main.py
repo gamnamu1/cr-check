@@ -178,6 +178,7 @@ def analyze_article(request: AnalyzeRequest):
             result=result,
             ethics_refs=result.report_result.ethics_refs if result.report_result else None,
             citation_audit=result.citation_audit,
+            phase1_forensic=result.phase1_forensic,
         )
         if share_id is None:
             print("⚠️  분석 결과 DB 저장 실패 (공유 기능 비활성화)")

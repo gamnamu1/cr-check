@@ -19,6 +19,8 @@ from urllib.parse import urlparse, urlunparse, parse_qs, urlencode
 import httpx
 
 from .db import _get_supabase_config
+# T0: phase1_model 하드코딩 제거 — pattern_matcher.SONNET_MODEL 단일 소스 참조
+from . import pattern_matcher as _pattern_matcher_mod
 
 logger = logging.getLogger(__name__)
 
@@ -433,6 +435,7 @@ def save_analysis_result(
     result,  # pipeline.AnalysisResult — 순환 import 회피용 untyped
     ethics_refs: list | None = None,  # report_generator.EthicsReference 리스트 (순환 import 회피)
     citation_audit: dict | None = None,  # S6: 관측 전용 metadata. 사용자-facing 노출 금지.
+    phase1_forensic: dict | None = None,  # T0: 관측 전용 Phase 1 포렌식. 사용자-facing 노출 금지.
 ) -> str | None:
     """분석 결과를 DB에 저장하고 share_id를 반환한다.
 
@@ -492,13 +495,15 @@ def save_analysis_result(
         "student_report": reports_dict.get("student", ""),
         "article_analysis": article_analysis_payload or None,
         "overall_assessment": result.overall_assessment or None,
-        "phase1_model": "claude-sonnet-4-5-20250929",
+        "phase1_model": _pattern_matcher_mod.SONNET_MODEL,
         "phase2_model": "claude-sonnet-4-6",
         "duration_seconds": result.total_seconds,
         "detected_patterns": detected_patterns or None,
         "meta_patterns": meta_patterns_payload or None,
         # S6: 관측 전용 metadata. detected_patterns와 별도 컬럼으로 분리 저장된다.
         "citation_audit": citation_audit,
+        # T0: 관측 전용 Phase 1 포렌식 축약본 (JSONB)
+        "phase1_forensic": phase1_forensic,
     }
 
     # 5. share_id 생성 — 충돌 시 최대 3회 재시도

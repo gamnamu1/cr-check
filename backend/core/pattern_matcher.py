@@ -76,6 +76,10 @@ class PatternMatchResult:
     # Phase 1 카탈로그 메타 맵 (code → {name, report_framing}). DB 왕복 0회로
     # _load_pattern_catalog 캐시 결과에서 구성. Phase 2 페이로드 전달용.
     pattern_catalog_meta: dict = field(default_factory=dict)
+    # T0 포렌식 — Solo 응답 파싱이 1차 json.loads 외 복구 경로를 탄 경우 True
+    parse_fallback_used: bool = False
+    # T0 포렌식 — 프롬프트 카탈로그에서 실제로 ★ 마크된 코드 (런타임 원본 기록)
+    starred_codes: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -699,8 +703,13 @@ def _fix_llm_json(json_str: str) -> str:
     return fixed
 
 
-def _parse_solo_response(text: str) -> tuple[str, list[HaikuDetection]]:
-    """Sonnet Solo 응답 파싱. 3단계 fallback으로 JSON 복구 시도."""
+def _parse_solo_response(text: str) -> tuple[str, list[HaikuDetection], bool]:
+    """Sonnet Solo 응답 파싱. 3단계 fallback으로 JSON 복구 시도.
+
+    Returns:
+        (overall_assessment, detections, fallback_used)
+        fallback_used: 1차 json.loads 성공 시 False, 그 외 모든 경로 True (T0 포렌식)
+    """
     text = re.sub(r"```json\s*", "", text)
     text = re.sub(r"```\s*", "", text)
     text = text.strip()
@@ -710,7 +719,7 @@ def _parse_solo_response(text: str) -> tuple[str, list[HaikuDetection]]:
     end = text.rfind("}")
     if start == -1 or end == -1:
         logger.warning("Solo response: JSON object not found")
-        return "", []
+        return "", [], True
 
     json_str = text[start : end + 1]
 
@@ -718,7 +727,8 @@ def _parse_solo_response(text: str) -> tuple[str, list[HaikuDetection]]:
     try:
         data = json.loads(json_str)
         logger.info("Solo JSON 1차 파싱 성공")
-        return _extract_solo_detections(data)
+        assessment, detections = _extract_solo_detections(data)
+        return assessment, detections, False
     except json.JSONDecodeError as e:
         logger.warning(f"Solo JSON 1차 실패, 2차 복구 시도: {e}")
 
@@ -727,7 +737,8 @@ def _parse_solo_response(text: str) -> tuple[str, list[HaikuDetection]]:
         fixed = _fix_llm_json(json_str)
         data = json.loads(fixed)
         logger.info("Solo JSON 2차 복구 성공")
-        return _extract_solo_detections(data)
+        assessment, detections = _extract_solo_detections(data)
+        return assessment, detections, True
     except json.JSONDecodeError as e:
         logger.warning(f"Solo JSON 2차 실패, 3차 정규식 추출 시도: {e}")
 
@@ -749,10 +760,10 @@ def _parse_solo_response(text: str) -> tuple[str, list[HaikuDetection]]:
                     reasoning="",
                 ))
         logger.warning(f"Solo JSON 3차 정규식 추출 사용: {[d.pattern_code for d in detections]}")
-        return assessment, detections
+        return assessment, detections, True
 
     logger.warning("Solo JSON 모든 파싱 시도 실패, 빈 결과 반환")
-    return "", []
+    return "", [], True
 
 
 def match_patterns_solo(
@@ -805,6 +816,7 @@ def match_patterns_solo(
     # ★ 마킹: [code] name 형식 매칭 + vector 섹션만 적용
     star_re = re.compile(r'^\[([^\]]+)\] ')
     marked_lines: list[str] = []
+    starred_codes: list[str] = []  # T0 포렌식 — 실제 ★ 마크된 코드 원본 기록
     current_section: str | None = None
     for line in catalog_text.split("\n"):
         if line.startswith("## 벡터 검색 기반 패턴"):
@@ -823,6 +835,7 @@ def match_patterns_solo(
         if m and current_section == "vector":
             code = m.group(1)
             if code in candidate_codes and code in vector_leaf_codes:
+                starred_codes.append(code)
                 marked_lines.append(f"★ {line}")
                 continue
         marked_lines.append(line)
@@ -845,7 +858,7 @@ def match_patterns_solo(
     )
 
     raw = response.content[0].text
-    assessment, detections = _parse_solo_response(raw)
+    assessment, detections, parse_fallback_used = _parse_solo_response(raw)
 
     # 4. 밸리데이션
     valid_ids, valid_codes, hallucinated = validate_pattern_codes(
@@ -870,6 +883,8 @@ def match_patterns_solo(
         unmatched_vector_candidates=unmatched_vector_candidates,
         suspect_result=suspect,
         pattern_catalog_meta=pattern_catalog_meta,
+        parse_fallback_used=parse_fallback_used,
+        starred_codes=sorted(starred_codes),
     )
 
 
