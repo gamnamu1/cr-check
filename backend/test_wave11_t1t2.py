@@ -78,6 +78,8 @@ class TestMandatoryReviewBlock(unittest.TestCase):
         for expected in [
             "장애인, 이주민, 성소수자, 노인, 여성, 노동자",
             "집회·시위·파업·농성",
+            "명시적 낙인 관용구·비하 어휘",
+            "'강성 노조', '귀족 노조'",
             "→ 4-3-b",
             "→ 3-4-a, 3-4-b",
             "→ 6-2-d",
