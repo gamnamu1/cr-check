@@ -38,6 +38,11 @@ SONNET_MODEL = "claude-sonnet-4-5-20250929"
 VECTOR_THRESHOLD = float(os.environ.get("VECTOR_THRESHOLD", "0.2"))
 VECTOR_MATCH_COUNT = 7
 
+# T2 — "사회적 약자·소수자 보도 필수 검토" 지시 블록이 이름으로 지목한 코드.
+# mandatory_review_codes는 이 집합과 validated_pattern_codes의 교집합으로
+# 파생 계산한다 (Phase 1 JSON 스키마에 새 top-level 키 추가 금지 원칙).
+_MANDATORY_REVIEW_TARGET_CODES = {"4-3-b", "3-4-a", "3-4-b", "6-2-d"}
+
 
 # ── 데이터 구조 ──────────────────────────────────────────────────
 
@@ -80,6 +85,9 @@ class PatternMatchResult:
     parse_fallback_used: bool = False
     # T0 포렌식 — 프롬프트 카탈로그에서 실제로 ★ 마크된 코드 (런타임 원본 기록)
     starred_codes: list[str] = field(default_factory=list)
+    # T2 — A-3 지시가 이름으로 지목한 4개 코드 중 이번 분석에서 실제로
+    # validated_pattern_codes에 포함된 것 (모델에 새 필드를 묻지 않고 파생 계산)
+    mandatory_review_codes: list[str] = field(default_factory=list)
 
 
 @dataclass
@@ -443,6 +451,20 @@ _SONNET_SOLO_PROMPT = """\
 - ★ 패턴을 먼저 우선적으로 검토하세요.
 - 단, ★ 표시가 없는 패턴도 기사에 명확히 해당하면 동등하게 선택하세요.
 
+## 사회적 약자·소수자 보도 필수 검토 (★ 표시와 무관)
+기사에 사회적 약자·소수자(장애인, 이주민, 성소수자, 노인, 여성, 노동자 등)나
+그들의 집단행동(집회·시위·파업·농성)이 등장하면, 명시적 비하어가 없더라도
+다음을 반드시 검토합니다:
+- 해당 집단을 공공질서 파괴자·시민의 적·사회적 부담·가해자로 위치시키는
+  프레이밍 → 4-3-b
+- 집단 간 대립·제로섬 구도로 환원하는 서술 → 3-4-a, 3-4-b
+- 제목이 공격적 발언을 거리두기 없이 인용·증폭하는 방식 → 6-2-d
+  (및 6-2-a/b/c 제목-본문 대조)
+
+정치인 등 유력 인사의 발언을 따옴표로 옮긴 경우라도, 제목·리드·본문 구조가
+그 표현을 증폭하면 동일하게 검토합니다. 검토는 의무이되 선택은 아닙니다 —
+기사 본문에서 근거 문장을 특정할 수 있을 때만 선택하십시오.
+
 {confusion_pairs_section}
 
 ## 기사 길이별 가이드
@@ -519,6 +541,25 @@ _SONNET_SOLO_PROMPT = """\
       "matched_text": "'눈먼 돈' 청년 전세대출",
       "reasoning": "'눈먼 돈'은 시각장애인 비하 표현이다. 문제는 단순한 자극적 표현이 아니라, 시각장애를 부정적 의미로 사용하는 차별적 관용구라는 점이다.",
       "severity": "medium",
+      "pattern_code": "4-3-b"
+    }}
+  ]
+}}
+```
+
+### 예시 3-1 — [TP] 4-3-b: 차별·혐오 표현 (프레이밍형 — 명시적 비하어 없음)
+기사 제목: "○○단체 또 도심 점거…'볼모' 잡힌 출근길"
+기사 요약: 한 정치인이 장애인단체의 이동권 시위를 "시민을 볼모로 잡는 독선"이라
+비판한 발언을 제목과 리드에 그대로 배치하고, 시민 불편 사례를 나열함.
+올바른 분석:
+```json
+{{
+  "overall_assessment": "이동권 시위라는 공적 쟁점을 다루면서, '볼모'·'독선' 등의 표현과 '시민 대 장애인' 대립 구도를 거리두기 없이 증폭하여 장애인의 권리 요구를 공공질서 파괴로만 프레이밍하는 문제가 확인된다.",
+  "detections": [
+    {{
+      "matched_text": "'볼모' 잡힌 출근길",
+      "reasoning": "명시적 비하어는 없으나, 권리 요구 집단을 시민 피해의 가해자로 위치시키는 프레이밍이다. 문제는 개별 단어가 아니라 제목·인용 배치가 만드는 구도로, 4-3-b의 프레이밍형 사례에 해당한다.",
+      "severity": "high",
       "pattern_code": "4-3-b"
     }}
   ]
@@ -865,6 +906,11 @@ def match_patterns_solo(
         detections, sb_url, sb_key
     )
 
+    # T2: 필수 검토 지시 대상 코드 중 실제 확정된 것 (파생 계산)
+    mandatory_review_codes = sorted(
+        _MANDATORY_REVIEW_TARGET_CODES & set(valid_codes)
+    )
+
     # 5. 벤치마크 호환용 SuspectResult
     suspect = SuspectResult(
         overall_assessment=assessment,
@@ -885,6 +931,7 @@ def match_patterns_solo(
         pattern_catalog_meta=pattern_catalog_meta,
         parse_fallback_used=parse_fallback_used,
         starred_codes=sorted(starred_codes),
+        mandatory_review_codes=mandatory_review_codes,
     )
 
 

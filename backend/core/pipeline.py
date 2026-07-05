@@ -156,8 +156,9 @@ def _build_phase1_forensic(
             for vc in pm.vector_candidates
         ],
         "starred_codes": list(pm.starred_codes),
-        # T2 배포 전까지 빈 배열 고정 (스키마 선행 확보)
-        "mandatory_review_codes": [],
+        # T2: 필수 검토 지시 대상 4개 코드 ∩ validated_pattern_codes (파생 계산).
+        # 이 값이 빈 배열 고정이 아니게 된 것이 T2 배포의 관측 신호다.
+        "mandatory_review_codes": list(pm.mandatory_review_codes),
         "validated_codes": list(pm.validated_pattern_codes),
         "hallucinated_codes": list(pm.hallucinated_codes),
         "unmatched_vector_candidates": list(pm.unmatched_vector_candidates),
