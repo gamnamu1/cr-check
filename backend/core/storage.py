@@ -21,6 +21,8 @@ import httpx
 from .db import _get_supabase_config
 # T0: phase1_model 하드코딩 제거 — pattern_matcher.SONNET_MODEL 단일 소스 참조
 from . import pattern_matcher as _pattern_matcher_mod
+# phase2_model도 동일하게 report_generator.SONNET_MODEL 단일 소스 참조
+from . import report_generator as _report_generator_mod
 
 logger = logging.getLogger(__name__)
 
@@ -496,7 +498,7 @@ def save_analysis_result(
         "article_analysis": article_analysis_payload or None,
         "overall_assessment": result.overall_assessment or None,
         "phase1_model": _pattern_matcher_mod.SONNET_MODEL,
-        "phase2_model": "claude-sonnet-4-6",
+        "phase2_model": _report_generator_mod.SONNET_MODEL,
         "duration_seconds": result.total_seconds,
         "detected_patterns": detected_patterns or None,
         "meta_patterns": meta_patterns_payload or None,

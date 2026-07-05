@@ -30,7 +30,7 @@ load_dotenv(dotenv_path=env_path)
 
 logger = logging.getLogger(__name__)
 
-SONNET_MODEL = "claude-sonnet-4-6"
+SONNET_MODEL = "claude-sonnet-5"
 
 
 # ── 데이터 구조 ──────────────────────────────────────────────────
@@ -693,7 +693,12 @@ def call_sonnet(
 
     response = client.messages.create(
         model=SONNET_MODEL,
+        # Sonnet 5 토크나이저는 동일 텍스트를 ~30% 더 많은 토큰으로 계산한다.
+        # 배포 후 usage.output_tokens 로그를 관찰하고 필요시 후속 커밋에서 조정할 것.
         max_tokens=10000,
+        # 이번 라운드는 adaptive thinking 의도적 비활성화 — 모델 자체 성능만 측정.
+        # 활성화 실험은 별도 라운드로 진행한다.
+        thinking={"type": "disabled"},
         # system prompt만 ephemeral 캐시 대상으로 지정한다.
         # user message(기사 본문/탐지/규범 컨텍스트/메타)는 매 호출 변동이 크므로 캐시하지 않는다.
         system=[
@@ -704,7 +709,6 @@ def call_sonnet(
             }
         ],
         messages=[{"role": "user", "content": user_message}],
-        temperature=0.0,
     )
 
     report = response.content[0].text
