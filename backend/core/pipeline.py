@@ -17,6 +17,7 @@ import logging
 from dataclasses import dataclass, field
 
 from .chunker import chunk_article, Chunk
+from . import pattern_matcher as _pattern_matcher_mod  # T0: SONNET_MODEL 런타임 참조용 (벤치마크 override 반영)
 from .pattern_matcher import (
     match_patterns_solo,
     PatternMatchResult,
@@ -66,6 +67,9 @@ class AnalysisResult:
     # S6: citation_audit JSON. analysis_results.citation_audit 컬럼에 저장된다.
     # 관측 전용 metadata — 사용자-facing 리포트 본문/프론트 응답에 노출하지 않는다.
     citation_audit: dict | None = None
+    # T0: Phase 1 포렌식 축약본. analysis_results.phase1_forensic 컬럼에 저장.
+    # 관측 전용 — 사용자-facing 리포트/프론트 응답에 노출 금지.
+    phase1_forensic: dict | None = None
 
 
 def _infer_article_context(article_text: str, pattern_codes: set) -> str:
@@ -132,6 +136,39 @@ def _build_haiku_dicts(pm: PatternMatchResult, include_report_meta: bool = False
     return dicts
 
 
+def _build_phase1_forensic(
+    pm: PatternMatchResult,
+    article_context: str,
+    patterns_without_ethics: list[str],
+) -> dict:
+    """T0: Phase 1 포렌식 축약본 조립 (10키 고정 스키마).
+
+    analysis_results.phase1_forensic JSONB에 저장되는 관측 전용 payload.
+    로컬 진단 덤프(CP2~CP4)의 부분집합 + 파싱 fallback·★ 마킹 원본 기록.
+    """
+    return {
+        "vector_candidates": [
+            {
+                "code": vc.pattern_code,
+                "name": vc.pattern_name,
+                "similarity": round(vc.similarity, 4),
+            }
+            for vc in pm.vector_candidates
+        ],
+        "starred_codes": list(pm.starred_codes),
+        # T2 배포 전까지 빈 배열 고정 (스키마 선행 확보)
+        "mandatory_review_codes": [],
+        "validated_codes": list(pm.validated_pattern_codes),
+        "hallucinated_codes": list(pm.hallucinated_codes),
+        "unmatched_vector_candidates": list(pm.unmatched_vector_candidates),
+        "patterns_without_ethics": patterns_without_ethics,
+        "article_context": article_context,
+        "fallback_used": pm.parse_fallback_used,
+        # 모듈 attribute 참조 — 벤치마크의 SONNET_MODEL 런타임 override를 반영
+        "phase1_model": _pattern_matcher_mod.SONNET_MODEL,
+    }
+
+
 def analyze_article(
     article_text: str,
     run_sonnet: bool = True,
@@ -194,14 +231,17 @@ def analyze_article(
     #     except Exception as e:
     #         logger.warning(f"메타 패턴 추론 실패, 건너뜀: {e}")
 
+    # T0: article_context는 탐지 0건(포렌식이 가장 필요한 완전 실패 사례)에서도
+    # 필요하므로 조건문 앞에서 무조건 1회 계산한다.
+    article_context = _infer_article_context(
+        article_text, pm.validated_pattern_codes
+    )
+
     # 3. 리포트 생성 (Sonnet) — 선택적
     if run_sonnet and pm.validated_pattern_ids:
         # S5: pattern_name + report_framing을 Phase 2 입력에 포함 (신규 DB 조회 없음 — pm.pattern_catalog_meta 사용).
         haiku_dicts = _build_haiku_dicts(pm, include_report_meta=True)
         try:
-            article_context = _infer_article_context(
-                article_text, pm.validated_pattern_codes
-            )
             rr = generate_report(
                 article_text,
                 pm.validated_pattern_ids,
@@ -281,6 +321,30 @@ def analyze_article(
         )
 
     result.total_seconds = time.time() - start
+
+    # ── T0: Phase 1 포렌식 payload ──────────────────────────────
+    # 로컬 진단 덤프와 별도의 try/except — 실패해도 파이프라인 불중단.
+    try:
+        if run_sonnet and pm.validated_pattern_ids:
+            # CP4의 _patterns_without 로직 재사용
+            _ethics_f = (
+                result.report_result.ethics_refs or []
+            ) if result.report_result else []
+            _with_ethics = {er.pattern_code for er in _ethics_f}
+            _patterns_without_f = [
+                pc for pc in pm.validated_pattern_codes
+                if pc not in _with_ethics
+            ]
+        else:
+            # 조건 미충족 시(탐지 0건 포함) validated 전체로 일관 처리
+            _patterns_without_f = list(pm.validated_pattern_codes)
+        result.phase1_forensic = _build_phase1_forensic(
+            pm, article_context, _patterns_without_f
+        )
+    except Exception as _forensic_err:
+        logger.warning(
+            f"phase1_forensic 조립 실패 (파이프라인에 영향 없음): {_forensic_err}"
+        )
 
     # ── 진단용 JSON 덤프 ────────────────────────────────────────
     try:
