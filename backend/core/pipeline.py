@@ -174,11 +174,13 @@ def analyze_article(
     article_text: str,
     run_sonnet: bool = True,
     vector_threshold: float = None,
+    title: str | None = None,
 ) -> AnalysisResult:
     """기사 전문을 입력받아 Sonnet Solo 파이프라인을 실행.
 
     Args:
         article_text: 기사 원문 텍스트
+        title: 기사 제목(선택). Phase 1 제목-본문 대조에 사용.
         run_sonnet: False이면 패턴 식별 단계까지만 실행 (벤치마크용)
         vector_threshold: 벡터 검색 threshold (None이면 기본값)
 
@@ -204,7 +206,7 @@ def analyze_article(
 
     # 2. 패턴 매칭 — 실패 시 복구 불가 (main.py에서 500으로 처리)
     try:
-        pm = match_patterns_solo(chunk_texts, article_text, threshold=vector_threshold)
+        pm = match_patterns_solo(chunk_texts, article_text, threshold=vector_threshold, title=title)
     except Exception as e:
         logger.error(f"패턴 매칭 실패: {e}", exc_info=True)
         raise

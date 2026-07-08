@@ -146,7 +146,7 @@ def analyze_article(request: AnalyzeRequest):
 
         # ③ 파이프라인 실행
         print(f"🔍 파이프라인 분석 시작...")
-        result: AnalysisResult = run_pipeline(article_text)
+        result: AnalysisResult = run_pipeline(article_text, title=article_data.get("title") or None)
         print(f"✅ 파이프라인 완료 ({result.total_seconds:.1f}초)")
 
         # ④ 응답용 article_info 구성
