@@ -5,7 +5,7 @@
   2. 필수 검토 블록 존재 + 블록 내 7-2·7-5 미포함
   3. 예시 3-1 삽입 확인
   4. 기존 예시 1·2·4~7 보존 + 순서 유지
-  5. 기사 길이별 가이드 4개 구간 무변경
+  5. 탐지 개수 상한 제거(2026-07-13) — 숫자 상한 부재 + 중복 금지 원칙 보존
   6. phase1_forensic 배선 (mandatory_review_codes 실값 전달)
 
 실행: backend/ 디렉터리에서  python3 -m unittest test_wave11_t1t2 -v
@@ -160,18 +160,31 @@ class TestExistingExamplesPreserved(unittest.TestCase):
         self.assertIn("### [structural] 3-1-b: 편향된 취재원 구성", text)
 
 
-class TestLengthGuideUnchanged(unittest.TestCase):
-    """5. 기사 길이별 가이드 무변경."""
+class TestDetectionCapRemoved(unittest.TestCase):
+    """5. 기사 길이별 탐지 개수 상한 제거(2026-07-13) + 중복 금지 보존.
 
-    def test_four_ranges_intact(self):
+    구 TestLengthGuideUnchanged를 대체 — 길이별 숫자 상한은 제거가 확정
+    계약이며, 동일 패턴 반복 금지 원칙은 반드시 살아 있어야 한다.
+    """
+
+    def test_numeric_caps_absent(self):
         text = _compiled_prompt()
-        for line in [
+        for stale in [
             "- 200자 미만: 최대 1~2개",
             "- 200~500자: 최대 2~3개",
             "- 500~2000자: 최대 3~4개",
             "- 2000자 이상: 최대 4~5개. 근거가 매우 명확한 경우에만.",
+            "## 기사 길이별 가이드",
         ]:
-            self.assertIn(line, text)
+            self.assertNotIn(stale, text)
+
+    def test_no_cap_principle_present(self):
+        text = _compiled_prompt()
+        self.assertIn("탐지 개수에 임의의 상한을 두지 마세요", text)
+        self.assertIn("독립적인 근거가 확인되는 패턴은 모두 기록", text)
+
+    def test_duplicate_ban_preserved(self):
+        self.assertIn("같은 패턴을 여러 번 선택하지 마세요", _compiled_prompt())
 
 
 class TestForensicWiring(unittest.TestCase):
