@@ -6,7 +6,7 @@ CR-Check — 벡터 검색 + Sonnet Solo 패턴 식별 모듈
 1. 청크별 임베딩 생성 (OpenAI text-embedding-3-small)
 2. 벡터 검색 — search_pattern_candidates() RPC
 3. Sonnet Solo 호출 — 전체 패턴 목록 + 벡터 후보 ★ 강조 + Devil's Advocate CoT
-4. 밸리데이션 — 코드→ID 변환 + 환각 코드 제거
+4. 밸리데이션 — 코드→ID 변환 + 비허용 코드(환각·부모·비활성·메타) 제거
 ※ [DEPRECATED] 2-Call(Haiku→Sonnet), 1-Call(게이트+Haiku) 코드는 비교용 보존
 """
 
@@ -71,6 +71,10 @@ class PatternMatchResult:
     haiku_detections: list[HaikuDetection] = field(default_factory=list)
     validated_pattern_ids: list[int] = field(default_factory=list)
     validated_pattern_codes: list[str] = field(default_factory=list)
+    # 거부 코드 목록. 활성 Sonnet Solo 경로에서는 DB 미존재 코드뿐 아니라
+    # 부모·비활성·메타 등 런타임 비허용 코드도 포함한다
+    # (validate_runtime_pattern_codes 참조). legacy 경로는 기존 "DB 존재 여부"
+    # 검증 의미를 유지한다 (validate_pattern_codes). 필드명은 하위 호환용 유지.
     hallucinated_codes: list[str] = field(default_factory=list)
     haiku_raw_response: str = ""
     embedding_tokens: int = 0
@@ -461,11 +465,9 @@ _SONNET_SOLO_PROMPT = """\
 
 {confusion_pairs_section}
 
-## 기사 길이별 가이드
-- 200자 미만: 최대 1~2개
-- 200~500자: 최대 2~3개
-- 500~2000자: 최대 3~4개
-- 2000자 이상: 최대 4~5개. 근거가 매우 명확한 경우에만.
+## 탐지 개수 원칙
+- 탐지 개수에 임의의 상한을 두지 마세요. 기사 안에서 독립적인 근거가 확인되는 패턴은 모두 기록하세요.
+- 정의상 중복되는 대체 후보 패턴은 가장 정확한 leaf 하나로 정리하되, 서로 다른 문제를 설명하는 패턴은 각각 기록하세요.
 - 같은 패턴을 여러 번 선택하지 마세요.
 
 ## 기타 규칙
@@ -897,9 +899,9 @@ def match_patterns_solo(
     raw = response.content[0].text
     assessment, detections, parse_fallback_used = _parse_solo_response(raw)
 
-    # 4. 밸리데이션
-    valid_ids, valid_codes, hallucinated = validate_pattern_codes(
-        detections, sb_url, sb_key
+    # 4. 밸리데이션 — 이미 로드한 활성 v3 leaf 카탈로그만으로 strict 검증 (DB 조회 0회)
+    valid_ids, valid_codes, hallucinated = validate_runtime_pattern_codes(
+        detections, catalog
     )
 
     # T2: 필수 검토 지시 대상 코드 중 실제 확정된 것 (파생 계산)
@@ -931,14 +933,99 @@ def match_patterns_solo(
     )
 
 
-# ── 밸리데이션: 코드→ID 변환 + 환각 제거 ─────────────────────────
+# ── 밸리데이션: 코드→ID 변환 + 비허용 코드 제거 (active/legacy 분리) ──
+#
+# 활성 경로  : validate_runtime_pattern_codes — 전달된 활성 v3 leaf 카탈로그만으로
+#              strict 검증 (DB 조회 0회). 부모·비활성·메타·미존재 코드 거부.
+# legacy 경로: validate_pattern_codes — DB 존재 여부만 확인 (기존 계약 보존).
+#              숫자형 구코드를 쓰는 pattern_matcher_legacy.py·기존 스크립트가 사용.
+
+_REJECT_REASON_NON_LEAF = "non_leaf_or_malformed"
+_REJECT_REASON_NOT_IN_CATALOG = "not_in_runtime_catalog"
+
+
+def validate_runtime_pattern_codes(
+    detections: list[HaikuDetection],
+    catalog: list[dict],
+) -> tuple[list[int], list[str], list[str]]:
+    """활성 파이프라인 전용 strict 검증 — 전달된 catalog만 사용, DB 조회 없음.
+
+    match_patterns_solo()가 이미 로드한 런타임 활성 v3 leaf 카탈로그를 받아
+    검증한다. 숫자형 구코드를 쓰는 legacy 경로는 이 함수를 타지 않는다
+    (validate_pattern_codes 참조).
+
+    통과 조건 (모두 충족):
+      - 코드가 catalog 안에서 아래 3조건을 모두 만족하는 row의 code와 일치
+        · is_active is True
+        · is_meta_pattern is False
+        · code가 v3 leaf 형식 (_LEAF_CODE_RE: ^[0-9]+-[0-9]+-[a-z]+$)
+        (catalog row 자체를 재검증 — 비활성·메타·비-leaf row가 카탈로그에
+         오염 유입돼도 허용 맵에서 배제된다)
+    따라서 부모 코드, 비활성 leaf, 메타 패턴, 미존재 코드는 모두 거부된다.
+
+    Returns:
+        (valid_ids, valid_codes, rejected_codes)
+        — 중복 코드는 기존 계약대로 입력 순서·횟수 그대로 반영된다.
+
+    ※ rejected_codes는 PatternMatchResult.hallucinated_codes 필드로 흘러간다.
+      의미 확장 (2026-07-13): 기존 "DB 미존재 환각 코드"에서 "부모·비활성·메타
+      등 런타임 비허용 코드 전체"로 확대. 필드명·위치는 하위 호환 유지.
+      거부 사유는 로컬 판별 가능한 2종만 로그로 구분:
+        non_leaf_or_malformed  — v3 leaf 형식 불일치 (부모 코드 등)
+        not_in_runtime_catalog — leaf 형식이나 활성 카탈로그에 없음
+      (미존재/비활성/메타 세부 분류는 후속 forensic 과제로 이관)
+    """
+    if not detections:
+        return [], [], []
+
+    allowed: dict[str, int] = {}
+    for row in catalog:
+        code = row.get("code") or ""
+        if (
+            row.get("is_active") is True
+            and row.get("is_meta_pattern") is False
+            and _LEAF_CODE_RE.match(code)
+        ):
+            allowed[code] = row["id"]
+
+    valid_ids: list[int] = []
+    valid_codes: list[str] = []
+    rejected: list[str] = []
+
+    for det in detections:
+        code = det.pattern_code
+        if code in allowed:
+            valid_ids.append(allowed[code])
+            valid_codes.append(code)
+        else:
+            rejected.append(code)
+            reason = (
+                _REJECT_REASON_NOT_IN_CATALOG
+                if _LEAF_CODE_RE.match(code)
+                else _REJECT_REASON_NON_LEAF
+            )
+            logger.warning(
+                f"Rejected pattern code removed: {code} (reason={reason})"
+            )
+
+    return valid_ids, valid_codes, rejected
+
 
 def validate_pattern_codes(
     detections: list[HaikuDetection],
     sb_url: str,
     sb_key: str,
 ) -> tuple[list[int], list[str], list[str]]:
-    """패턴 코드를 DB에서 검증하고 ID로 변환.
+    """패턴 코드를 DB 존재 여부로 검증하고 ID로 변환 (legacy 전용).
+
+    ※ 역할 분리 (2026-07-13): 활성 파이프라인(match_patterns_solo)은 이 함수가
+      아니라 validate_runtime_pattern_codes(strict)를 사용한다. 이 함수는
+      숫자형 3세그먼트 구코드(예: 1-1-1, 1-7-2)를 쓰는
+      pattern_matcher_legacy.py와 기존 스크립트의 "DB에 존재하면 통과" 계약을
+      그대로 보존한다 — v3 leaf 기준으로 강화하지 말 것 (legacy 코드 체계가
+      전부 거부된다). 현행 DB와 legacy 구코드 체계는 이미 일치하지 않을 수
+      있다. 이 분리의 목적은 현 DB에서 legacy를 즉시 복구하는 것이 아니라,
+      함수 의미를 보존해 구 DB 스냅샷 기반 재현 가능성을 방해하지 않는 것이다.
 
     Returns:
         (valid_ids, valid_codes, hallucinated_codes)
