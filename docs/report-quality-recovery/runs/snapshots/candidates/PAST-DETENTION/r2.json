@@ -1,0 +1,366 @@
+{
+  "snapshot_version": "rq_v1",
+  "fixture_id": "PAST-DETENTION",
+  "run_tag": "r2",
+  "generated_at": "2026-07-18T23:20:40.283207+09:00",
+  "git_commit": "9d051927187ed5d09a9ede630ea7781d1f8bc0ed",
+  "entrypoint": "core.pipeline.analyze_article 직접 호출 — 운영 API(/analyze), URL 캐시(get_cached_analysis), DB 저장(save_analysis_result) 미경유",
+  "run_sonnet": false,
+  "supabase_host": "vwaelliqpoqzeoggrfew.supabase.co",
+  "article": {
+    "title": "[단독] 살인 전과자도 있는 외국인보호소, '계엄 정국'에 일괄 석방 우려",
+    "text": "'무기한 수용' 출입국법 6월부터 효력 상실하위법 개정·위원회 구성 4개월 필요한데보호기간 상한 여야 이견에 국회 계류 중 경기 화성외국인보호소. 한국일보 자료사진강제퇴거(강제출국) 처분을 받고도 한국을 떠나지 않아 외국인보호소에 머물고 있는 불법체류 외국인들이 다시 쏟아져 나올지 모른다는 우려가 커지고 있다. 보호소 운영의 근거가 되는 법 조항이 5월 말 사라지는데, 12·3 불법계엄 여파로 국회에서의 개정안 논의가 지지부진하기 때문이다. 보호소에 수용된 외국인 중엔 살인 등 강력범죄 전과자도 다수 포함돼 있어 입법을 서둘러야 한다는 지적이 나온다. 외국인보호소는 정부의 강제퇴거 명령을 받고도 출국을 거부하거나 당장 출국이 불가능한 외국인을 모아 강제로 수용하는 곳이다. 본국으로 출국하면 언제든 풀려난다는 점에서 구금·수감과는 구별되지만, 시민단체에선 \"반인권적인 사실상의 구금\"이라고 비판했다. 비자(사증) 만료를 이유로 출국 시점까지 무기한 갇혀 있을 수 있기 때문이다. 2023년에는 3세 아동이 아버지와 함께 19일간 보호소에 머물다 추방돼 인권침해 논란이 일기도 했다. 출입국관리법 개정 시한 5월인데 여야 합의 아직인권침해 논란이 커지자 헌법재판소는 2022년 3월 헌법불합치 결정을 통해 법 개정을 주문했다. 헌재는 출입국관리법상 외국인보호 조항(63조1항)에 ①보호기간 상한을 두지 않은 점 ②보호 개시·연장 심사가 독립기관에 의해 이뤄지지 않는 점 ③당사자에게 의견제출 기회가 부여되지 않는 점을 들어 위헌으로 판단했다. 헌재는 그러면서 올해 5월 31일까지 법을 고치라고 했다.하지만 국회 논의는 12·3 불법계엄 여파로 늦어지고 있다. 법무부는 지난해 11월 헌재 결정을 반영한 정부안을 국회에 제출했지만, 국회의 모든 논의는 윤석열 대통령 탄핵과 특검법으로 흡수됐다. 1월 10일 예정됐던 국회 법제사법위원회 제1소위는 함께 상정된 '내란 특검법'에 대한 여야 이견으로 파행했고, 1월 22일 회의에서도 보호기간 상한과 조건을 두고 이견을 좁히지 못했다. 정부는 \"고의로 출국을 거부하는 외국인 상당수가 난민 신청 및 소송을 제기하는데 평균 18개월이 소요된다\"며 기본 상한을 최소 17~18개월로 해야 한다는 입장이다. 야당은 그러나 \"인권 침해적 요소가 있어 상한을 더 낮춰야 한다\"고 주장한다. 박주민 더불어민주당 의원 발의안의 경우 보호기간 상한은 최대 100일이다. 5월 말까지 법이 개정되지 않으면, 외국인보호 근거 조항은 효력이 상실된다. 외국인보호소가 일시 폐지되고 보호 중인 외국인들을 일괄 석방하는 '입법 공백' 사태가 벌어질 수 있다. 현재 전국 보호소에 수용된 외국인은 하루 평균 1,600~1,800명이다. 여권 분실, 교통비 마련 등 현실적인 이유로 잠시 머무는 경우가 대부분이다. 고의로 안 나가는 장기보호 외국인 상당수 전과자문제는 고의로 출국을 거부하며 장기간 보호소에 머무는 외국인들이다. 소송 중인 외국인은 강제퇴거 집행이 어려운 현행법을 이용해 난민 신청·소송 등을 제기하거나, 비행기에서 난동을 부려 하차 조치되는 방법으로 출국을 거부한다. 범죄 전과자들도 많다. 법무부에 따르면, 18개월 이상 장기보호 외국인은 최근 5년간 152명으로, 이들 중 32.9%(50명)가 형사범들이다. A씨는 정신지체 장애가 있는 12세 의붓딸(한국인)을 성폭행한 혐의로 2015년 2월 유죄를 확정받았다. 그는 만기 출소로 보호소로 인계된 뒤 돌연 난민 신청 등을 제기해 16개월 동안 머물다가 최근에야 송환됐다. 살인 전과자도 있다. 중국 국적 장모씨는 둔기로 배우자를 살해하고 처제까지 살해하려다 미수에 그친 혐의로 2006년 11월 징역 18년을 선고받았다. 지난해 출소한 장씨는 현재 보호소에서 지내고 있다. 중국 호구부(주민등록)가 말소된 상태라서 여권 재발급 및 강제퇴거까진 상당 시간이 소요될 것으로 보인다. 5월까지 개정된 법이 시행되지 않으면 장씨는 풀려나게 된다.입법 공백을 막기 위해선 국회가 논의를 서둘러야 한다. 법 제정 절차에는 통상 4개월 이상 걸린다. 개정 법에 따라 보호 연장 등을 심사할 위원회를 구성해야 하고 하위 법령 제정도 필요하다. 입법예고(40일), 규제심사(20일), 법제처 심사(30일), 차관·국무회의(15일) 등의 절차도 있다. 당장 국회를 통과해도 시일이 빠듯한 상황이지만, 키를 쥔 국회 법사위 1소위는 다음 일정도 정하지 않았다. 법무부에서 일했던 한 변호사는 \"지금부터 준비해도 법령을 제정하기엔 시간이 촉박하다\"며 \"기한이 정해진 법 개정은 특히 신경을 써야 한다\"고 말했다.",
+    "sha256": "e4878a49c41d322b68fd245355f8cb1fd0c34097bdfbaa9e4f0a36fe9a6144fb",
+    "chars": 2233,
+    "url": "https://n.news.naver.com/mnews/article/469/0000846997?sid=102",
+    "publisher": "한국일보",
+    "source": "past_report_rescrape",
+    "characteristic": "1. 복합 문제(제목 프레이밍+통계+취재원 편중+이주민 낙인)",
+    "selection_reason": "제목 프레이밍·통계 출처 불투명·취재원 편중·이주민 낙인이 동시에 존재하는 복합 사례이자, 과거 리포트(1765376064770)와 직접 비교 가능한 1순위(외국인보호소·인권) 기사"
+  },
+  "phase1": {
+    "model": "claude-sonnet-4-6",
+    "validated_pattern_ids": [
+      125,
+      78,
+      86
+    ],
+    "validated_pattern_codes": [
+      "2-2-c",
+      "3-2-b",
+      "6-2-c"
+    ],
+    "detections": [
+      {
+        "pattern_code": "6-2-c",
+        "matched_text": "살인 전과자도 있는 외국인보호소, '계엄 정국'에 일괄 석방 우려",
+        "severity": "high",
+        "reasoning": "본문에서 살인 전과자는 장모씨 1명의 사례이고, 18개월 이상 장기보호 외국인 152명 중 형사범은 50명이며, 전체 수용자 1,600~1,800명 중 '여권 분실, 교통비 마련 등 현실적인 이유로 잠시 머무는 경우가 대부분'이라고 본문이 명시한다. 그럼에도 제목은 '살인 전과자도 있는 외국인보호소'를 전면에 배치해 전체 수용자를 위험 집단으로 암시하는 침소봉대에 해당한다.",
+        "pattern_name": "제목-본문 불일치(침소봉대)",
+        "report_framing": "구체 패턴(6-2-c) '제목-본문 불일치(침소봉대)'의 판단 기준을 중심으로 설명하되, 필요 시 전문성 부족 맥락으로 확장"
+      },
+      {
+        "pattern_code": "2-2-c",
+        "matched_text": "강제퇴거(강제출국) 처분을 받고도 한국을 떠나지 않아 외국인보호소에 머물고 있는 불법체류 외국인들이 다시 쏟아져 나올지 모른다는 우려가 커지고 있다",
+        "severity": "medium",
+        "reasoning": "'쏟아져 나올지 모른다는 우려가 커지고 있다'는 표현은 누가 우려하는지 주체를 밝히지 않은 채 불확실한 전망을 기정사실에 가깝게 제시하는 간접인용 판단 서술이다.",
+        "pattern_name": "간접인용 판단 서술",
+        "report_framing": "구체 패턴(2-2-c) '간접인용 판단 서술'의 판단 기준을 중심으로 설명하되, 필요 시 책임 회피 표현 맥락으로 확장"
+      },
+      {
+        "pattern_code": "3-2-b",
+        "matched_text": "보호소에 수용된 외국인 중엔 살인 등 강력범죄 전과자도 다수 포함돼 있어 입법을 서둘러야 한다는 지적이 나온다",
+        "severity": "medium",
+        "reasoning": "법 개정의 필요성을 '강력범죄 전과자 다수 포함'이라는 위험 프레임으로만 제시하고, 인권단체·피수용자 측의 반론(무기한 구금의 인권침해 문제)은 본문 중간에 짧게 언급하는 데 그쳐, 입법 촉구 논거가 안전 위협 측면에 편중되어 있다.",
+        "pattern_name": "선별적 사실 제시",
+        "report_framing": "구체 패턴(3-2-b) '선별적 사실 제시'의 판단 기준을 중심으로 설명하되, 필요 시 편향적 보도 맥락으로 확장"
+      }
+    ],
+    "overall_assessment": "출입국관리법 개정 지연으로 인한 외국인보호소 입법 공백 우려를 다룬 공익적 보도다. 법적 쟁점과 입법 절차를 비교적 충실히 설명하고 있으나, 제목에서 '살인 전과자'를 전면에 내세워 전체 수용자(1,600~1,800명)를 잠재적 위험 집단으로 암시하는 프레이밍 문제가 확인된다. 또한 '쏟아져 나올지 모른다', '우려가 커지고 있다' 등 확인되지 않은 전망을 단정에 가깝게 서술하는 표현도 발견된다.",
+    "article_context": "general",
+    "forensic": {
+      "vector_candidates": [
+        {
+          "code": "4-4-b",
+          "name": "무죄추정 원칙 위반",
+          "similarity": 0.4402
+        },
+        {
+          "code": "3-4-a",
+          "name": "이분법 대결 구도",
+          "similarity": 0.4048
+        },
+        {
+          "code": "4-4-e",
+          "name": "피해자·증인 보호 소홀",
+          "similarity": 0.3792
+        },
+        {
+          "code": "2-1-a",
+          "name": "취재원 신원 모호 표기",
+          "similarity": 0.3639
+        },
+        {
+          "code": "4-4-c",
+          "name": "재판 중 사안 편향 보도",
+          "similarity": 0.3599
+        },
+        {
+          "code": "3-4-b",
+          "name": "제로섬 프레임",
+          "similarity": 0.3523
+        },
+        {
+          "code": "5-1-b",
+          "name": "맥락 없는 사실 나열",
+          "similarity": 0.3443
+        },
+        {
+          "code": "1-4-d",
+          "name": "의견의 사실화 (기자)",
+          "similarity": 0.338
+        },
+        {
+          "code": "4-2-a",
+          "name": "취재원 신상정보 무단 노출",
+          "similarity": 0.3307
+        },
+        {
+          "code": "1-1-c",
+          "name": "익명 단일 취재원 의존",
+          "similarity": 0.324
+        },
+        {
+          "code": "6-1-c",
+          "name": "의혹을 사실처럼 표현",
+          "similarity": 0.3176
+        },
+        {
+          "code": "1-4-e",
+          "name": "심리·의도 단정",
+          "similarity": 0.315
+        },
+        {
+          "code": "4-2-b",
+          "name": "사건 무관 가족 신원 노출",
+          "similarity": 0.3123
+        },
+        {
+          "code": "2-1-b",
+          "name": "익명 이용 공격·책임 회피",
+          "similarity": 0.3117
+        },
+        {
+          "code": "1-1-j",
+          "name": "맥락 정보 생략·체리피킹",
+          "similarity": 0.3065
+        },
+        {
+          "code": "4-3-a",
+          "name": "근거 없는 의혹 제기 보도",
+          "similarity": 0.3061
+        }
+      ],
+      "starred_codes": [
+        "1-1-c",
+        "1-1-j",
+        "1-4-d",
+        "1-4-e",
+        "2-1-a",
+        "2-1-b",
+        "3-4-a",
+        "3-4-b",
+        "4-2-a",
+        "4-2-b",
+        "4-3-a",
+        "4-4-b",
+        "4-4-c",
+        "4-4-e",
+        "5-1-b",
+        "6-1-c"
+      ],
+      "mandatory_review_codes": [],
+      "validated_codes": [
+        "6-2-c",
+        "2-2-c",
+        "3-2-b"
+      ],
+      "hallucinated_codes": [],
+      "unmatched_vector_candidates": [],
+      "patterns_without_ethics": [
+        "6-2-c",
+        "2-2-c",
+        "3-2-b"
+      ],
+      "article_context": "general",
+      "fallback_used": false,
+      "phase1_model": "claude-sonnet-4-6"
+    }
+  },
+  "ethics": {
+    "count": 12,
+    "empty_warning": false,
+    "refs": [
+      {
+        "pattern_code": "3-2-b",
+        "ethics_code": "JEC-4",
+        "ethics_title": "공정하게 보도한다",
+        "ethics_full_text": "윤리적 언론은 특정 집단, 세력, 견해에 치우치지 않고 공평무사한 자세로 보도한다. 사회적으로 중요한 사안이나 갈등적 사안을 다룰 때는 다양한 입장을 두루 담아 전체를 아우르는 균형 잡힌 시각과 관점을 보여준다. 윤리적 언론은 시시비비를 가리는 언론 본연의 역할에 충실하면서도 사회 내에 존재하는 다양한 의견의 경중을 고려해 보도 내용의 양적·질적 균형을 맞춘다. 특정한 가치와 정파적 이익에 부합하는 사실과 견해만을 선택하거나 과장하지 않는다. 기사로 인해 불이익을 볼 수 있는 개인이나 집단에는 자신을 방어하고 반론할 권리를 보장한다.",
+        "ethics_tier": 1,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "parent chain rollup",
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "6-2-c",
+        "ethics_code": "JEC-7",
+        "ethics_title": "다양성을 존중하고 차별에 반대한다",
+        "ethics_full_text": "윤리적 언론은 모든 사람이 존중받는 세상을 위해 차별과 편견을 줄이려 노력한다. 언론은 다양한 사회적 가치와 문화적 차이를 인정하고 이를 존중한다. 언론은 성별, 장애, 종교, 나이, 출신 지역, 인종, 성적 지향 등을 이유로 누구도 부당하게 차별받지 않도록 감시한다. 편견과 차별이 발생하는 구조를 발굴·보도해 사회적 의제로 확산시킨다. 고정관념과 편견을 부추기는 표현, 특정 계층·지역을 비하하는 표현, 성차별 표현, 사람을 성적으로 대상화하는 표현을 삼간다.",
+        "ethics_tier": 1,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "parent chain rollup",
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제7조"
+      },
+      {
+        "pattern_code": "2-2-c",
+        "ethics_code": "JEC-4",
+        "ethics_title": "공정하게 보도한다",
+        "ethics_full_text": "윤리적 언론은 특정 집단, 세력, 견해에 치우치지 않고 공평무사한 자세로 보도한다. 사회적으로 중요한 사안이나 갈등적 사안을 다룰 때는 다양한 입장을 두루 담아 전체를 아우르는 균형 잡힌 시각과 관점을 보여준다. 윤리적 언론은 시시비비를 가리는 언론 본연의 역할에 충실하면서도 사회 내에 존재하는 다양한 의견의 경중을 고려해 보도 내용의 양적·질적 균형을 맞춘다. 특정한 가치와 정파적 이익에 부합하는 사실과 견해만을 선택하거나 과장하지 않는다. 기사로 인해 불이익을 볼 수 있는 개인이나 집단에는 자신을 방어하고 반론할 권리를 보장한다.",
+        "ethics_tier": 1,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "parent chain rollup",
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "6-2-c",
+        "ethics_code": "JEC-4",
+        "ethics_title": "공정하게 보도한다",
+        "ethics_full_text": "윤리적 언론은 특정 집단, 세력, 견해에 치우치지 않고 공평무사한 자세로 보도한다. 사회적으로 중요한 사안이나 갈등적 사안을 다룰 때는 다양한 입장을 두루 담아 전체를 아우르는 균형 잡힌 시각과 관점을 보여준다. 윤리적 언론은 시시비비를 가리는 언론 본연의 역할에 충실하면서도 사회 내에 존재하는 다양한 의견의 경중을 고려해 보도 내용의 양적·질적 균형을 맞춘다. 특정한 가치와 정파적 이익에 부합하는 사실과 견해만을 선택하거나 과장하지 않는다. 기사로 인해 불이익을 볼 수 있는 개인이나 집단에는 자신을 방어하고 반론할 권리를 보장한다.",
+        "ethics_tier": 1,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "parent chain rollup",
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "3-2-b",
+        "ethics_code": "PCE-4",
+        "ethics_title": "보도와 평론",
+        "ethics_full_text": "우리 언론인은 사실의 전모를 정확하고, 객관적이고, 공정하게 보도함으로써 진실을 추구할 것을 다짐한다. 또한 공정하고 바르게 평론하며, 사회의 의견을 폭넓게 수용해 다양한 여론 형성에 기여할 것을 결의한다.",
+        "ethics_tier": 2,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "parent chain rollup",
+        "ethics_source": "신문윤리강령",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "2-2-c",
+        "ethics_code": "PCE-4",
+        "ethics_title": "보도와 평론",
+        "ethics_full_text": "우리 언론인은 사실의 전모를 정확하고, 객관적이고, 공정하게 보도함으로써 진실을 추구할 것을 다짐한다. 또한 공정하고 바르게 평론하며, 사회의 의견을 폭넓게 수용해 다양한 여론 형성에 기여할 것을 결의한다.",
+        "ethics_tier": 2,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": null,
+        "ethics_source": "신문윤리강령",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "6-2-c",
+        "ethics_code": "PCE-4",
+        "ethics_title": "보도와 평론",
+        "ethics_full_text": "우리 언론인은 사실의 전모를 정확하고, 객관적이고, 공정하게 보도함으로써 진실을 추구할 것을 다짐한다. 또한 공정하고 바르게 평론하며, 사회의 의견을 폭넓게 수용해 다양한 여론 형성에 기여할 것을 결의한다.",
+        "ethics_tier": 2,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "parent chain rollup",
+        "ethics_source": "신문윤리강령",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "2-2-c",
+        "ethics_code": "PCP-3-1",
+        "ethics_title": "보도기사의 사실과 의견 구분",
+        "ethics_full_text": "보도기사는 사실과 의견을 명확히 구분하여 작성해야 한다. 또한 편견이나 이기적 동기로 보도기사를 고르거나 작성해서는 안 된다.",
+        "ethics_tier": 2,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "신문윤리실천요강",
+        "ethics_article_number": "제3조 ①"
+      },
+      {
+        "pattern_code": "6-2-c",
+        "ethics_code": "PCP-3-2",
+        "ethics_title": "공정보도",
+        "ethics_full_text": "경합 중인 사안을 보도할 때 한 쪽의 주장을 편파적으로 보도하지 않는다. 여론조사 등을 바탕으로 보도할 때는 조사의 신뢰성을 확인할 수 있는 근거를 분명히 밝혀야 하며, 통계를 왜곡해서는 안 된다.",
+        "ethics_tier": 2,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "신문윤리실천요강",
+        "ethics_article_number": "제3조 ②"
+      },
+      {
+        "pattern_code": "3-2-b",
+        "ethics_code": "PCP-3-2",
+        "ethics_title": "공정보도",
+        "ethics_full_text": "경합 중인 사안을 보도할 때 한 쪽의 주장을 편파적으로 보도하지 않는다. 여론조사 등을 바탕으로 보도할 때는 조사의 신뢰성을 확인할 수 있는 근거를 분명히 밝혀야 하며, 통계를 왜곡해서는 안 된다.",
+        "ethics_tier": 2,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "신문윤리실천요강",
+        "ethics_article_number": "제3조 ②"
+      },
+      {
+        "pattern_code": "6-2-c",
+        "ethics_code": "PCP-10-1",
+        "ethics_title": "제목의 원칙",
+        "ethics_full_text": "제목은 기사의 요약된 내용이나 핵심 내용을 대표해야 하며, 기사 내용을 과장하거나 왜곡해서는 안 된다.",
+        "ethics_tier": 2,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "신문윤리실천요강",
+        "ethics_article_number": "제10조 ①"
+      },
+      {
+        "pattern_code": "6-2-c",
+        "ethics_code": "HSD-1",
+        "ethics_title": "혐오표현 인식과 주의 깊은 전달",
+        "ethics_full_text": "우리는 평소 혐오표현의 개념과 맥락, 해악을 충분히 인식하고, 다양한 사회현상과 발언 등에 혐오표현이 있는지 주의 깊게 살펴보고 전달하겠습니다.",
+        "ethics_tier": 4,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": null,
+        "ethics_source": "혐오표현 반대 미디어 실천 선언",
+        "ethics_article_number": "선언 1"
+      }
+    ]
+  },
+  "stability_digest": "b13e5c6cabc959cd52adca4f8f349548725e452d588326df627878dd54fe7126",
+  "timing": {
+    "pipeline_total_seconds": 22.51,
+    "wall_seconds": 22.51,
+    "embedding_tokens": 2292
+  },
+  "capture_validation": {
+    "patterns_with_ethics": [
+      "2-2-c",
+      "3-2-b",
+      "6-2-c"
+    ],
+    "patterns_without_ethics": [],
+    "forensic_consistency": false,
+    "difference_reason": "run_sonnet=False로 pipeline 내부 ethics 조회가 수행되지 않음 — forensic.patterns_without_ethics는 validated 전체로 채워진다(pipeline.py 341-343). 본 필드는 runner가 별도 조회한 규범 refs 기준 재계산값이다.",
+    "ethics_subset_of_validated": true
+  },
+  "true_negative_candidate": false,
+  "article_body_sha256": "11c1ed28edf1e241fcbf22356a0cd88ed8a37878758c31efdb7df407c188c662",
+  "article_title_sha256": "8807e4e4fdc849e3651be5fee096282e6cd605e69408fada44a4862e050667d6",
+  "analysis_input_sha256": "607abf2d31102dc10dd099ccd4ff835b291f87b2ab14c4ff7165ff6aed86fb1c",
+  "detections_canonical_sha256": "c75ff2ed2bf7224e943d6ebdfbed6c6fe82b74dc6b70cbd3f2a3779b7dfb0141",
+  "detections_ordered_sha256": "b566e993bc6226de4da871ccded01c06dd74c3a96452713413d37cfa0d63fc9e",
+  "ethics_snapshot_sha256": "11e95f5648aed04cc26e530539d64b543f7c33b1828471ab3bf2654e7b9d0194",
+  "phase1_system_prompt_sha256": "bc3769c701c7a6e16a1393c8b3451a630cec72c5b661cf5406a3ade61bb7c0e2",
+  "report_input_sha256": "ced2b1fc2a6b76b2aa043ef2327ad378337230a53cfdb49aa891e1813241a340",
+  "semantic_hash_provenance": {
+    "basis": "postprocess",
+    "computed_at": "2026-07-19T07:00:19.989989+09:00",
+    "code": "scripts/report_quality_runner.py compute_semantic_hashes() (scripts/rq_postprocess_supplement.py에서 호출)",
+    "phase1_prompt_note": "phase1_system_prompt_sha256는 후처리 시점(2026-07-19)에 _build_sonnet_solo_prompt를 동일 커밋·동일 DB에서 재빌드해 계산 — 캡처 시점(2026-07-18) 프롬프트 원문은 저장돼 있지 않으므로 그 사이 DB 혼동쌍이 불변이라는 가정 하의 값이다."
+  },
+  "diagnostic_path": "docs/report-quality-recovery/runs/diagnostics/PAST-DETENTION/r2.json",
+  "diagnostic_sha256": "840b8f542d515ae5a0d81cb2e1fb39b2ecc337eab83aee337c8706cef0702f0e",
+  "postprocess_version": "rq_v1_supplement1",
+  "postprocessed_at": "2026-07-19T07:00:19.990029+09:00"
+}

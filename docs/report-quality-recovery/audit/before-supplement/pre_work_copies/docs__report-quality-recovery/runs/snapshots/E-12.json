@@ -1,0 +1,470 @@
+{
+  "snapshot_version": "rq_v1",
+  "fixture_id": "E-12",
+  "run_tag": "r1",
+  "generated_at": "2026-07-18T23:19:30.641072+09:00",
+  "git_commit": "9d051927187ed5d09a9ede630ea7781d1f8bc0ed",
+  "entrypoint": "core.pipeline.analyze_article 직접 호출 — 운영 API(/analyze), URL 캐시(get_cached_analysis), DB 저장(save_analysis_result) 미경유",
+  "run_sonnet": false,
+  "supabase_host": "vwaelliqpoqzeoggrfew.supabase.co",
+  "article": {
+    "title": "공단·농장···외국인 노동자 모인 곳에 마약이 있었다",
+    "text": "국내에 체류하는 외국인이 해마다 증가하면서 외국인 마약사범이 역대 최고 수치를 기록했다. 온라인 마약 거래 활성화로 20~30대 마약사범 비율도 사상 최고치를 보이는 등 국내 마약 범죄가 외국인과 젊은층을 중심으로 빠르게 확산하고 있다.\n\n대검찰청 마약·조직범죄부(노만석 검사장)는 15일 '2024년 마약류 범죄백서'를 발간하고 지난해 단속된 마약류 사범이 2만 3022명을 기록했다고 밝혔다. 이는 역대 최다 수치를 보인 전년 2만 7611명보다 16.6% 감소한 수치다. 지난해 마약류 사범은 2023년보다는 줄었으나 역대 두 번째로 높은 기록이다. 특히 최초 집계 시점인 1985년 당시 마약사범 1190명보다 지난해가 20배 많은 수준으로 마약사범 증가율이 인구 증가율을 훨씬 상회한다.\n\n최근 수년간 마약사범이 크게 증가한 것은 온라인 플랫폼 거래 활성화 때문으로 보인다. 대검 관계자는 \"1999년 이후 마약사범은 1만명 안팎 수준을 유지하다가 2015년 무렵부터 SNS·다크웹을 이용한 비대면 온라인 마약 거래가 보편화하면서 급증했다\"고 설명했다.\n\n마약사범 숫자가 역대 두 번째로 2만 명을 넘어선 가운데 이른바 20·30 세대가 차지하는 비율은 전체 대비 60.8%로 사상 처음으로 60%대를 넘어섰다. 지난해 20·30대 마약사범 숫자는 1만 3996명을 기록했다.\n\n다만 2023년 사상 최고치를 기록한 10대 마약사범 숫자는 지난해 649명으로 56% 감소했다. 대검찰청은 \"몇 년 사이 10대 마약사범 수가 꾸준히 늘었지만 강남 학원가 마약 음료 사건 이후 범정부적 예방과 단속으로 10대 사범이 대폭 줄었다\"고 설명했다.\n\n지난해 체류 외국인 숫자가 260만명을 처음으로 돌파한 가운데 외국인 마약사범도 역대 최고치를 보였다. 지난해 전체 마약사범은 전년 대비 줄었지만 외국인 마약사범은 전년 대비 2.6% 증가한 3232명을 기록했다.\n\n외국인 마약사범은 주로 외국인 근로자를 중심으로, 산업단지나 대규모 농장을 통해 유통되는 사례가 많았다. 특히 동남아 마약조직과 결탁해 국내로 유통하는 범죄가 늘어나고 있다. 검찰은 지난해 12월 라오스계 마약조직과 연계된 국내 마약유통 조직이 태국 마약상을 통해 밀수한 필로폰을 은닉한 사실을 밝혀내고 마약 조직 일당을 구속기소하기도 했다.\n\n전체 범죄유형별로 보면 마약류 투약사범과 공급사범(밀조·밀수·밀매)은 각각 9528명, 7738명으로 전년 대비 12.6%, 15.4% 감소했다. 다만 마약류를 직접 만든 제조사범(밀조)은 19명으로 전년 6명에서 3배 수준으로 늘어났다.\n\n지난해 마약 압수량은 1,173.2㎏으로 전년 998㎏ 대비 17.6% 높아졌다. 코카인·야바·JWH-018(일명 합성대마) 압수량은 전년 대비 증가하고 메스암페타민(필로폰)·대마초 압수량은 감소했다. 대검 관계자는 \"마약범죄의 사회적 해악을 고려한 양형기준 강화 의견을 개진해 지난해 7월 법원 양형위원회에서 강화된 범죄 양형기준이 심의-의결되도록 했다\"며 \"법무부·식약처·보건복지부 등과 협업해 재활 연계모델도 확대하고 있다\"고 했다.",
+    "sha256": "7fcdc044ad77af823d43df694e42729c87ac641fcfd28df48831b5b15fa13570",
+    "chars": 1506,
+    "url": "https://www.ikpec.or.kr/m2/sub2_1_1.asp?Year=2025&DecideBaseNo=Y20250709&DecideNo=2025-1257",
+    "publisher": "서울경제",
+    "source": "golden_set",
+    "characteristic": "2. 낙인·차별",
+    "selection_reason": "외국인 노동자 집단을 마약 범죄와 결합하는 전형적 집단 낙인 기사 (골든셋 1-5/1-7 라벨 보유)"
+  },
+  "phase1": {
+    "model": "claude-sonnet-4-6",
+    "validated_pattern_ids": [
+      101,
+      87,
+      57
+    ],
+    "validated_pattern_codes": [
+      "1-4-a",
+      "3-2-c",
+      "4-3-b"
+    ],
+    "detections": [
+      {
+        "pattern_code": "4-3-b",
+        "matched_text": "공단·농장···외국인 노동자 모인 곳에 마약이 있었다",
+        "severity": "high",
+        "reasoning": "제목이 '외국인 노동자가 모인 곳'과 '마약'을 직접 연결하여 외국인 노동자 집단 전체를 마약 범죄와 연루된 집단으로 위치시키는 프레이밍이다. 본문에는 외국인 마약사범 3232명이 전체 2만 3022명 중 일부임이 명시되어 있고, 외국인 노동자 전체가 아닌 일부 유통 경로를 설명하는 수준임에도 제목은 외국인 노동자 집단 전체에 마약 범죄의 낙인을 씌우는 구조로 되어 있다.",
+        "pattern_name": "차별·혐오·인권침해 표현 (6-5 통합)",
+        "report_framing": "차별·혐오 표현, 집단 낙인, 인권침해적 언어 사용 여부를 중심으로 설명한다. 명예훼손 일반론보다 특정 속성에 대한 비하·편견 강화 여부에 초점을 맞춘다."
+      },
+      {
+        "pattern_code": "3-2-c",
+        "matched_text": "외국인 마약사범은 주로 외국인 근로자를 중심으로, 산업단지나 대규모 농장을 통해 유통되는 사례가 많았다.",
+        "severity": "medium",
+        "reasoning": "전체 마약사범 2만 3022명 중 외국인 사범은 3232명(약 14%)에 불과하고, 그 중에서도 산업단지·농장 유통 사례가 '많다'는 주장의 구체적 수치나 출처가 제시되지 않아 일부 사례를 외국인 노동자 전반의 특성으로 일반화하는 오류가 있다.",
+        "pattern_name": "일부 사례의 부당한 일반화",
+        "report_framing": "구체 패턴(3-2-c) '일부 사례의 부당한 일반화'의 판단 기준을 중심으로 설명하되, 필요 시 편향적 보도 맥락으로 확장"
+      },
+      {
+        "pattern_code": "1-4-a",
+        "matched_text": "최근 수년간 마약사범이 크게 증가한 것은 온라인 플랫폼 거래 활성화 때문으로 보인다.",
+        "severity": "low",
+        "reasoning": "복합적 원인이 있을 수 있는 마약사범 증가 현상을 '온라인 플랫폼 거래 활성화' 단일 원인으로 귀속시키면서 '때문으로 보인다'는 추측성 술어로 단정하고 있다.",
+        "pattern_name": "추측성 술어 단정",
+        "report_framing": "구체 패턴(1-4-a) '추측성 술어 단정'의 판단 기준을 중심으로 설명하되, 필요 시 사실과 의견 혼재 맥락으로 확장"
+      }
+    ],
+    "overall_assessment": "대검찰청 마약류 범죄백서를 바탕으로 한 통계 보도로 전반적으로 수치를 충실히 전달하고 있으나, 제목이 외국인 노동자를 마약 범죄의 주요 집단으로 연결 짓는 프레이밍 문제가 있다. 또한 외국인 마약사범 증가 원인을 단순화하고 맥락 없이 서술하는 부분도 확인된다.",
+    "article_context": "general",
+    "forensic": {
+      "vector_candidates": [
+        {
+          "code": "1-5-h",
+          "name": "통계 맥락 무시(기저효과·계절성)",
+          "similarity": 0.3989
+        },
+        {
+          "code": "1-1-j",
+          "name": "맥락 정보 생략·체리피킹",
+          "similarity": 0.3886
+        },
+        {
+          "code": "4-4-b",
+          "name": "무죄추정 원칙 위반",
+          "similarity": 0.3736
+        },
+        {
+          "code": "3-3-a",
+          "name": "인과관계 왜곡",
+          "similarity": 0.3734
+        },
+        {
+          "code": "6-4-c",
+          "name": "사건·재난 잔혹 묘사",
+          "similarity": 0.3543
+        },
+        {
+          "code": "6-3-c",
+          "name": "단정적 용어 사용",
+          "similarity": 0.3518
+        },
+        {
+          "code": "5-1-b",
+          "name": "맥락 없는 사실 나열",
+          "similarity": 0.3374
+        },
+        {
+          "code": "1-5-a",
+          "name": "데이터 출처·조사방법 미공개",
+          "similarity": 0.2538
+        },
+        {
+          "code": "3-4-a",
+          "name": "이분법 대결 구도",
+          "similarity": 0.2482
+        },
+        {
+          "code": "1-5-f",
+          "name": "선거 여론조사 과장·왜곡",
+          "similarity": 0.246
+        },
+        {
+          "code": "6-3-a",
+          "name": "과장된 표현",
+          "similarity": 0.2376
+        },
+        {
+          "code": "4-4-e",
+          "name": "피해자·증인 보호 소홀",
+          "similarity": 0.2197
+        }
+      ],
+      "starred_codes": [
+        "1-1-j",
+        "1-5-a",
+        "1-5-f",
+        "1-5-h",
+        "3-3-a",
+        "3-4-a",
+        "4-4-b",
+        "4-4-e",
+        "5-1-b",
+        "6-3-a",
+        "6-3-c",
+        "6-4-c"
+      ],
+      "mandatory_review_codes": [
+        "4-3-b"
+      ],
+      "validated_codes": [
+        "4-3-b",
+        "3-2-c",
+        "1-4-a"
+      ],
+      "hallucinated_codes": [],
+      "unmatched_vector_candidates": [],
+      "patterns_without_ethics": [
+        "4-3-b",
+        "3-2-c",
+        "1-4-a"
+      ],
+      "article_context": "general",
+      "fallback_used": false,
+      "phase1_model": "claude-sonnet-4-6"
+    }
+  },
+  "ethics": {
+    "count": 25,
+    "empty_warning": false,
+    "refs": [
+      {
+        "pattern_code": "4-3-b",
+        "ethics_code": "JEC-3",
+        "ethics_title": "인권을 존중하고 피해를 최소화한다",
+        "ethics_full_text": "윤리적 언론은 취재 대상을 존중한다. 공공의 이익을 위해 보도할 가치가 있는 정보를 취재하고 전달할 경우에도 개인의 인권과 존엄성을 침해하지 않도록 한다. 특히 미숙하고 동의 능력이 없는 취재원, 사건 피해자 등을 취재할 때는 절차적 정당성과 가장 높은 수준의 인권 감수성을 가지고 주의를 기울인다. 합법적으로 획득한 정보라도 이를 보도할 때는 윤리적 정당성을 갖춰야 한다. 공인이 아닌 일반 시민에 대해 보도할 때는 인격권 보호에 더욱 주의한다. 피의자가 공정한 재판을 받을 권리와 공중의 알권리 사이의 균형을 추구한다.",
+        "ethics_tier": 1,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "parent chain rollup",
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제3조"
+      },
+      {
+        "pattern_code": "4-3-b",
+        "ethics_code": "JEC-4",
+        "ethics_title": "공정하게 보도한다",
+        "ethics_full_text": "윤리적 언론은 특정 집단, 세력, 견해에 치우치지 않고 공평무사한 자세로 보도한다. 사회적으로 중요한 사안이나 갈등적 사안을 다룰 때는 다양한 입장을 두루 담아 전체를 아우르는 균형 잡힌 시각과 관점을 보여준다. 윤리적 언론은 시시비비를 가리는 언론 본연의 역할에 충실하면서도 사회 내에 존재하는 다양한 의견의 경중을 고려해 보도 내용의 양적·질적 균형을 맞춘다. 특정한 가치와 정파적 이익에 부합하는 사실과 견해만을 선택하거나 과장하지 않는다. 기사로 인해 불이익을 볼 수 있는 개인이나 집단에는 자신을 방어하고 반론할 권리를 보장한다.",
+        "ethics_tier": 1,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "parent chain rollup",
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "3-2-c",
+        "ethics_code": "JEC-4",
+        "ethics_title": "공정하게 보도한다",
+        "ethics_full_text": "윤리적 언론은 특정 집단, 세력, 견해에 치우치지 않고 공평무사한 자세로 보도한다. 사회적으로 중요한 사안이나 갈등적 사안을 다룰 때는 다양한 입장을 두루 담아 전체를 아우르는 균형 잡힌 시각과 관점을 보여준다. 윤리적 언론은 시시비비를 가리는 언론 본연의 역할에 충실하면서도 사회 내에 존재하는 다양한 의견의 경중을 고려해 보도 내용의 양적·질적 균형을 맞춘다. 특정한 가치와 정파적 이익에 부합하는 사실과 견해만을 선택하거나 과장하지 않는다. 기사로 인해 불이익을 볼 수 있는 개인이나 집단에는 자신을 방어하고 반론할 권리를 보장한다.",
+        "ethics_tier": 1,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "parent chain rollup",
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "3-2-c",
+        "ethics_code": "JEC-1",
+        "ethics_title": "진실을 추구한다",
+        "ethics_full_text": "윤리적 언론은 진실을 보도한다. 진실 추구는 언론의 존재 이유다. 사실을 부정하고 믿고 싶은 바를 진실로 받아들이는 시대에 진실 추구의 중요성은 그 어느 때보다 크다. 윤리적 언론은 정확한 사실을 종합적이고 포괄적인 맥락으로 전달한다. 정확성은 신속성에 우선한다. 모든 정보를 성실하게 검증하고 명확한 근거를 바탕으로 보도한다. 취재원 발언을 정확히 인용하며 발언 취지가 왜곡되지 않도록 한다. 진실을 밝히기 위해 용기 있고 성실한 태도를 견지한다. 사실과 의견을 분리하고, 의도와 기술방식이 진실을 가리지 않도록 양심에 따라 보도한다.",
+        "ethics_tier": 1,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제1조"
+      },
+      {
+        "pattern_code": "1-4-a",
+        "ethics_code": "JEC-1",
+        "ethics_title": "진실을 추구한다",
+        "ethics_full_text": "윤리적 언론은 진실을 보도한다. 진실 추구는 언론의 존재 이유다. 사실을 부정하고 믿고 싶은 바를 진실로 받아들이는 시대에 진실 추구의 중요성은 그 어느 때보다 크다. 윤리적 언론은 정확한 사실을 종합적이고 포괄적인 맥락으로 전달한다. 정확성은 신속성에 우선한다. 모든 정보를 성실하게 검증하고 명확한 근거를 바탕으로 보도한다. 취재원 발언을 정확히 인용하며 발언 취지가 왜곡되지 않도록 한다. 진실을 밝히기 위해 용기 있고 성실한 태도를 견지한다. 사실과 의견을 분리하고, 의도와 기술방식이 진실을 가리지 않도록 양심에 따라 보도한다.",
+        "ethics_tier": 1,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제1조"
+      },
+      {
+        "pattern_code": "4-3-b",
+        "ethics_code": "JEC-7",
+        "ethics_title": "다양성을 존중하고 차별에 반대한다",
+        "ethics_full_text": "윤리적 언론은 모든 사람이 존중받는 세상을 위해 차별과 편견을 줄이려 노력한다. 언론은 다양한 사회적 가치와 문화적 차이를 인정하고 이를 존중한다. 언론은 성별, 장애, 종교, 나이, 출신 지역, 인종, 성적 지향 등을 이유로 누구도 부당하게 차별받지 않도록 감시한다. 편견과 차별이 발생하는 구조를 발굴·보도해 사회적 의제로 확산시킨다. 고정관념과 편견을 부추기는 표현, 특정 계층·지역을 비하하는 표현, 성차별 표현, 사람을 성적으로 대상화하는 표현을 삼간다.",
+        "ethics_tier": 1,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제7조"
+      },
+      {
+        "pattern_code": "1-4-a",
+        "ethics_code": "JEC-4",
+        "ethics_title": "공정하게 보도한다",
+        "ethics_full_text": "윤리적 언론은 특정 집단, 세력, 견해에 치우치지 않고 공평무사한 자세로 보도한다. 사회적으로 중요한 사안이나 갈등적 사안을 다룰 때는 다양한 입장을 두루 담아 전체를 아우르는 균형 잡힌 시각과 관점을 보여준다. 윤리적 언론은 시시비비를 가리는 언론 본연의 역할에 충실하면서도 사회 내에 존재하는 다양한 의견의 경중을 고려해 보도 내용의 양적·질적 균형을 맞춘다. 특정한 가치와 정파적 이익에 부합하는 사실과 견해만을 선택하거나 과장하지 않는다. 기사로 인해 불이익을 볼 수 있는 개인이나 집단에는 자신을 방어하고 반론할 권리를 보장한다.",
+        "ethics_tier": 1,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "parent chain rollup",
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "4-3-b",
+        "ethics_code": "JEC-5",
+        "ethics_title": "독립적으로 보도한다",
+        "ethics_full_text": "윤리적 언론은 모든 권력으로부터 독립해 오로지 시민과 공익의 관점에서 자율적이고 전문적으로 판단한다. 언론사 안팎의 부당한 간섭과 압력을 거부하고 언론의 자유와 보도의 자율성을 지킨다. 독립적인 보도를 보장하기 위해 편집과 경영의 분리 원칙을 준수한다. 이를 바탕으로 모든 형태의 권력을 감시한다. 독자와 시청자의 의견과 비판을 겸허하게 경청하고 보도에 반영하되, 건전한 비판 보도를 막으려는 의도적이고 집단적인 공격에 위축되지 않는다. 상업적 이해가 보도에 영향을 미치지 않도록 한다.",
+        "ethics_tier": 1,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "parent chain rollup",
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제5조"
+      },
+      {
+        "pattern_code": "4-3-b",
+        "ethics_code": "PCP-1-5",
+        "ethics_title": "사회적 약자 보호",
+        "ethics_full_text": "장애인 ‧ 노약자 ‧ 성 소수자 등 사회적 약자의 권리 보호에 적극 나서야 하며, 이들에 대해 편견을 갖지 말아야 한다.",
+        "ethics_tier": 2,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": "wave1.1 curated: 사회적 약자 보호",
+        "ethics_source": "신문윤리실천요강",
+        "ethics_article_number": "제1조 ⑤"
+      },
+      {
+        "pattern_code": "1-4-a",
+        "ethics_code": "PCP-3-1",
+        "ethics_title": "보도기사의 사실과 의견 구분",
+        "ethics_full_text": "보도기사는 사실과 의견을 명확히 구분하여 작성해야 한다. 또한 편견이나 이기적 동기로 보도기사를 고르거나 작성해서는 안 된다.",
+        "ethics_tier": 2,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "신문윤리실천요강",
+        "ethics_article_number": "제3조 ①"
+      },
+      {
+        "pattern_code": "3-2-c",
+        "ethics_code": "PCE-4",
+        "ethics_title": "보도와 평론",
+        "ethics_full_text": "우리 언론인은 사실의 전모를 정확하고, 객관적이고, 공정하게 보도함으로써 진실을 추구할 것을 다짐한다. 또한 공정하고 바르게 평론하며, 사회의 의견을 폭넓게 수용해 다양한 여론 형성에 기여할 것을 결의한다.",
+        "ethics_tier": 2,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "parent chain rollup",
+        "ethics_source": "신문윤리강령",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "4-3-b",
+        "ethics_code": "PCE-4",
+        "ethics_title": "보도와 평론",
+        "ethics_full_text": "우리 언론인은 사실의 전모를 정확하고, 객관적이고, 공정하게 보도함으로써 진실을 추구할 것을 다짐한다. 또한 공정하고 바르게 평론하며, 사회의 의견을 폭넓게 수용해 다양한 여론 형성에 기여할 것을 결의한다.",
+        "ethics_tier": 2,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "parent chain rollup",
+        "ethics_source": "신문윤리강령",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "1-4-a",
+        "ethics_code": "PCE-4",
+        "ethics_title": "보도와 평론",
+        "ethics_full_text": "우리 언론인은 사실의 전모를 정확하고, 객관적이고, 공정하게 보도함으로써 진실을 추구할 것을 다짐한다. 또한 공정하고 바르게 평론하며, 사회의 의견을 폭넓게 수용해 다양한 여론 형성에 기여할 것을 결의한다.",
+        "ethics_tier": 2,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": null,
+        "ethics_source": "신문윤리강령",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "4-3-b",
+        "ethics_code": "PCP-1-4",
+        "ethics_title": "차별과 편견 금지",
+        "ethics_full_text": "지역, 계층, 성별, 인종, 종교 간 갈등이나 혐오를 부추기는 보도를 해서는 안 되며, 이에 근거해 개인이나 단체를 차별해서도 안 된다.",
+        "ethics_tier": 2,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "신문윤리실천요강",
+        "ethics_article_number": "제1조 ④"
+      },
+      {
+        "pattern_code": "4-3-b",
+        "ethics_code": "PCP-10-1",
+        "ethics_title": "제목의 원칙",
+        "ethics_full_text": "제목은 기사의 요약된 내용이나 핵심 내용을 대표해야 하며, 기사 내용을 과장하거나 왜곡해서는 안 된다.",
+        "ethics_tier": 2,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "신문윤리실천요강",
+        "ethics_article_number": "제10조 ①"
+      },
+      {
+        "pattern_code": "3-2-c",
+        "ethics_code": "PCP-3-1",
+        "ethics_title": "보도기사의 사실과 의견 구분",
+        "ethics_full_text": "보도기사는 사실과 의견을 명확히 구분하여 작성해야 한다. 또한 편견이나 이기적 동기로 보도기사를 고르거나 작성해서는 안 된다.",
+        "ethics_tier": 2,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "신문윤리실천요강",
+        "ethics_article_number": "제3조 ①"
+      },
+      {
+        "pattern_code": "4-3-b",
+        "ethics_code": "HRG-3-2a",
+        "ethics_title": "고정관념·편견 강화 표현 금지",
+        "ethics_full_text": "장애에 대한 잘못된 고정관념과 편견을 강화할 수 있는 표현을 사용하지 않는다.",
+        "ethics_tier": 3,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": "wave1.1 curated: 고정관념·편견 강화",
+        "ethics_source": "인권보도준칙",
+        "ethics_article_number": "제3장 2-가"
+      },
+      {
+        "pattern_code": "4-3-b",
+        "ethics_code": "HRG-3-1b",
+        "ethics_title": "부정적 관용구 금지",
+        "ethics_full_text": "통상적으로 쓰이는 말 중 장애인에 대해 부정적 뉘앙스를 담고 있는 관용구를 사용하지 않는다.",
+        "ethics_tier": 3,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": "wave1.1 curated: 부정적 관용구 — 4-3-b 정의와 정합",
+        "ethics_source": "인권보도준칙",
+        "ethics_article_number": "제3장 1-나"
+      },
+      {
+        "pattern_code": "4-3-b",
+        "ethics_code": "HRG-3-1a",
+        "ethics_title": "장애인 비하·차별 표현 주의",
+        "ethics_full_text": "장애인을 비하하거나 차별하는 표현에 주의한다.",
+        "ethics_tier": 3,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": "wave1.1 curated: 장애인 비하·차별 표현",
+        "ethics_source": "인권보도준칙",
+        "ethics_article_number": "제3장 1-가"
+      },
+      {
+        "pattern_code": "4-3-b",
+        "ethics_code": "HRG-2-1f",
+        "ethics_title": "인용·인터뷰 인격권 침해·차별 조장 금지",
+        "ethics_full_text": "인용이나 인터뷰를 이용하여 인격권을 침해하거나 차별을 조장하지 않는다.",
+        "ethics_tier": 3,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": "wave1.1 curated: 인용 경유 차별 조장",
+        "ethics_source": "인권보도준칙",
+        "ethics_article_number": "제2장 1-바"
+      },
+      {
+        "pattern_code": "4-3-b",
+        "ethics_code": "HRG-5-2b",
+        "ethics_title": "이주노동자 잠재적 범죄자·전염병 원인 표현 금지",
+        "ethics_full_text": "이주노동자 등을 잠재적 범죄자 또는 전염병 원인 제공자 등으로 몰아갈 수 있는 표현을 사용하지 않는다.",
+        "ethics_tier": 3,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "인권보도준칙",
+        "ethics_article_number": "제5장 2-나"
+      },
+      {
+        "pattern_code": "4-3-b",
+        "ethics_code": "HRG-3-1",
+        "ethics_title": "장애인 자존감·존엄성·인격권 무시 보도 금지",
+        "ethics_full_text": "언론은 장애인이 자존감과 존엄성, 인격권을 무시당한다고 느낄 수 있는 보도를 하지 않는다.",
+        "ethics_tier": 3,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": "wave1.1 curated: 장애인 존엄성·인격권",
+        "ethics_source": "인권보도준칙",
+        "ethics_article_number": "제3장 1"
+      },
+      {
+        "pattern_code": "4-3-b",
+        "ethics_code": "HSD-1",
+        "ethics_title": "혐오표현 인식과 주의 깊은 전달",
+        "ethics_full_text": "우리는 평소 혐오표현의 개념과 맥락, 해악을 충분히 인식하고, 다양한 사회현상과 발언 등에 혐오표현이 있는지 주의 깊게 살펴보고 전달하겠습니다.",
+        "ethics_tier": 4,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": null,
+        "ethics_source": "혐오표현 반대 미디어 실천 선언",
+        "ethics_article_number": "선언 1"
+      },
+      {
+        "pattern_code": "4-3-b",
+        "ethics_code": "HSD-3",
+        "ethics_title": "사회적 소수자 배제 혐오표현 대응",
+        "ethics_full_text": "우리는 성소수자, 이주민, 난민, 북한이탈주민 등 사회적 소수자를 열등한 존재로 규정하고, 편견을 확산시키거나, 이들이 위험을 야기할 것이라는 공포를 부추겨 그들을 사회에서 배제하는 혐오표현에 적극 대응하겠습니다.",
+        "ethics_tier": 4,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "wave1.1 curated: 소수자 배제 혐오표현",
+        "ethics_source": "혐오표현 반대 미디어 실천 선언",
+        "ethics_article_number": "선언 3"
+      },
+      {
+        "pattern_code": "4-3-b",
+        "ethics_code": "HSD-4",
+        "ethics_title": "사회적 영향력자 혐오표현 비판",
+        "ethics_full_text": "우리는 주요 정치인, 고위 공무원, 종교 지도자 등 사회적 영향력이 큰 사람이 하는 혐오표현은 더욱 엄격하게 비판적으로 바라보겠습니다.",
+        "ethics_tier": 4,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "wave1.1 curated: 영향력자 혐오표현 증폭",
+        "ethics_source": "혐오표현 반대 미디어 실천 선언",
+        "ethics_article_number": "선언 4"
+      }
+    ]
+  },
+  "stability_digest": "4ee043fe504933e53b4b5e04e82b6108118403aa8d117cf8237b77e42b5c4a03",
+  "timing": {
+    "pipeline_total_seconds": 18.24,
+    "wall_seconds": 18.24,
+    "embedding_tokens": 1542
+  }
+}

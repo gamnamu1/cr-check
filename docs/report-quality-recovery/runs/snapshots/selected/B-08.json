@@ -1,0 +1,380 @@
+{
+  "snapshot_version": "rq_v1",
+  "fixture_id": "B-08",
+  "run_tag": "r1",
+  "generated_at": "2026-07-18T23:19:57.058674+09:00",
+  "git_commit": "9d051927187ed5d09a9ede630ea7781d1f8bc0ed",
+  "entrypoint": "core.pipeline.analyze_article 직접 호출 — 운영 API(/analyze), URL 캐시(get_cached_analysis), DB 저장(save_analysis_result) 미경유",
+  "run_sonnet": false,
+  "supabase_host": "vwaelliqpoqzeoggrfew.supabase.co",
+  "article": {
+    "title": "실업급여 늘리자…6년 만에 비정규직 24만명 급증",
+    "text": "2019년 바뀐 실업급여 제도 때문에 비정규직이 약 24만명 증가했다는 연구 결과가 나왔다. 지급액과 지급기간을 모두 대폭 늘려주자 수급에 필요한 기간만 일하면서 '반복수급'을 누리려는 비정규직 근로자가 급증하고 있다는 분석이다. 최저임금을 받고 일한 근로자보다 실업급여 수급자가 받는 지급액이 더 많은 '역전현상'이 발생하는 등 제도 설계가 잘못됐다는 지적도 제기됐다.\n\n파이터치연구원은 18일 '실업급여가 비정규직에 미치는 영향'이란 보고서에서 이같은 분석 결과를 내놨다. 실업급여 비중과 비정규직 근로자수의 인과관계 분석에는 2005~2022년 한국과 유럽 20개국 자료를 바탕으로 '하우스만-테일러 추정법'을 적용했다.\n\n분석 결과 실직 전 받은 평균 임금 대비 실업급여 비중이 1%포인트 올랐을 때 비정규직 비중(전체 임금 근로자 대비)은 0.12%포인트 상승하는 것으로 나타났다. 이 분석을 최근 변경된 실업급여 제도에 적용하면 실업급여가 인상되면서 그로 인해 비정규직이 24만1000명 늘었다는 결론이다.\n\n2018년 대비 지난해 실업급여 비중은 50%에서 60%포인트로 인상됐고, 동 기간 비정규직 비중은 1.2%포인트 늘었다. 연구원은 \"실업급여가 증가하면 구직자는 도덕적 해이에 빠지기 쉬워진다\"며 \"자발적 퇴직자는 실업급여를 받을 수 없지만 계약이간이 정해진 비정규직은 수급이 용이해 도덕적 해이가 비정규직에서 발생하기 쉽다\"고 설명했다.\n\n실업급여 지급액도 2018년 6조7000억원에서 2023년 11조8000억원으로 약 80% 폭증했다. 지난해 기준 최저임금을 받고 월 209시간 일한 근로자가 받는 실수령 월급(184만원)보다 실업급여 수급자가 받는 월 최소액(189만원)이 더 큰 '역전현상'도 발생했다. 수급요건도 한국(실직 전 18개월 중 180일 근무)이 독일(30개월 중 12개월 이상 근무)이나 스위스(24개월 중 12개월 근무), 스페인(6년 중 360일 이상 근무)보다 느슨하다고 지적했다.\n\n연구를 수행한 마지현 파이터치연구원 수석연구원은 \"높은 수준의 실업급여는 구직자가 취업과 실업을 반복하며 실업급여를 지속적으로 수급하는 결과로 이어지고 있다\"며 \"현재의 실업급여 지급수준을 변경되기 이전 수준으로 조정하고, 수급요건을 강화해야 한다\"고 강조했다.",
+    "sha256": "a974990f99590fb0aad6d508409ed4a37e6afa7f63c950cfe8d8a7f900bde58e",
+    "chars": 1117,
+    "url": "",
+    "publisher": "한국경제",
+    "source": "golden_set",
+    "characteristic": "3. 통계·경제 인과",
+    "selection_reason": "실업급여 제도 변화→비정규직 급증이라는 단정적 인과 + '충격 결과' 프레임의 통계·경제 기사 (골든셋 1-7/1-1)"
+  },
+  "phase1": {
+    "model": "claude-sonnet-4-6",
+    "validated_pattern_ids": [
+      123,
+      83,
+      70,
+      69,
+      86
+    ],
+    "validated_pattern_codes": [
+      "1-5-h",
+      "1-5-i",
+      "3-1-b",
+      "3-2-b",
+      "6-2-a"
+    ],
+    "detections": [
+      {
+        "pattern_code": "6-2-a",
+        "matched_text": "실업급여 늘리자…6년 만에 비정규직 24만명 급증",
+        "severity": "high",
+        "reasoning": "제목은 실업급여 확대와 비정규직 증가 사이의 인과관계를 확정적으로 제시하지만, 본문에서 인용된 연구는 '하우스만-테일러 추정법'을 적용한 통계 분석으로 인과관계 주장에 한계가 있으며, 비정규직 증가에 영향을 미치는 다른 요인(경기 변동, 코로나19 등)은 전혀 언급되지 않는다. 부차적 조건을 삭제하고 인과관계를 단정한 제목이다.",
+        "pattern_name": "제목-본문 불일치(맥락 삭제)",
+        "report_framing": "구체 패턴(6-2-a) '제목-본문 불일치(맥락 삭제)'의 판단 기준을 중심으로 설명하되, 필요 시 전문성 부족 맥락으로 확장"
+      },
+      {
+        "pattern_code": "3-1-b",
+        "matched_text": "파이터치연구원은 18일 '실업급여가 비정규직에 미치는 영향'이란 보고서에서 이같은 분석 결과를 내놨다.",
+        "severity": "high",
+        "reasoning": "기사 전체가 파이터치연구원 단일 기관의 보고서에만 의존하며, 이 연구 결과에 반론을 제시하는 다른 연구자나 노동계·수급자 측 취재원이 전혀 등장하지 않는다. 실업급여 제도 개편의 긍정적 효과(저소득층 소득 보전, 구직 기간 안정화 등)를 다루는 관점도 완전히 배제되어 있다.",
+        "pattern_name": "편향된 취재원 구성",
+        "report_framing": "구체 패턴(3-1-b) '편향된 취재원 구성'의 판단 기준을 중심으로 설명하되, 필요 시 관점 다양성 부족 맥락으로 확장"
+      },
+      {
+        "pattern_code": "1-5-i",
+        "matched_text": "이 분석을 최근 변경된 실업급여 제도에 적용하면 실업급여가 인상되면서 그로 인해 비정규직이 24만1000명 늘었다는 결론이다.",
+        "severity": "high",
+        "reasoning": "통계 분석에서 도출된 상관관계 추정치를 '그로 인해'라는 인과 표현으로 단정하고 있으며, 분석 모델의 한계(다른 변수 통제 여부, 오차범위 등)나 연구의 예비적 성격에 대한 설명이 전혀 없다. 연구 결과를 확정된 사실처럼 과장 인용한 것이다.",
+        "pattern_name": "연구 결과 선택적·과장 인용",
+        "report_framing": "구체 패턴(1-5-i) '연구 결과 선택적·과장 인용'의 판단 기준을 중심으로 설명하되, 필요 시 데이터 및 통계 오용 맥락으로 확장"
+      },
+      {
+        "pattern_code": "1-5-h",
+        "matched_text": "실업급여 지급액도 2018년 6조7000억원에서 2023년 11조8000억원으로 약 80% 폭증했다.",
+        "severity": "medium",
+        "reasoning": "지급액 증가의 맥락(수급자 수 증가, 코로나19로 인한 실업 급증, 물가 상승 등)을 전혀 제시하지 않고 수치만 나열하여 '폭증'으로 단정했다. 기저효과나 외부 요인을 무시한 단순 수치 비교다.",
+        "pattern_name": "통계 맥락 무시(기저효과·계절성)",
+        "report_framing": "구체 패턴(1-5-h) '통계 맥락 무시(기저효과·계절성)'의 판단 기준을 중심으로 설명하되, 필요 시 데이터 및 통계 오용 맥락으로 확장"
+      },
+      {
+        "pattern_code": "3-2-b",
+        "matched_text": "현재의 실업급여 지급수준을 변경되기 이전 수준으로 조정하고, 수급요건을 강화해야 한다고 강조했다.",
+        "severity": "medium",
+        "reasoning": "기사는 실업급여 축소·요건 강화라는 단일 정책 방향만 제시하고, 제도 개편의 긍정적 효과(저소득 실직자 보호, 소비 안정화 등)나 대안적 개선 방향에 대한 다른 전문가 의견은 전혀 다루지 않아 선별적 사실 제시가 확인된다.",
+        "pattern_name": "선별적 사실 제시",
+        "report_framing": "구체 패턴(3-2-b) '선별적 사실 제시'의 판단 기준을 중심으로 설명하되, 필요 시 편향적 보도 맥락으로 확장"
+      }
+    ],
+    "overall_assessment": "단일 연구기관(파이터치연구원)의 보고서를 근거로 실업급여 제도 개편의 부작용을 단정적으로 보도한 기사다. 제목에서 인과관계를 확정적으로 제시하고, 반대 관점이나 제도 개편의 긍정적 효과는 전혀 다루지 않아 편향된 취재원 구성과 선별적 사실 제시 문제가 확인된다. 또한 연구 결과의 한계(상관관계와 인과관계 혼동 가능성)를 충분히 설명하지 않은 채 수치를 단정적으로 제시하는 문제도 있다.",
+    "article_context": "general",
+    "forensic": {
+      "vector_candidates": [
+        {
+          "code": "1-5-h",
+          "name": "통계 맥락 무시(기저효과·계절성)",
+          "similarity": 0.4201
+        },
+        {
+          "code": "1-1-g",
+          "name": "통계·연구 출처 미공개",
+          "similarity": 0.3494
+        },
+        {
+          "code": "3-2-b",
+          "name": "선별적 사실 제시",
+          "similarity": 0.3184
+        },
+        {
+          "code": "4-4-a",
+          "name": "수사기관 발표 일방 의존",
+          "similarity": 0.3165
+        },
+        {
+          "code": "1-5-a",
+          "name": "데이터 출처·조사방법 미공개",
+          "similarity": 0.3138
+        },
+        {
+          "code": "3-4-b",
+          "name": "제로섬 프레임",
+          "similarity": 0.3108
+        },
+        {
+          "code": "1-5-i",
+          "name": "연구 결과 선택적·과장 인용",
+          "similarity": 0.2998
+        },
+        {
+          "code": "4-2-a",
+          "name": "취재원 신상정보 무단 노출",
+          "similarity": 0.2843
+        },
+        {
+          "code": "5-1-b",
+          "name": "맥락 없는 사실 나열",
+          "similarity": 0.2816
+        },
+        {
+          "code": "1-4-c",
+          "name": "의혹 기정사실화",
+          "similarity": 0.268
+        }
+      ],
+      "starred_codes": [
+        "1-1-g",
+        "1-4-c",
+        "1-5-a",
+        "1-5-h",
+        "1-5-i",
+        "3-2-b",
+        "3-4-b",
+        "4-2-a",
+        "4-4-a",
+        "5-1-b"
+      ],
+      "mandatory_review_codes": [],
+      "validated_codes": [
+        "6-2-a",
+        "3-1-b",
+        "1-5-i",
+        "1-5-h",
+        "3-2-b"
+      ],
+      "hallucinated_codes": [],
+      "unmatched_vector_candidates": [],
+      "patterns_without_ethics": [
+        "6-2-a",
+        "3-1-b",
+        "1-5-i",
+        "1-5-h",
+        "3-2-b"
+      ],
+      "article_context": "general",
+      "fallback_used": false,
+      "phase1_model": "claude-sonnet-4-6"
+    }
+  },
+  "ethics": {
+    "count": 14,
+    "empty_warning": false,
+    "refs": [
+      {
+        "pattern_code": "1-5-h",
+        "ethics_code": "JEC-1",
+        "ethics_title": "진실을 추구한다",
+        "ethics_full_text": "윤리적 언론은 진실을 보도한다. 진실 추구는 언론의 존재 이유다. 사실을 부정하고 믿고 싶은 바를 진실로 받아들이는 시대에 진실 추구의 중요성은 그 어느 때보다 크다. 윤리적 언론은 정확한 사실을 종합적이고 포괄적인 맥락으로 전달한다. 정확성은 신속성에 우선한다. 모든 정보를 성실하게 검증하고 명확한 근거를 바탕으로 보도한다. 취재원 발언을 정확히 인용하며 발언 취지가 왜곡되지 않도록 한다. 진실을 밝히기 위해 용기 있고 성실한 태도를 견지한다. 사실과 의견을 분리하고, 의도와 기술방식이 진실을 가리지 않도록 양심에 따라 보도한다.",
+        "ethics_tier": 1,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제1조"
+      },
+      {
+        "pattern_code": "6-2-a",
+        "ethics_code": "JEC-4",
+        "ethics_title": "공정하게 보도한다",
+        "ethics_full_text": "윤리적 언론은 특정 집단, 세력, 견해에 치우치지 않고 공평무사한 자세로 보도한다. 사회적으로 중요한 사안이나 갈등적 사안을 다룰 때는 다양한 입장을 두루 담아 전체를 아우르는 균형 잡힌 시각과 관점을 보여준다. 윤리적 언론은 시시비비를 가리는 언론 본연의 역할에 충실하면서도 사회 내에 존재하는 다양한 의견의 경중을 고려해 보도 내용의 양적·질적 균형을 맞춘다. 특정한 가치와 정파적 이익에 부합하는 사실과 견해만을 선택하거나 과장하지 않는다. 기사로 인해 불이익을 볼 수 있는 개인이나 집단에는 자신을 방어하고 반론할 권리를 보장한다.",
+        "ethics_tier": 1,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "parent chain rollup",
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "6-2-a",
+        "ethics_code": "JEC-1",
+        "ethics_title": "진실을 추구한다",
+        "ethics_full_text": "윤리적 언론은 진실을 보도한다. 진실 추구는 언론의 존재 이유다. 사실을 부정하고 믿고 싶은 바를 진실로 받아들이는 시대에 진실 추구의 중요성은 그 어느 때보다 크다. 윤리적 언론은 정확한 사실을 종합적이고 포괄적인 맥락으로 전달한다. 정확성은 신속성에 우선한다. 모든 정보를 성실하게 검증하고 명확한 근거를 바탕으로 보도한다. 취재원 발언을 정확히 인용하며 발언 취지가 왜곡되지 않도록 한다. 진실을 밝히기 위해 용기 있고 성실한 태도를 견지한다. 사실과 의견을 분리하고, 의도와 기술방식이 진실을 가리지 않도록 양심에 따라 보도한다.",
+        "ethics_tier": 1,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "adoption G: 종합적·포괄적 맥락 전달 원칙의 보조 근거",
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제1조"
+      },
+      {
+        "pattern_code": "1-5-i",
+        "ethics_code": "JEC-2",
+        "ethics_title": "투명하게 보도하고 책임 있게 설명한다",
+        "ethics_full_text": "윤리적 언론은 정보원과 취재 과정 등을 가능한 한 투명하게 알리고, 문제 제기에 책임 있게 설명한다. 윤리적 언론은 독자와 시청자가 정보에 대해 스스로 판단할 수 있도록, 취재원 보호 등 필요한 경우를 제외하고는 정보의 출처를 명확히 밝힌다. 보도에 대한 의문과 비판에 열린 자세로 소통하며, 잘못이 있다면 신속하고 분명하게 바로잡는다. 보도에 영향을 미친 외부 지원과 후원 및 이해상충 소지 등에 대해서도 정직하게 밝힌다. 투명성과 설명책임은 언론인 개인뿐 아니라 언론사 조직의 공동책임이다.",
+        "ethics_tier": 1,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": null,
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제2조"
+      },
+      {
+        "pattern_code": "1-5-i",
+        "ethics_code": "JEC-1",
+        "ethics_title": "진실을 추구한다",
+        "ethics_full_text": "윤리적 언론은 진실을 보도한다. 진실 추구는 언론의 존재 이유다. 사실을 부정하고 믿고 싶은 바를 진실로 받아들이는 시대에 진실 추구의 중요성은 그 어느 때보다 크다. 윤리적 언론은 정확한 사실을 종합적이고 포괄적인 맥락으로 전달한다. 정확성은 신속성에 우선한다. 모든 정보를 성실하게 검증하고 명확한 근거를 바탕으로 보도한다. 취재원 발언을 정확히 인용하며 발언 취지가 왜곡되지 않도록 한다. 진실을 밝히기 위해 용기 있고 성실한 태도를 견지한다. 사실과 의견을 분리하고, 의도와 기술방식이 진실을 가리지 않도록 양심에 따라 보도한다.",
+        "ethics_tier": 1,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제1조"
+      },
+      {
+        "pattern_code": "3-1-b",
+        "ethics_code": "JEC-4",
+        "ethics_title": "공정하게 보도한다",
+        "ethics_full_text": "윤리적 언론은 특정 집단, 세력, 견해에 치우치지 않고 공평무사한 자세로 보도한다. 사회적으로 중요한 사안이나 갈등적 사안을 다룰 때는 다양한 입장을 두루 담아 전체를 아우르는 균형 잡힌 시각과 관점을 보여준다. 윤리적 언론은 시시비비를 가리는 언론 본연의 역할에 충실하면서도 사회 내에 존재하는 다양한 의견의 경중을 고려해 보도 내용의 양적·질적 균형을 맞춘다. 특정한 가치와 정파적 이익에 부합하는 사실과 견해만을 선택하거나 과장하지 않는다. 기사로 인해 불이익을 볼 수 있는 개인이나 집단에는 자신을 방어하고 반론할 권리를 보장한다.",
+        "ethics_tier": 1,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "3-2-b",
+        "ethics_code": "JEC-4",
+        "ethics_title": "공정하게 보도한다",
+        "ethics_full_text": "윤리적 언론은 특정 집단, 세력, 견해에 치우치지 않고 공평무사한 자세로 보도한다. 사회적으로 중요한 사안이나 갈등적 사안을 다룰 때는 다양한 입장을 두루 담아 전체를 아우르는 균형 잡힌 시각과 관점을 보여준다. 윤리적 언론은 시시비비를 가리는 언론 본연의 역할에 충실하면서도 사회 내에 존재하는 다양한 의견의 경중을 고려해 보도 내용의 양적·질적 균형을 맞춘다. 특정한 가치와 정파적 이익에 부합하는 사실과 견해만을 선택하거나 과장하지 않는다. 기사로 인해 불이익을 볼 수 있는 개인이나 집단에는 자신을 방어하고 반론할 권리를 보장한다.",
+        "ethics_tier": 1,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "parent chain rollup",
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "3-1-b",
+        "ethics_code": "JEC-7",
+        "ethics_title": "다양성을 존중하고 차별에 반대한다",
+        "ethics_full_text": "윤리적 언론은 모든 사람이 존중받는 세상을 위해 차별과 편견을 줄이려 노력한다. 언론은 다양한 사회적 가치와 문화적 차이를 인정하고 이를 존중한다. 언론은 성별, 장애, 종교, 나이, 출신 지역, 인종, 성적 지향 등을 이유로 누구도 부당하게 차별받지 않도록 감시한다. 편견과 차별이 발생하는 구조를 발굴·보도해 사회적 의제로 확산시킨다. 고정관념과 편견을 부추기는 표현, 특정 계층·지역을 비하하는 표현, 성차별 표현, 사람을 성적으로 대상화하는 표현을 삼간다.",
+        "ethics_tier": 1,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": null,
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제7조"
+      },
+      {
+        "pattern_code": "3-2-b",
+        "ethics_code": "PCP-3-2",
+        "ethics_title": "공정보도",
+        "ethics_full_text": "경합 중인 사안을 보도할 때 한 쪽의 주장을 편파적으로 보도하지 않는다. 여론조사 등을 바탕으로 보도할 때는 조사의 신뢰성을 확인할 수 있는 근거를 분명히 밝혀야 하며, 통계를 왜곡해서는 안 된다.",
+        "ethics_tier": 2,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "신문윤리실천요강",
+        "ethics_article_number": "제3조 ②"
+      },
+      {
+        "pattern_code": "6-2-a",
+        "ethics_code": "PCE-4",
+        "ethics_title": "보도와 평론",
+        "ethics_full_text": "우리 언론인은 사실의 전모를 정확하고, 객관적이고, 공정하게 보도함으로써 진실을 추구할 것을 다짐한다. 또한 공정하고 바르게 평론하며, 사회의 의견을 폭넓게 수용해 다양한 여론 형성에 기여할 것을 결의한다.",
+        "ethics_tier": 2,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "parent chain rollup",
+        "ethics_source": "신문윤리강령",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "3-1-b",
+        "ethics_code": "PCE-4",
+        "ethics_title": "보도와 평론",
+        "ethics_full_text": "우리 언론인은 사실의 전모를 정확하고, 객관적이고, 공정하게 보도함으로써 진실을 추구할 것을 다짐한다. 또한 공정하고 바르게 평론하며, 사회의 의견을 폭넓게 수용해 다양한 여론 형성에 기여할 것을 결의한다.",
+        "ethics_tier": 2,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "parent chain rollup",
+        "ethics_source": "신문윤리강령",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "3-2-b",
+        "ethics_code": "PCE-4",
+        "ethics_title": "보도와 평론",
+        "ethics_full_text": "우리 언론인은 사실의 전모를 정확하고, 객관적이고, 공정하게 보도함으로써 진실을 추구할 것을 다짐한다. 또한 공정하고 바르게 평론하며, 사회의 의견을 폭넓게 수용해 다양한 여론 형성에 기여할 것을 결의한다.",
+        "ethics_tier": 2,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "parent chain rollup",
+        "ethics_source": "신문윤리강령",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "6-2-a",
+        "ethics_code": "PCP-10-1",
+        "ethics_title": "제목의 원칙",
+        "ethics_full_text": "제목은 기사의 요약된 내용이나 핵심 내용을 대표해야 하며, 기사 내용을 과장하거나 왜곡해서는 안 된다.",
+        "ethics_tier": 2,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": "adoption G: 제목이 본문의 조건·맥락을 삭제하는 유형의 표제 원칙 근거",
+        "ethics_source": "신문윤리실천요강",
+        "ethics_article_number": "제10조 ①"
+      },
+      {
+        "pattern_code": "3-1-b",
+        "ethics_code": "PCP-3-2",
+        "ethics_title": "공정보도",
+        "ethics_full_text": "경합 중인 사안을 보도할 때 한 쪽의 주장을 편파적으로 보도하지 않는다. 여론조사 등을 바탕으로 보도할 때는 조사의 신뢰성을 확인할 수 있는 근거를 분명히 밝혀야 하며, 통계를 왜곡해서는 안 된다.",
+        "ethics_tier": 2,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "신문윤리실천요강",
+        "ethics_article_number": "제3조 ②"
+      }
+    ]
+  },
+  "stability_digest": "e869ca79d4cc8e111c3f5f69359d23aec117927d032f241266b18ebc9eb9a4e5",
+  "timing": {
+    "pipeline_total_seconds": 26.3,
+    "wall_seconds": 26.31,
+    "embedding_tokens": 1130
+  },
+  "capture_validation": {
+    "patterns_with_ethics": [
+      "1-5-h",
+      "1-5-i",
+      "3-1-b",
+      "3-2-b",
+      "6-2-a"
+    ],
+    "patterns_without_ethics": [],
+    "forensic_consistency": false,
+    "difference_reason": "run_sonnet=False로 pipeline 내부 ethics 조회가 수행되지 않음 — forensic.patterns_without_ethics는 validated 전체로 채워진다(pipeline.py 341-343). 본 필드는 runner가 별도 조회한 규범 refs 기준 재계산값이다.",
+    "ethics_subset_of_validated": true
+  },
+  "true_negative_candidate": false,
+  "article_body_sha256": "84e31d404c5d50ab18ae4d9e68f3bb92cdca7cabf1bc9dcd087fa6a7d2884df2",
+  "article_title_sha256": "2f530c5013c7897cc20681c6dc627153fb72e2b2ed88b3222c5b366c04b135c0",
+  "analysis_input_sha256": "6d07bf26890cedaf7565b792849da4406cadeb182fd4d3a6dcc30477b3d291b2",
+  "detections_canonical_sha256": "e20c0a22a39b5794f1f1a85503c47835e97406e9117a084a5f5f820fb59a7722",
+  "detections_ordered_sha256": "d9d029f5aff8b7c045c8af4872352cfd81acbc4b827c66d06e2f63718a2bbf52",
+  "ethics_snapshot_sha256": "c242b4523a3559efb517225ea1340a51f79d77fcd4ffce8e3ab491eb2d8d2ee9",
+  "phase1_system_prompt_sha256": "bc3769c701c7a6e16a1393c8b3451a630cec72c5b661cf5406a3ade61bb7c0e2",
+  "report_input_sha256": "df358462dc4b4cb660bd6194c81a5d54554b86dd229226b9839b91adc2c26cee",
+  "semantic_hash_provenance": {
+    "basis": "postprocess",
+    "computed_at": "2026-07-19T07:00:20.021610+09:00",
+    "code": "scripts/report_quality_runner.py compute_semantic_hashes() (scripts/rq_postprocess_supplement.py에서 호출)",
+    "phase1_prompt_note": "phase1_system_prompt_sha256는 후처리 시점(2026-07-19)에 _build_sonnet_solo_prompt를 동일 커밋·동일 DB에서 재빌드해 계산 — 캡처 시점(2026-07-18) 프롬프트 원문은 저장돼 있지 않으므로 그 사이 DB 혼동쌍이 불변이라는 가정 하의 값이다."
+  },
+  "diagnostic_path": "docs/report-quality-recovery/runs/diagnostics/B-08/r1.json",
+  "diagnostic_sha256": "ee6a7f5364dddd67d34521e6588a99ac45ab8a0f082f47d02b31fba8af3814d5",
+  "postprocess_version": "rq_v1_supplement1",
+  "postprocessed_at": "2026-07-19T07:00:20.021656+09:00"
+}
