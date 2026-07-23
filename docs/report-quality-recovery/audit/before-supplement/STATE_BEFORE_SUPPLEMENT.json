@@ -1,0 +1,167 @@
+{
+  "record_purpose": "2차 보완 작업(스냅샷 보완·확정) 시작 전의 작업 트리 상태 보존",
+  "recorded_at": "2026-07-19T06:42:14.658652+09:00",
+  "recorded_first_at": "/tmp/rq_before_supplement (저장소 외부) — 이후 audit 경로로 복사",
+  "note_audit_exclusion": "이 기록과 audit/before-supplement/ 디렉터리 자체는 기록 완료 후에 생성되므로 '작업 전 상태' 파일 목록에 포함하지 않는다.",
+  "branch": "quality-recovery/minimal-baseline",
+  "head_commit": "9d051927187ed5d09a9ede630ea7781d1f8bc0ed",
+  "git_status_porcelain": "?? docs/report-quality-recovery/\n?? scripts/_experiment_p2_guardrail.py\n?? scripts/_experiment_p2_results.json\n?? scripts/_experiment_read_first_prompt.py\n?? scripts/_experiment_read_first_results.json\n?? scripts/_experiment_read_first_stdout.txt\n?? scripts/_experiment_regression_results.json\n?? scripts/_experiment_regression_small.py\n?? scripts/_experiment_regression_stdout.txt\n?? scripts/_experiment_regression_v2.py\n?? scripts/_experiment_regression_v2_results.json\n?? scripts/_experiment_vector_ablation.py\n?? scripts/_p2_stdout.txt\n?? scripts/_prepare_regression_cases.py\n?? scripts/_regression_cases.json\n?? scripts/_regression_small_results.json\n?? scripts/_regression_small_stdout.txt\n?? scripts/_v2_stdout.txt\n?? scripts/report_quality_runner.py\n",
+  "git_status_human": "On branch quality-recovery/minimal-baseline\nUntracked files:\n  (use \"git add <file>...\" to include in what will be committed)\n\tdocs/report-quality-recovery/\n\tscripts/_experiment_p2_guardrail.py\n\tscripts/_experiment_p2_results.json\n\tscripts/_experiment_read_first_prompt.py\n\tscripts/_experiment_read_first_results.json\n\tscripts/_experiment_read_first_stdout.txt\n\tscripts/_experiment_regression_results.json\n\tscripts/_experiment_regression_small.py\n\tscripts/_experiment_regression_stdout.txt\n\tscripts/_experiment_regression_v2.py\n\tscripts/_experiment_regression_v2_results.json\n\tscripts/_experiment_vector_ablation.py\n\tscripts/_p2_stdout.txt\n\tscripts/_prepare_regression_cases.py\n\tscripts/_regression_cases.json\n\tscripts/_regression_small_results.json\n\tscripts/_regression_small_stdout.txt\n\tscripts/_v2_stdout.txt\n\tscripts/report_quality_runner.py\n\nnothing added to commit but untracked files present (use \"git add\" to track)\n",
+  "tracked_modified_files": [],
+  "untracked_files_sha256": {
+    "docs/report-quality-recovery/fixtures/_scraped_past-detention.json": {
+      "sha256": "4e721d6ae69be5361fc300d61719f14e1aa1d570f44329c88d3b81bbf478aa31",
+      "bytes": 5641
+    },
+    "docs/report-quality-recovery/fixtures/_scraped_past-refugee.json": {
+      "sha256": "d5617755d0a45ce190c2267fde22dbedbaf3ece6be0656ab50a38e9ede3b53f3",
+      "bytes": 4202
+    },
+    "docs/report-quality-recovery/fixtures/_scraped_past-union-stats.json": {
+      "sha256": "12287e18018121d1ac8811931435fce4b95d3a4f8a6d8d49a82a4e6c251be84a",
+      "bytes": 5503
+    },
+    "docs/report-quality-recovery/fixtures/fixtures.json": {
+      "sha256": "8f41528af44d920046612d1f031c407d428fe50fcc841715a5fd4111f71e69f2",
+      "bytes": 14448
+    },
+    "docs/report-quality-recovery/runs/BASELINE_SELECTION.json": {
+      "sha256": "87f2c547dfe68234b69fccfa82dc7fdb4a6e9b2c12d22f716988e685b6bf5756",
+      "bytes": 2415
+    },
+    "docs/report-quality-recovery/runs/snapshots/B-08.json": {
+      "sha256": "e1bc5f4439620969056a192794d53a1c8ea293f7ceb209f67444fd42ce485b23",
+      "bytes": 23884
+    },
+    "docs/report-quality-recovery/runs/snapshots/B-08__r2.json": {
+      "sha256": "368ffeb286be834cd76e88d242b80a24fb3cfe93aeb0fb3d04c8300d274d3990",
+      "bytes": 23731
+    },
+    "docs/report-quality-recovery/runs/snapshots/E-12.json": {
+      "sha256": "03d87a7b8ab1117515d1e468265ef8309b6ed3cea3a30cd2a0fba4ee02d12085",
+      "bytes": 29409
+    },
+    "docs/report-quality-recovery/runs/snapshots/E-12__r2.json": {
+      "sha256": "235c5d8aba9debfd31cadafb76fda4b6d5b9a66b06c855c09eae439f645b5496",
+      "bytes": 29295
+    },
+    "docs/report-quality-recovery/runs/snapshots/PAST-DETENTION.json": {
+      "sha256": "aa92cff11d3dd975e2cf1a4a1ea54d8def7420188589f7d0530257fab0d95d82",
+      "bytes": 27699
+    },
+    "docs/report-quality-recovery/runs/snapshots/PAST-DETENTION__r2.json": {
+      "sha256": "a3da81efbcdbd2600600a6cb1a9e6fb9cee21c4308c8a5bf51c17ae5839cfb12",
+      "bytes": 22547
+    },
+    "docs/report-quality-recovery/runs/snapshots/PAST-DETENTION__r3.json": {
+      "sha256": "96d35363c01ac06946906b087f7a4af9a5c0c20789aedb8b9d1eab1c46d7a6ec",
+      "bytes": 32593
+    },
+    "scripts/_experiment_p2_guardrail.py": {
+      "sha256": "3858eebcabed34687d948faf039daf3797e58bdb30399759714e298fd0305ac0",
+      "bytes": 5270
+    },
+    "scripts/_experiment_p2_results.json": {
+      "sha256": "91d4b8fdd7bc864ffc265b75ddfda4f7fe9903d9aaada325f36f6af9eb469df4",
+      "bytes": 9507
+    },
+    "scripts/_experiment_read_first_prompt.py": {
+      "sha256": "62385cc1199a6ff09a4fd738192d8d1f7ad9fc4af08b8ff3f362d6eed08882ce",
+      "bytes": 17837
+    },
+    "scripts/_experiment_read_first_results.json": {
+      "sha256": "ebf20648a825a91f6ffbf3a14231b62ceebe7b5281591c7ef680c44b0889ecf7",
+      "bytes": 6265
+    },
+    "scripts/_experiment_read_first_stdout.txt": {
+      "sha256": "1f86380434207b3cf85252545a5918003610e0589458d208cec2656fdb790b8a",
+      "bytes": 8281
+    },
+    "scripts/_experiment_regression_results.json": {
+      "sha256": "2a299cc0c7e7d5f094b7f312bcb5d9dbbee93b75fef7d4f35b45869d55e2d7bc",
+      "bytes": 77806
+    },
+    "scripts/_experiment_regression_small.py": {
+      "sha256": "9c2f2797a637783d612a991fe2fdf5510901c36007923f259b79479fd9ad15e8",
+      "bytes": 10090
+    },
+    "scripts/_experiment_regression_stdout.txt": {
+      "sha256": "eb0f226d07355420f7d95afb08b38b97968c19468208fa05bab6a62001bb63b3",
+      "bytes": 3030
+    },
+    "scripts/_experiment_regression_v2.py": {
+      "sha256": "6ecec7260ad50edc722c5a289405eb1e90fcea299daf2e21b9a7d61a2bde049f",
+      "bytes": 8973
+    },
+    "scripts/_experiment_regression_v2_results.json": {
+      "sha256": "00c2e4a105c0d3e8bc3e3c3041f9a1171c75b47bc7ade6a6200f34990e2a1a4d",
+      "bytes": 47883
+    },
+    "scripts/_experiment_vector_ablation.py": {
+      "sha256": "41df1511cf1bc41d58f55b2b1ea3a772edfec6b2efde4094cbbecf091422e65f",
+      "bytes": 5213
+    },
+    "scripts/_p2_stdout.txt": {
+      "sha256": "f4930b7bf7b483df1c1ed0f7abb56974a26870bd239c62f4d216f3aead0f5a0a",
+      "bytes": 1294
+    },
+    "scripts/_prepare_regression_cases.py": {
+      "sha256": "301c141963cb9bbb7801181d3252610246f248fdd520e9a4c61ded9f969e4ae4",
+      "bytes": 4461
+    },
+    "scripts/_regression_cases.json": {
+      "sha256": "04b66b090eb3c773676a5c8e2ea8c511628c4863c0fd6a181b6cb34b80662cb2",
+      "bytes": 30056
+    },
+    "scripts/_regression_small_results.json": {
+      "sha256": "237ab6182f4c068ee348be7e0d9eb6000903eb72d44e8ec9d3137e1b0696a8d8",
+      "bytes": 71623
+    },
+    "scripts/_regression_small_stdout.txt": {
+      "sha256": "24fa9a3da53ce546fdc86d4349a78c96dc55eb69acce753169fb3c8d30116edf",
+      "bytes": 1982
+    },
+    "scripts/_v2_stdout.txt": {
+      "sha256": "8b7982fe1249ca72f18d81dbb56216c1a9202ae01017eb3bd83701db1f376198",
+      "bytes": 1993
+    },
+    "scripts/report_quality_runner.py": {
+      "sha256": "65628936445587489cccb5659fde92f3ca8168229d59fb55c422b451550de75a",
+      "bytes": 8139
+    }
+  },
+  "gitignored_diagnostics_20260718_sha256": {
+    "note": "backend/diagnostics/는 .gitignore(82행) 대상이라 git status에 없음. Task 6 이동 대상인 2026-07-18 생성 덤프 7건만 보존 기록.",
+    "files": {
+      "backend/diagnostics/diagnostic_20260718_231911.json": {
+        "sha256": "aa470a37e136f03ec7f69eb0f297ca0bf0f8342bd2474883282c9acc8981cde3",
+        "bytes": 9818
+      },
+      "backend/diagnostics/diagnostic_20260718_231930.json": {
+        "sha256": "d7c58af7ea8c47b3b744e9664c8c0b9ef45c8f10c546b643ced999ee795ad238",
+        "bytes": 7593
+      },
+      "backend/diagnostics/diagnostic_20260718_231956.json": {
+        "sha256": "ee6a7f5364dddd67d34521e6588a99ac45ab8a0f082f47d02b31fba8af3814d5",
+        "bytes": 9917
+      },
+      "backend/diagnostics/diagnostic_20260718_232040.json": {
+        "sha256": "840b8f542d515ae5a0d81cb2e1fb39b2ecc337eab83aee337c8706cef0702f0e",
+        "bytes": 9005
+      },
+      "backend/diagnostics/diagnostic_20260718_232057.json": {
+        "sha256": "cc6358a400d28076bfb75580e2222e3c67d35fe026c24f994d5f65177133332a",
+        "bytes": 7365
+      },
+      "backend/diagnostics/diagnostic_20260718_232120.json": {
+        "sha256": "e148c6a0ee753f2bfe51f33e3283f16c73391d9c51f4c8d988a8fce12ef71238",
+        "bytes": 8416
+      },
+      "backend/diagnostics/diagnostic_20260718_232143.json": {
+        "sha256": "80bc704838de8eda5adcdb861385f3f1f0c53dc3e3e291073095fa4578c72b92",
+        "bytes": 9504
+      }
+    }
+  },
+  "pre_work_copies_note": "이번 작업에서 수정·이동될 1차 산출물(docs/report-quality-recovery/** 전부, scripts/report_quality_runner.py)은 hash만으로는 내용 복원이 불가하므로 pre_work_copies/에 전문 사본을 보존한다. 실험 파일(scripts/_*)은 미수정 대상이므로 hash만 기록."
+}

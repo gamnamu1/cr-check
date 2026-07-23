@@ -1,0 +1,44 @@
+{
+  "created": "2026-07-18",
+  "purpose": "반복 실행 중 이후 비교의 기준으로 쓸 스냅샷을 명시적으로 선택·고정한다",
+  "git_commit": "9d051927187ed5d09a9ede630ea7781d1f8bc0ed",
+  "selections": [
+    {
+      "fixture_id": "PAST-DETENTION",
+      "chosen_snapshot": "PAST-DETENTION.json",
+      "chosen_run_tag": "r1",
+      "file_sha256": "aa92cff11d3dd975e2cf1a4a1ea54d8def7420188589f7d0530257fab0d95d82",
+      "stability_digest": "1e170d4106f98745b2222d10379055b2dadd8bad7fcede7526835b1d65ae41e8",
+      "stability_note": "3회 실행 공통 코어 {2-2-c, 6-2-c(high 고정)}. 주변부 요동: r1 +2-2-d,3-2-c / r2 +3-2-b / r3 +4-3-b, 2-2-c severity med→med→low. r1은 공통 코어를 포함하며 지침 경로(<fixture_id>.json)에 저장된 1차 실행이므로 기준으로 선택.",
+      "all_runs": {
+        "r1": "1e170d4106f98745b2222d10379055b2dadd8bad7fcede7526835b1d65ae41e8",
+        "r2": "b13e5c6cabc959cd52adca4f8f349548725e452d588326df627878dd54fe7126",
+        "r3": "5e7631df227e4e93f96e601abb73b5fa25dcb2c799858ca61228dfcf4b00b917"
+      }
+    },
+    {
+      "fixture_id": "E-12",
+      "chosen_snapshot": "E-12.json",
+      "chosen_run_tag": "r1",
+      "file_sha256": "03d87a7b8ab1117515d1e468265ef8309b6ed3cea3a30cd2a0fba4ee02d12085",
+      "stability_digest": "4ee043fe504933e53b4b5e04e82b6108118403aa8d117cf8237b77e42b5c4a03",
+      "stability_note": "2회 실행 패턴 집합 완전 동일 {1-4-a, 3-2-c, 4-3-b}. severity 1건만 요동(3-2-c med↔high). 가장 안정적. r1 기준 선택.",
+      "all_runs": {
+        "r1": "4ee043fe504933e53b4b5e04e82b6108118403aa8d117cf8237b77e42b5c4a03",
+        "r2": "bc6ddb0a08b05bb22f52961db9030d60d2a348d227e1fdb48de482e991bfc6de"
+      }
+    },
+    {
+      "fixture_id": "B-08",
+      "chosen_snapshot": "B-08.json",
+      "chosen_run_tag": "r1",
+      "file_sha256": "e1bc5f4439620969056a192794d53a1c8ea293f7ceb209f67444fd42ce485b23",
+      "stability_digest": "e869ca79d4cc8e111c3f5f69359d23aec117927d032f241266b18ebc9eb9a4e5",
+      "stability_note": "2회 실행 5패턴 중 4패턴 동일 severity로 일치 {1-5-h, 3-1-b, 3-2-b, 6-2-a}. 요동 1건: r1 1-5-i ↔ r2 1-1-e. r1 기준 선택.",
+      "all_runs": {
+        "r1": "e869ca79d4cc8e111c3f5f69359d23aec117927d032f241266b18ebc9eb9a4e5",
+        "r2": "f1baae57220fcc1fcf1813b323b192accbc239d6cc17c3d3b514ec045caacc8f"
+      }
+    }
+  ]
+}

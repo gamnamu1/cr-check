@@ -1,0 +1,122 @@
+{
+  "timestamp": "20260719_065255",
+  "total_seconds": 19.97,
+  "checkpoint_1_chunks": {
+    "chunk_count": 3,
+    "avg_chunk_length": 481.3,
+    "chunks_preview": [
+      {
+        "index": 0,
+        "length": 516,
+        "preview": "군대 일반병 월급을 나눠 갖기로 모의하고 타인 명의로 대신 입대한 20대 남성이 적발돼 재판에 넘겨졌다. 대리 입영이 실제 적발된 사례는 197"
+      },
+      {
+        "index": 1,
+        "length": 436,
+        "preview": "그러나 범행을 공모한 최씨가 지난 9월 병무청에 '두렵다'고 자수하면서 사건이 적발됐다. 해당 사안을 인지한 병무청은 즉각 조씨에 대한 조치를 "
+      },
+      {
+        "index": 2,
+        "length": 492,
+        "preview": "1970년 병무청 설립 이래 대리 입영이 실제 이뤄진 사례가 적발된 건 이번이 처음이다. 그동안 '정신질환'을 위장하는 등 병역 면탈과 관련한 "
+      }
+    ]
+  },
+  "checkpoint_2_vector": {
+    "candidate_count": 12,
+    "vector_candidates": [
+      {
+        "pattern_code": "4-4-a",
+        "pattern_name": "수사기관 발표 일방 의존",
+        "similarity": 0.4907
+      },
+      {
+        "pattern_code": "4-4-b",
+        "pattern_name": "무죄추정 원칙 위반",
+        "similarity": 0.4267
+      },
+      {
+        "pattern_code": "3-4-a",
+        "pattern_name": "이분법 대결 구도",
+        "similarity": 0.3965
+      },
+      {
+        "pattern_code": "4-4-c",
+        "pattern_name": "재판 중 사안 편향 보도",
+        "similarity": 0.3818
+      },
+      {
+        "pattern_code": "1-4-d",
+        "pattern_name": "의견의 사실화 (기자)",
+        "similarity": 0.3751
+      },
+      {
+        "pattern_code": "4-2-a",
+        "pattern_name": "취재원 신상정보 무단 노출",
+        "similarity": 0.3709
+      },
+      {
+        "pattern_code": "3-4-b",
+        "pattern_name": "제로섬 프레임",
+        "similarity": 0.3536
+      },
+      {
+        "pattern_code": "1-1-c",
+        "pattern_name": "익명 단일 취재원 의존",
+        "similarity": 0.3512
+      },
+      {
+        "pattern_code": "1-1-j",
+        "pattern_name": "맥락 정보 생략·체리피킹",
+        "similarity": 0.3391
+      },
+      {
+        "pattern_code": "3-2-b",
+        "pattern_name": "선별적 사실 제시",
+        "similarity": 0.3314
+      },
+      {
+        "pattern_code": "1-1-f",
+        "pattern_name": "따옴표 처리 책임 회피",
+        "similarity": 0.3151
+      },
+      {
+        "pattern_code": "1-5-f",
+        "pattern_name": "선거 여론조사 과장·왜곡",
+        "similarity": 0.2947
+      }
+    ]
+  },
+  "checkpoint_3_pattern": {
+    "overall_assessment": "병역법 위반 사건을 단독 보도한 기사로, 사건의 경위와 수사 결과를 비교적 충실히 전달하고 있다. 다만 일부 정보에서 출처 감추기 표현이 반복되고, 병무청 대응에 대한 비판적 평가가 귀속 없이 제시되는 문제가 확인된다.",
+    "haiku_detections": [
+      {
+        "pattern_code": "1-4-d",
+        "matched_text": "사전에 대리 입영을 방지하지 못한 병무청 대응도 도마에 오를 전망이다.",
+        "severity": "medium",
+        "reasoning": "'도마에 오를 전망'은 기자의 주관적 판단을 사실 서술어 자리에 배치한 표현으로, 누가 그렇게 평가하는지 귀속 없이 기자 의견을 객관적 전망처럼 제시한 것이다."
+      },
+      {
+        "pattern_code": "6-1-d",
+        "matched_text": "조씨와 최씨는 인터넷을 통해 접촉한 후 대리 입영에 관한 계획을 세운 것으로 전해졌다. / 조씨는 대리 입영한 상태로 실제 3개월간 군 생활을 했던 것으로 전해졌다. / 조사 결과 조씨는 대리 입영 이전 본인 이름으로 입대했다가 정신건강 문제로 전역한 이력도 있었던 것으로 알려졌다. / 검찰은 조만간 공범 최씨도 재판에 넘길 것으로 전해졌다.",
+        "severity": "medium",
+        "reasoning": "'전해졌다', '알려졌다' 등 무주체 피동형이 반복 사용되어 정보 출처나 책임 소재가 불명확하다. 독자가 해당 정보의 신뢰도를 판단할 수 없게 만드는 출처 감추기 표현이다."
+      },
+      {
+        "pattern_code": "2-2-c",
+        "matched_text": "대리 입영 사례가 수면 위로 드러난 상황에서 이를 방지하기 위한 예방책이 시급하다는 지적도 제기된다.",
+        "severity": "low",
+        "reasoning": "'지적도 제기된다'는 누가 지적하는지 주체를 밝히지 않은 간접인용 판단 서술로, 기자의 평가를 불특정 다수의 의견인 것처럼 포장하고 있다."
+      }
+    ],
+    "validated_pattern_codes": [
+      "1-4-d",
+      "6-1-d",
+      "2-2-c"
+    ],
+    "hallucinated_codes": [],
+    "haiku_raw_response": "```json\n{\n  \"overall_assessment\": \"병역법 위반 사건을 단독 보도한 기사로, 사건의 경위와 수사 결과를 비교적 충실히 전달하고 있다. 다만 일부 정보에서 출처 감추기 표현이 반복되고, 병무청 대응에 대한 비판적 평가가 귀속 없이 제시되는 문제가 확인된다.\",\n  \"detections\": [\n    {\n      \"matched_text\": \"사전에 대리 입영을 방지하지 못한 병무청 대응도 도마에 오를 전망이다.\",\n      \"reasoning\": \"'도마에 오를 전망'은 기자의 주관적 판단을 사실 서술어 자리에 배치한 표현으로, 누가 그렇게 평가하는지 귀속 없이 기자 의견을 객관적 전망처럼 제시한 것이다.\",\n      \"severity\": \"medium\",\n      \"pattern_code\": \"1-4-d\"\n    },\n    {\n      \"matched_text\": \"조씨와 최씨는 인터넷을 통해 접촉한 후 대리 입영에 관한 계획을 세운 것으로 전해졌다. / 조씨는 대리 입영한 상태로 실제 3개월간 군 생활을 했던 것으로 전해졌다. / 조사 결과 조씨는 대리 입영 이전 본인 이름으로 입대했다가 정신건강 문제로 전역한 이력도 있었던 것으로 알려졌다. / 검찰은 조만간 공범 최씨도 재판에 넘길 것으로 전해졌다.\",\n      \"reasoning\": \"'전해졌다', '알려졌다' 등 무주체 피동형이 반복 사용되어 정보 출처나 책임 소재가 불명확하다. 독자가 해당 정보의 신뢰도를 판단할 수 없게 만드는 출처 감추기 표현이다.\",\n      \"severity\": \"medium\",\n      \"pattern_code\": \"6-1-d\"\n    },\n    {\n      \"matched_text\": \"대리 입영 사례가 수면 위로 드러난 상황에서 이를 방지하기 위한 예방책이 시급하다는 지적도 제기된다.\",\n      \"reasoning\": \"'지적도 제기된다'는 누가 지적하는지 주체를 밝히지 않은 간접인용 판단 서술로, 기자의 평가를 불특정 다수의 의견인 것처럼 포장하고 있다.\",\n      \"severity\": \"low\",\n      \"pattern_code\": \"2-2-c\"\n    }\n  ]\n}\n```"
+  },
+  "checkpoint_4_ethics": {},
+  "checkpoint_5_report": {}
+}

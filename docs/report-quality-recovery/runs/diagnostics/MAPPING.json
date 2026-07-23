@@ -1,0 +1,99 @@
+{
+  "created": "2026-07-19T07:05:51.786114+09:00",
+  "method": "dump.timestamp와 snapshot.generated_at의 차(0≤gen−dump≤30s) + checkpoint_3 validated_pattern_codes 집합 일치 + checkpoint_1 첫 청크 preview 40자가 기사 본문에 포함",
+  "scope_note": "2026-07-18 생성 덤프(1차 표본 고정 실행분)만 대상. 그 이전 날짜의 덤프 237건은 과거 벤치마크·실험 세션 산출물로 이번 매핑 대상이 아니며 backend/diagnostics/에 그대로 둔다. C2-07 r1·r2 덤프는 v2 runner가 capture 시점에 자동 아카이브했다(runs/diagnostics/C2-07/).",
+  "mappings": [
+    {
+      "fixture_id": "PAST-DETENTION",
+      "run_tag": "r1",
+      "dump": "diagnostic_20260718_231911.json",
+      "gen_minus_dump_seconds": 1.3,
+      "criteria": "timestamp(0~30s)+validated_codes+first_chunk_preview",
+      "status": "matched",
+      "archived_to": "docs/report-quality-recovery/runs/diagnostics/PAST-DETENTION/r1.json",
+      "sha256": "aa470a37e136f03ec7f69eb0f297ca0bf0f8342bd2474883282c9acc8981cde3",
+      "reverified_from_archive": true,
+      "task0_byte_identity": "사전 보존 sha256와 일치 — 원본과 바이트 동일",
+      "note": "이미 아카이브됨(재실행)"
+    },
+    {
+      "fixture_id": "PAST-DETENTION",
+      "run_tag": "r2",
+      "dump": "diagnostic_20260718_232040.json",
+      "gen_minus_dump_seconds": 0.3,
+      "criteria": "timestamp(0~30s)+validated_codes+first_chunk_preview",
+      "status": "matched",
+      "archived_to": "docs/report-quality-recovery/runs/diagnostics/PAST-DETENTION/r2.json",
+      "sha256": "840b8f542d515ae5a0d81cb2e1fb39b2ecc337eab83aee337c8706cef0702f0e",
+      "reverified_from_archive": true,
+      "task0_byte_identity": "사전 보존 sha256와 일치 — 원본과 바이트 동일",
+      "note": "이미 아카이브됨(재실행)"
+    },
+    {
+      "fixture_id": "PAST-DETENTION",
+      "run_tag": "r3",
+      "dump": "diagnostic_20260718_232143.json",
+      "gen_minus_dump_seconds": 1.0,
+      "criteria": "timestamp(0~30s)+validated_codes+first_chunk_preview",
+      "status": "matched",
+      "archived_to": "docs/report-quality-recovery/runs/diagnostics/PAST-DETENTION/r3.json",
+      "sha256": "80bc704838de8eda5adcdb861385f3f1f0c53dc3e3e291073095fa4578c72b92",
+      "reverified_from_archive": true,
+      "task0_byte_identity": "사전 보존 sha256와 일치 — 원본과 바이트 동일",
+      "note": "이미 아카이브됨(재실행)"
+    },
+    {
+      "fixture_id": "E-12",
+      "run_tag": "r1",
+      "dump": "diagnostic_20260718_231930.json",
+      "gen_minus_dump_seconds": 0.6,
+      "criteria": "timestamp(0~30s)+validated_codes+first_chunk_preview",
+      "status": "matched",
+      "archived_to": "docs/report-quality-recovery/runs/diagnostics/E-12/r1.json",
+      "sha256": "d7c58af7ea8c47b3b744e9664c8c0b9ef45c8f10c546b643ced999ee795ad238",
+      "reverified_from_archive": true,
+      "task0_byte_identity": "사전 보존 sha256와 일치 — 원본과 바이트 동일",
+      "note": "이미 아카이브됨(재실행)"
+    },
+    {
+      "fixture_id": "E-12",
+      "run_tag": "r2",
+      "dump": "diagnostic_20260718_232057.json",
+      "gen_minus_dump_seconds": 0.3,
+      "criteria": "timestamp(0~30s)+validated_codes+first_chunk_preview",
+      "status": "matched",
+      "archived_to": "docs/report-quality-recovery/runs/diagnostics/E-12/r2.json",
+      "sha256": "cc6358a400d28076bfb75580e2222e3c67d35fe026c24f994d5f65177133332a",
+      "reverified_from_archive": true,
+      "task0_byte_identity": "사전 보존 sha256와 일치 — 원본과 바이트 동일",
+      "note": "이미 아카이브됨(재실행)"
+    },
+    {
+      "fixture_id": "B-08",
+      "run_tag": "r1",
+      "dump": "diagnostic_20260718_231956.json",
+      "gen_minus_dump_seconds": 1.1,
+      "criteria": "timestamp(0~30s)+validated_codes+first_chunk_preview",
+      "status": "matched",
+      "archived_to": "docs/report-quality-recovery/runs/diagnostics/B-08/r1.json",
+      "sha256": "ee6a7f5364dddd67d34521e6588a99ac45ab8a0f082f47d02b31fba8af3814d5",
+      "reverified_from_archive": true,
+      "task0_byte_identity": "사전 보존 sha256와 일치 — 원본과 바이트 동일",
+      "note": "이미 아카이브됨(재실행)"
+    },
+    {
+      "fixture_id": "B-08",
+      "run_tag": "r2",
+      "dump": "diagnostic_20260718_232120.json",
+      "gen_minus_dump_seconds": 0.3,
+      "criteria": "timestamp(0~30s)+validated_codes+first_chunk_preview",
+      "status": "matched",
+      "archived_to": "docs/report-quality-recovery/runs/diagnostics/B-08/r2.json",
+      "sha256": "e148c6a0ee753f2bfe51f33e3283f16c73391d9c51f4c8d988a8fce12ef71238",
+      "reverified_from_archive": true,
+      "task0_byte_identity": "사전 보존 sha256와 일치 — 원본과 바이트 동일",
+      "note": "이미 아카이브됨(재실행)"
+    }
+  ],
+  "unmatched_20260718_moved": []
+}

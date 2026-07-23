@@ -1,0 +1,303 @@
+{
+  "snapshot_version": "rq_v2",
+  "fixture_id": "C2-07",
+  "run_tag": "r2",
+  "generated_at": "2026-07-19T06:52:56.354357+09:00",
+  "git_commit": "9d051927187ed5d09a9ede630ea7781d1f8bc0ed",
+  "entrypoint": "core.pipeline.analyze_article 직접 호출 — 운영 API(/analyze), URL 캐시(get_cached_analysis), DB 저장(save_analysis_result) 미경유",
+  "run_sonnet": false,
+  "supabase_host": "vwaelliqpoqzeoggrfew.supabase.co",
+  "article": {
+    "title": "[단독] \"군 월급 반반 나눠갖자\" 대리입영 사상 첫 적발",
+    "text": "군대 일반병 월급을 나눠 갖기로 모의하고 타인 명의로 대신 입대한 20대 남성이 적발돼 재판에 넘겨졌다. 대리 입영이 실제 적발된 사례는 1970년 병무청 설립 이래 처음이다. 사전에 대리 입영을 방지하지 못한 병무청 대응도 도마에 오를 전망이다.\n\n14일 국민일보 취재를 종합하면 춘천지검 형사2부(부장검사 홍승현)는 지난 8일 병역법 위반·위계공무집행방해·주민등록법 위반 혐의를 받는 조모씨를 구속기소했다. 조씨는 원래 입대해야 할 최모씨와 공모해 군인 월급을 나눠 갖기로 하고, 의식주를 해결하기 위해 대리 입영한 것으로 조사됐다.\n\n수사기관에 따르면 지난 7월 조씨는 최씨의 신분증을 들고 강원 홍천의 한 신병교육대에 입소했다. 군 입영절차에 따라 병무청 직원은 사병을 인도·인접하는 과정에서 신분증을 검사해 신원을 확인한다. 그러나 병무청 직원이 조씨의 신분을 제대로 확인하지 못하면서 조씨는 최씨의 이름으로 대리 입대하게 됐다. 조씨와 최씨는 인터넷을 통해 접촉한 후 대리 입영에 관한 계획을 세운 것으로 전해졌다.\n\n그러나 범행을 공모한 최씨가 지난 9월 병무청에 '두렵다'고 자수하면서 사건이 적발됐다. 해당 사안을 인지한 병무청은 즉각 조씨에 대한 조치를 진행했고, 조씨는 육군 제1수송교육연대에서 체포됐다. 조씨는 대리 입영한 상태로 실제 3개월간 군 생활을 했던 것으로 전해졌다.\n\n최씨는 경찰·검찰 조사에서 \"대리입영이 잘못된 것을 알았기에 겁이 나서 자수했다\"고 진술했다. 조씨는 \"군대에서 월급을 많이 주니까 의식주를 해결하기 위해 입영했다\"며 \"명의자와 반반씩 나누기로 했다\"고 진술한 것으로 전해졌다. 조사 결과 조씨는 대리 입영 이전 본인 이름으로 입대했다가 정신건강 문제로 전역한 이력도 있었던 것으로 알려졌다. 강원경찰청은 병무청으로부터 사건을 넘겨받고 지난달 말 조씨를 검찰에 구속 송치했고, 최씨는 불구속 송치했다. 검찰은 조만간 공범 최씨도 재판에 넘길 것으로 전해졌다.\n\n1970년 병무청 설립 이래 대리 입영이 실제 이뤄진 사례가 적발된 건 이번이 처음이다. 그동안 '정신질환'을 위장하는 등 병역 면탈과 관련한 범죄는 꾸준히 발생했다. 그러나 이번처럼 대리 입영 시도가 이뤄지고, 실제로 대리 입영한 사례는 없었다는 것이 병무청의 설명이다.\n\n대리 입영 사례가 수면 위로 드러난 상황에서 이를 방지하기 위한 예방책이 시급하다는 지적도 제기된다. 현재 일반병 입대 과정에서 병무청의 인도·인접 절차는 오직 신분증을 기준으로 진행된다. 이 때문에 현장의 직원들은 실제 입대할 사병과 신분증의 인물이 동일인인지 명확히 확인하기 어려운 경우가 많다고 한다.\n\n병무청은 대리 입영을 방지하기 위해 강화된 시스템 도입을 검토하겠다고 밝혔다. 병무청 관계자는 \"다시는 이런 일이 재발하지 않도록 홍채 인식이나 안면 시스템 도입을 검토할 예정\"이라고 말했다. 아울러 조씨의 신분을 확인하지 못한 병무청 직원을 재판 결과에 따라 징계 등 조치를 할 예정이라고 전했다.",
+    "sha256": "c97ee7d9cb3511bcbe7937f10ebf132e6706135b544cfe931f52a82ecaf1a609",
+    "chars": 1453,
+    "url": "",
+    "publisher": "국민일보",
+    "source": "golden_set",
+    "characteristic": "4. 경계형 대조군(수사기관·병무청 단일 계통 취재원, 전언 표현 다수, 명백한 낙인·왜곡 없음)",
+    "selection_reason": "골든셋 TN(difficulty easy, 비복합). 공식 적발 사실 기반 스트레이트로 명백한 차별·왜곡·과장이 없고, 수사기관·병무청 중심의 단일 계통 취재원과 '전해졌다/알려졌다' 전언 의존이라는 경미한 문제 소지만 있어 low severity 1~2건의 안정 탐지를 기대할 수 있는 경계형 후보. 골든셋 라벨도 expected_patterns=[]에 1-1-1(교차검증 부재) low 오탐 위험만 명시. 기존 3건의 문제 유형(낙인·차별, 통계 왜곡, 복합 프레이밍)과 겹치지 않음"
+  },
+  "phase1": {
+    "model": "claude-sonnet-4-6",
+    "validated_pattern_ids": [
+      60,
+      120,
+      78
+    ],
+    "validated_pattern_codes": [
+      "1-4-d",
+      "2-2-c",
+      "6-1-d"
+    ],
+    "detections": [
+      {
+        "pattern_code": "1-4-d",
+        "matched_text": "사전에 대리 입영을 방지하지 못한 병무청 대응도 도마에 오를 전망이다.",
+        "severity": "medium",
+        "reasoning": "'도마에 오를 전망'은 기자의 주관적 판단을 사실 서술어 자리에 배치한 표현으로, 누가 그렇게 평가하는지 귀속 없이 기자 의견을 객관적 전망처럼 제시한 것이다.",
+        "pattern_name": "의견의 사실화 (기자)",
+        "report_framing": "구체 패턴(1-4-d) '의견의 사실화 (기자)'의 판단 기준을 중심으로 설명하되, 필요 시 사실과 의견 혼재 맥락으로 확장"
+      },
+      {
+        "pattern_code": "6-1-d",
+        "matched_text": "조씨와 최씨는 인터넷을 통해 접촉한 후 대리 입영에 관한 계획을 세운 것으로 전해졌다. / 조씨는 대리 입영한 상태로 실제 3개월간 군 생활을 했던 것으로 전해졌다. / 조사 결과 조씨는 대리 입영 이전 본인 이름으로 입대했다가 정신건강 문제로 전역한 이력도 있었던 것으로 알려졌다. / 검찰은 조만간 공범 최씨도 재판에 넘길 것으로 전해졌다.",
+        "severity": "medium",
+        "reasoning": "'전해졌다', '알려졌다' 등 무주체 피동형이 반복 사용되어 정보 출처나 책임 소재가 불명확하다. 독자가 해당 정보의 신뢰도를 판단할 수 없게 만드는 출처 감추기 표현이다.",
+        "pattern_name": "출처 감추기(피동형)",
+        "report_framing": "구체 패턴(6-1-d) '출처 감추기(피동형)'의 판단 기준을 중심으로 설명하되, 필요 시 기사의 심층성 부족 맥락으로 확장"
+      },
+      {
+        "pattern_code": "2-2-c",
+        "matched_text": "대리 입영 사례가 수면 위로 드러난 상황에서 이를 방지하기 위한 예방책이 시급하다는 지적도 제기된다.",
+        "severity": "low",
+        "reasoning": "'지적도 제기된다'는 누가 지적하는지 주체를 밝히지 않은 간접인용 판단 서술로, 기자의 평가를 불특정 다수의 의견인 것처럼 포장하고 있다.",
+        "pattern_name": "간접인용 판단 서술",
+        "report_framing": "구체 패턴(2-2-c) '간접인용 판단 서술'의 판단 기준을 중심으로 설명하되, 필요 시 책임 회피 표현 맥락으로 확장"
+      }
+    ],
+    "overall_assessment": "병역법 위반 사건을 단독 보도한 기사로, 사건의 경위와 수사 결과를 비교적 충실히 전달하고 있다. 다만 일부 정보에서 출처 감추기 표현이 반복되고, 병무청 대응에 대한 비판적 평가가 귀속 없이 제시되는 문제가 확인된다.",
+    "article_context": "general",
+    "forensic": {
+      "vector_candidates": [
+        {
+          "code": "4-4-a",
+          "name": "수사기관 발표 일방 의존",
+          "similarity": 0.4907
+        },
+        {
+          "code": "4-4-b",
+          "name": "무죄추정 원칙 위반",
+          "similarity": 0.4267
+        },
+        {
+          "code": "3-4-a",
+          "name": "이분법 대결 구도",
+          "similarity": 0.3965
+        },
+        {
+          "code": "4-4-c",
+          "name": "재판 중 사안 편향 보도",
+          "similarity": 0.3818
+        },
+        {
+          "code": "1-4-d",
+          "name": "의견의 사실화 (기자)",
+          "similarity": 0.3751
+        },
+        {
+          "code": "4-2-a",
+          "name": "취재원 신상정보 무단 노출",
+          "similarity": 0.3709
+        },
+        {
+          "code": "3-4-b",
+          "name": "제로섬 프레임",
+          "similarity": 0.3536
+        },
+        {
+          "code": "1-1-c",
+          "name": "익명 단일 취재원 의존",
+          "similarity": 0.3512
+        },
+        {
+          "code": "1-1-j",
+          "name": "맥락 정보 생략·체리피킹",
+          "similarity": 0.3391
+        },
+        {
+          "code": "3-2-b",
+          "name": "선별적 사실 제시",
+          "similarity": 0.3314
+        },
+        {
+          "code": "1-1-f",
+          "name": "따옴표 처리 책임 회피",
+          "similarity": 0.3151
+        },
+        {
+          "code": "1-5-f",
+          "name": "선거 여론조사 과장·왜곡",
+          "similarity": 0.2947
+        }
+      ],
+      "starred_codes": [
+        "1-1-c",
+        "1-1-f",
+        "1-1-j",
+        "1-4-d",
+        "1-5-f",
+        "3-2-b",
+        "3-4-a",
+        "3-4-b",
+        "4-2-a",
+        "4-4-a",
+        "4-4-b",
+        "4-4-c"
+      ],
+      "mandatory_review_codes": [],
+      "validated_codes": [
+        "1-4-d",
+        "6-1-d",
+        "2-2-c"
+      ],
+      "hallucinated_codes": [],
+      "unmatched_vector_candidates": [],
+      "patterns_without_ethics": [
+        "1-4-d",
+        "6-1-d",
+        "2-2-c"
+      ],
+      "article_context": "general",
+      "fallback_used": false,
+      "phase1_model": "claude-sonnet-4-6"
+    }
+  },
+  "ethics": {
+    "count": 9,
+    "empty_warning": false,
+    "refs": [
+      {
+        "pattern_code": "6-1-d",
+        "ethics_code": "JEC-4",
+        "ethics_title": "공정하게 보도한다",
+        "ethics_full_text": "윤리적 언론은 특정 집단, 세력, 견해에 치우치지 않고 공평무사한 자세로 보도한다. 사회적으로 중요한 사안이나 갈등적 사안을 다룰 때는 다양한 입장을 두루 담아 전체를 아우르는 균형 잡힌 시각과 관점을 보여준다. 윤리적 언론은 시시비비를 가리는 언론 본연의 역할에 충실하면서도 사회 내에 존재하는 다양한 의견의 경중을 고려해 보도 내용의 양적·질적 균형을 맞춘다. 특정한 가치와 정파적 이익에 부합하는 사실과 견해만을 선택하거나 과장하지 않는다. 기사로 인해 불이익을 볼 수 있는 개인이나 집단에는 자신을 방어하고 반론할 권리를 보장한다.",
+        "ethics_tier": 1,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "parent chain rollup",
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "6-1-d",
+        "ethics_code": "JEC-2",
+        "ethics_title": "투명하게 보도하고 책임 있게 설명한다",
+        "ethics_full_text": "윤리적 언론은 정보원과 취재 과정 등을 가능한 한 투명하게 알리고, 문제 제기에 책임 있게 설명한다. 윤리적 언론은 독자와 시청자가 정보에 대해 스스로 판단할 수 있도록, 취재원 보호 등 필요한 경우를 제외하고는 정보의 출처를 명확히 밝힌다. 보도에 대한 의문과 비판에 열린 자세로 소통하며, 잘못이 있다면 신속하고 분명하게 바로잡는다. 보도에 영향을 미친 외부 지원과 후원 및 이해상충 소지 등에 대해서도 정직하게 밝힌다. 투명성과 설명책임은 언론인 개인뿐 아니라 언론사 조직의 공동책임이다.",
+        "ethics_tier": 1,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제2조"
+      },
+      {
+        "pattern_code": "2-2-c",
+        "ethics_code": "JEC-4",
+        "ethics_title": "공정하게 보도한다",
+        "ethics_full_text": "윤리적 언론은 특정 집단, 세력, 견해에 치우치지 않고 공평무사한 자세로 보도한다. 사회적으로 중요한 사안이나 갈등적 사안을 다룰 때는 다양한 입장을 두루 담아 전체를 아우르는 균형 잡힌 시각과 관점을 보여준다. 윤리적 언론은 시시비비를 가리는 언론 본연의 역할에 충실하면서도 사회 내에 존재하는 다양한 의견의 경중을 고려해 보도 내용의 양적·질적 균형을 맞춘다. 특정한 가치와 정파적 이익에 부합하는 사실과 견해만을 선택하거나 과장하지 않는다. 기사로 인해 불이익을 볼 수 있는 개인이나 집단에는 자신을 방어하고 반론할 권리를 보장한다.",
+        "ethics_tier": 1,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": "parent chain rollup",
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "1-4-d",
+        "ethics_code": "JEC-4",
+        "ethics_title": "공정하게 보도한다",
+        "ethics_full_text": "윤리적 언론은 특정 집단, 세력, 견해에 치우치지 않고 공평무사한 자세로 보도한다. 사회적으로 중요한 사안이나 갈등적 사안을 다룰 때는 다양한 입장을 두루 담아 전체를 아우르는 균형 잡힌 시각과 관점을 보여준다. 윤리적 언론은 시시비비를 가리는 언론 본연의 역할에 충실하면서도 사회 내에 존재하는 다양한 의견의 경중을 고려해 보도 내용의 양적·질적 균형을 맞춘다. 특정한 가치와 정파적 이익에 부합하는 사실과 견해만을 선택하거나 과장하지 않는다. 기사로 인해 불이익을 볼 수 있는 개인이나 집단에는 자신을 방어하고 반론할 권리를 보장한다.",
+        "ethics_tier": 1,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": null,
+        "ethics_source": "언론윤리헌장",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "6-1-d",
+        "ethics_code": "PCE-4",
+        "ethics_title": "보도와 평론",
+        "ethics_full_text": "우리 언론인은 사실의 전모를 정확하고, 객관적이고, 공정하게 보도함으로써 진실을 추구할 것을 다짐한다. 또한 공정하고 바르게 평론하며, 사회의 의견을 폭넓게 수용해 다양한 여론 형성에 기여할 것을 결의한다.",
+        "ethics_tier": 2,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": null,
+        "ethics_source": "신문윤리강령",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "1-4-d",
+        "ethics_code": "PCP-3-1",
+        "ethics_title": "보도기사의 사실과 의견 구분",
+        "ethics_full_text": "보도기사는 사실과 의견을 명확히 구분하여 작성해야 한다. 또한 편견이나 이기적 동기로 보도기사를 고르거나 작성해서는 안 된다.",
+        "ethics_tier": 2,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "신문윤리실천요강",
+        "ethics_article_number": "제3조 ①"
+      },
+      {
+        "pattern_code": "2-2-c",
+        "ethics_code": "PCE-4",
+        "ethics_title": "보도와 평론",
+        "ethics_full_text": "우리 언론인은 사실의 전모를 정확하고, 객관적이고, 공정하게 보도함으로써 진실을 추구할 것을 다짐한다. 또한 공정하고 바르게 평론하며, 사회의 의견을 폭넓게 수용해 다양한 여론 형성에 기여할 것을 결의한다.",
+        "ethics_tier": 2,
+        "relation_type": "related_to",
+        "strength": "moderate",
+        "reasoning": null,
+        "ethics_source": "신문윤리강령",
+        "ethics_article_number": "제4조"
+      },
+      {
+        "pattern_code": "2-2-c",
+        "ethics_code": "PCP-3-1",
+        "ethics_title": "보도기사의 사실과 의견 구분",
+        "ethics_full_text": "보도기사는 사실과 의견을 명확히 구분하여 작성해야 한다. 또한 편견이나 이기적 동기로 보도기사를 고르거나 작성해서는 안 된다.",
+        "ethics_tier": 2,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "신문윤리실천요강",
+        "ethics_article_number": "제3조 ①"
+      },
+      {
+        "pattern_code": "1-4-d",
+        "ethics_code": "PCE-4",
+        "ethics_title": "보도와 평론",
+        "ethics_full_text": "우리 언론인은 사실의 전모를 정확하고, 객관적이고, 공정하게 보도함으로써 진실을 추구할 것을 다짐한다. 또한 공정하고 바르게 평론하며, 사회의 의견을 폭넓게 수용해 다양한 여론 형성에 기여할 것을 결의한다.",
+        "ethics_tier": 2,
+        "relation_type": "violates",
+        "strength": "strong",
+        "reasoning": null,
+        "ethics_source": "신문윤리강령",
+        "ethics_article_number": "제4조"
+      }
+    ]
+  },
+  "true_negative_candidate": false,
+  "capture_validation": {
+    "patterns_with_ethics": [
+      "1-4-d",
+      "2-2-c",
+      "6-1-d"
+    ],
+    "patterns_without_ethics": [],
+    "forensic_consistency": false,
+    "difference_reason": "run_sonnet=False로 pipeline 내부 ethics 조회가 수행되지 않음 — forensic.patterns_without_ethics는 validated 전체로 채워진다(pipeline.py 341-343). 본 필드는 runner가 별도 조회한 규범 refs 기준 재계산값이다.",
+    "ethics_subset_of_validated": true
+  },
+  "article_body_sha256": "69dfdfb44302f643545ed8066ab1039fa0070ccccb8bc3d95579a8a3b0e2b26d",
+  "article_title_sha256": "31469cbfec6813ee8e05e5f0fb8ccfde6042e521bb86027354cb80e7776fecd3",
+  "analysis_input_sha256": "4eb56088e1ebf642f20da124ba699e1d71b95c643b3cc20354d79062cc8fb5fe",
+  "detections_canonical_sha256": "a675073c3bb867aeee1359250876835055874124e4628143537a3293c63495db",
+  "detections_ordered_sha256": "bca1ba3413c37e670c9e023009600be1550c7b3c3db9f9b07ef03c6d42220cea",
+  "ethics_snapshot_sha256": "03d4ffc71528c150bcfdbef1ad830378abb4254adc3eea0159253ba31f04b931",
+  "phase1_system_prompt_sha256": "bc3769c701c7a6e16a1393c8b3451a630cec72c5b661cf5406a3ade61bb7c0e2",
+  "report_input_sha256": "2258ef771159b6f87520f4784b74e214d091f4729674be26fbbdb436e131375f",
+  "semantic_hash_provenance": {
+    "basis": "capture",
+    "computed_at": "2026-07-19T06:52:56.364981+09:00",
+    "code": "scripts/report_quality_runner.py compute_semantic_hashes()"
+  },
+  "diagnostic_path": "docs/report-quality-recovery/runs/diagnostics/C2-07/r2.json",
+  "diagnostic_sha256": "0209751093f154f2dd16eb6b5d1540a6d2db738e48142f96869ecb14b13671de",
+  "stability_digest": "2190df38436a7f476430356aadb9cde3e124300ad11b6e76c0033d36d2ed2548",
+  "timing": {
+    "pipeline_total_seconds": 19.97,
+    "wall_seconds": 19.97,
+    "embedding_tokens": 1493
+  }
+}

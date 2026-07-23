@@ -1,0 +1,291 @@
+{
+  "version": "v2_supplement",
+  "created": "2026-07-18",
+  "updated": "2026-07-19",
+  "purpose": "반복 실행 중 이후 비교의 기준으로 쓸 스냅샷을 명시적으로 선택·고정하고, 선택 규칙·무결성 검증·한계·체크리스트·실행 메타데이터를 봉인한다",
+  "commit_metadata": {
+    "execution_commit": "9d051927187ed5d09a9ede630ea7781d1f8bc0ed",
+    "canonical_main_commit": "be85f01a0288c6d5cf282ca7ee1dbe136e9fe9fb",
+    "source_tree_equivalent": true,
+    "execution_tree_sha": "95573a1aa57494edb4f74fa4de71fb535492a584",
+    "canonical_main_tree_sha": "95573a1aa57494edb4f74fa4de71fb535492a584",
+    "origin_main_freshness": "fetched",
+    "note": "2026-07-19 git fetch --prune origin main 성공(0851b94..be85f01 갱신). origin/main 최신 커밋 be85f01은 이 브랜치 팁(9d05192)을 머지한 PR #53 머지 커밋으로, 트리 SHA가 완전 동일하다(머지 이력만 상이)."
+  },
+  "selection_rule": {
+    "rule_verbatim": "선택 규칙: 각 표본의 기준 스냅샷은 무결성 검증을 통과한 최초 성공 실행(r1)으로 고정한다. 이는 실행 내용의 우수성에 따른 선택이 아니라, 사후 편향을 차단하기 위해 사전에 정한 결정론적 규칙이다.",
+    "integrity_exceptions_verbatim": "무결성 예외: 기계적으로 검증 가능한 결함 — matched_text가 아래 검증 절차를 거쳐도 기사 원문에서 확인되지 않음, JSON 구조 손상·필수 필드 결손, 문제 기사인데 규범 조회 실패 — 이 r1에서 발견되면, 임의로 다른 실행을 선택하지 말고 DISCUSS로 보고한다.",
+    "quality_opinion_verbatim": "품질 판단은 교체 사유가 아니다: severity가 과하거나 부족해 보인다, 핵심 패턴이 누락됐다, 판단이 아쉽다 같은 평가적 의견은 r1 고정을 바꾸지 않는다. 기준선은 \"가장 좋은 탐지\"가 아니라 \"현재 파이프라인의 있는 그대로의 출력\"이어야 하기 때문이다. 이런 의견은 아래 체크리스트에 기록으로만 남긴다.",
+    "matched_text_procedure_verbatim": [
+      "1. 원문 그대로 exact substring 확인",
+      "2. 실패하면 양쪽 텍스트에 Unicode NFKC 정규화 적용",
+      "3. 줄바꿈·연속 공백을 단일 공백으로 통합",
+      "4. 따옴표(곡선/일반)·말줄임표 등 표기 차이를 정규화",
+      "5. 그래도 일치하지 않으면 DISCUSS — 즉시 환각으로 단정하거나 r1을 교체하지 말고, 원문 해당 부분과 matched_text를 나란히 제출해 판단을 요청한다"
+    ],
+    "abbreviated_quote_structure_note": "Phase 1 프롬프트는 한 탐지의 matched_text에 여러 인용을 ' / ' 구분 단일 문자열로 담는 것을 허용한다(backend/core/pattern_matcher.py 650-654). 따라서 검증은 ' / ' 세그먼트 단위로 수행했고, 검색 공간은 제목+본문이다(제목 인용 패턴 대비). 또한 4단계 따옴표 정규화에는 '인용부호 자체를 양쪽에서 제거한 비교'가 포함된다 — Phase 1이 발췌 시 원문 내부 인용부호를 탈락시키는 사례(B-08 3-2-b) 때문이며, 인용부호 외 문자는 완전 일치를 요구하므로 패러프레이즈는 통과할 수 없다.",
+    "verification_record": "runs/matched_text_verification.json"
+  },
+  "structure": {
+    "candidates": "runs/snapshots/candidates/<fixture_id>/<run_tag>.json — 모든 실행본(후처리 필드 포함)",
+    "selected": "runs/snapshots/selected/<fixture_id>.json — 규칙에 따라 선택된 기준본의 바이트 동일 사본",
+    "selected_created_after_postprocess": "selected 사본은 capture_validation(Task 1)·semantic hash 9종(Task 5)·diagnostic 참조(Task 6) 후처리를 모두 완료한 뒤 생성했고, 생성 후 원본 candidate와의 report_input_sha256 및 전체 의미 내용 일치를 검증했다."
+  },
+  "selections": [
+    {
+      "fixture_id": "PAST-DETENTION",
+      "chosen_run_tag": "r1",
+      "candidate_path": "runs/snapshots/candidates/PAST-DETENTION/r1.json",
+      "selected_path": "runs/snapshots/selected/PAST-DETENTION.json",
+      "file_sha256": "16b8db44565beb86aed058c4e626449d744925f8e07788db53569374492e3726",
+      "stability_digest": "1e170d4106f98745b2222d10379055b2dadd8bad7fcede7526835b1d65ae41e8",
+      "all_runs_stability_digest": {
+        "r1": "1e170d4106f98745b2222d10379055b2dadd8bad7fcede7526835b1d65ae41e8",
+        "r2": "b13e5c6cabc959cd52adca4f8f349548725e452d588326df627878dd54fe7126",
+        "r3": "5e7631df227e4e93f96e601abb73b5fa25dcb2c799858ca61228dfcf4b00b917"
+      },
+      "all_runs_file_sha256": {
+        "r1": "16b8db44565beb86aed058c4e626449d744925f8e07788db53569374492e3726",
+        "r2": "2d285379f96f13f2a802ebeb389f95566c18c73796d3c588cee434fa375b3697",
+        "r3": "ae05e5699d027daccb3b17a7c3a60c84a463cd538b967218b7c8655424c68ea8"
+      },
+      "key_semantic_hashes": {
+        "analysis_input_sha256": "607abf2d31102dc10dd099ccd4ff835b291f87b2ab14c4ff7165ff6aed86fb1c",
+        "detections_canonical_sha256": "2fbf8fd641aff9d135f6b7d3f510b98e6b3c3350611d1fab44149aa20c35f904",
+        "ethics_snapshot_sha256": "4a683928f68cd73ecb37e069645de1ca229a2812de5d6efb9664ac1b725a2f25",
+        "report_input_sha256": "92418f2c3b59fdd86639131713fcdeb17b28e1869d68b3e38c3cfecd6ca6a52d"
+      },
+      "stability_note": "3회 실행 공통 코어 {2-2-c, 6-2-c(high 고정)}. 주변부 요동: r1 +2-2-d,3-2-c / r2 +3-2-b / r3 +4-3-b, 2-2-c severity med→med→low. r1은 규칙(무결성 통과 최초 실행)에 따라 선택.",
+      "integrity_verification": {
+        "verified_at": "2026-07-19",
+        "required_fields_ok": true,
+        "ethics_refs_count": 17,
+        "ethics_zero_on_problem_article": false,
+        "matched_text": {
+          "result": "pass",
+          "stages": {
+            "6-2-c": ["stage1_exact"],
+            "2-2-d": ["stage1_exact"],
+            "2-2-c": ["stage1_exact"],
+            "3-2-c": ["stage1_exact", "stage1_exact"]
+          }
+        },
+        "integrity_pass": true
+      },
+      "known_limitations": [
+        "낙인 패턴 4-3-b는 r3에서만 탐지되었고 기준 스냅샷 r1에는 없다. 이후 실험에서 이 기사의 낙인 비평 부재는 스냅샷의 한계일 수 있으므로 해석 시 반영해야 한다. 낙인 비평 검증은 E-12가 담당한다.",
+        "r2에서만 탐지된 3-2-b(선별적 사실 제시)도 r1에 없다 — 주변부 요동 패턴으로, 선별 제시 비평 검증은 B-08(r1에 3-2-b 포함)이 보완한다."
+      ],
+      "validity_checklist": {
+        "1_matched_text_exists": "적합 — 5개 세그먼트 전부 stage1_exact (무결성 판정 항목)",
+        "2_code_evidence_fit": "기록: 4건 모두 코드-근거 정합. 6-2-c(제목 침소봉대)는 제목 vs 본문 수치(수용자 1,600~1,800명 중 형사범 50명·살인 전과 1명) 대비가 명확하고, 2-2-d('우려가 커지고 있다')·2-2-c('지적이 나온다')는 무주체 서술 정의에 부합, 3-2-c는 제목·소제목의 일반화 프레이밍에 부합한다.",
+        "3_reasoning_within_evidence": "기록: reasoning이 본문 수치(152명/50명/1명)를 직접 인용해 근거 내에서 논증한다. 2-2-c reasoning의 '과장된 인상을 줄 수 있다'는 약한 추정이지만 수치 대비에 근거한다.",
+        "4_severity_appropriateness": "기록: 6-2-c high는 극소수 사례의 제목 전면 배치라는 근거상 개연적. 나머지 medium 3건도 과도·과소로 보이지 않는다.",
+        "5_missed_core_issues": "기록: 낙인(4-3-b) 관점 부재가 핵심 한계(known_limitations 참조). 그 외 통계 맥락 결여(1-5 계열)는 이 기사에서 상대적으로 부차적.",
+        "6_duplicate_detections": "기록: 6-2-c와 3-2-c가 모두 제목 프레이밍을 다뤄 부분 중복이나, 관점이 다르고(침소봉대 vs 일부 사례 일반화) matched_text 범위도 달라 허용 범위로 판단."
+      },
+      "phase1_system_prompt_provenance": {
+        "hash_basis": "reconstructed_after_capture",
+        "capture_time_verified": false,
+        "assumption": "캡처(2026-07-18)와 후처리(2026-07-19) hash 계산 시점 사이 confusion-pair DB가 불변이었다는 가정에 근거",
+        "supporting_evidence": {
+          "confusion_pair_rows": 5,
+          "all_created_at": "2026-05-09",
+          "later_insert_or_update_detected": false,
+          "note": "updated_at 컬럼 부재로 소급 무변경의 완전한 증명은 구조적으로 불가하나, 반증 정황은 없다"
+        }
+      }
+    },
+    {
+      "fixture_id": "E-12",
+      "chosen_run_tag": "r1",
+      "candidate_path": "runs/snapshots/candidates/E-12/r1.json",
+      "selected_path": "runs/snapshots/selected/E-12.json",
+      "file_sha256": "b1c31d7480b55d432533da9b50727e1c469b4e61c5b14158affc2e754849f1dc",
+      "stability_digest": "4ee043fe504933e53b4b5e04e82b6108118403aa8d117cf8237b77e42b5c4a03",
+      "all_runs_stability_digest": {
+        "r1": "4ee043fe504933e53b4b5e04e82b6108118403aa8d117cf8237b77e42b5c4a03",
+        "r2": "bc6ddb0a08b05bb22f52961db9030d60d2a348d227e1fdb48de482e991bfc6de"
+      },
+      "all_runs_file_sha256": {
+        "r1": "b1c31d7480b55d432533da9b50727e1c469b4e61c5b14158affc2e754849f1dc",
+        "r2": "f0c3bfda1a32abf989bd6188610a7c641745649c307bd137926e2cb190f5cda2"
+      },
+      "key_semantic_hashes": {
+        "analysis_input_sha256": "5be38bdc77bf0a9b113810088e89419f10d14206779617773b40ff15d4d67380",
+        "detections_canonical_sha256": "8fb082c089cb4aadac9b57194a4e89c8a2351dbd30361a0f7b0fe799695ddb9a",
+        "ethics_snapshot_sha256": "453d255cd8e856213fc607c8c17dd199e4745bb68cbed0c687909f5b1b77f1ad",
+        "report_input_sha256": "9c0b94fe6ceedcc566c7e794371fefb71f8aec3814a5f4015d2c2395857390e2"
+      },
+      "stability_note": "2회 실행 패턴 집합 완전 동일 {1-4-a, 3-2-c, 4-3-b}. severity 1건만 요동(3-2-c med↔high). 가장 안정적. r1 규칙 선택.",
+      "integrity_verification": {
+        "verified_at": "2026-07-19",
+        "required_fields_ok": true,
+        "ethics_refs_count": 25,
+        "ethics_zero_on_problem_article": false,
+        "matched_text": {
+          "result": "pass",
+          "stages": {
+            "4-3-b": ["stage1_exact"],
+            "3-2-c": ["stage1_exact"],
+            "1-4-a": ["stage1_exact"]
+          }
+        },
+        "integrity_pass": true
+      },
+      "known_limitations": [
+        "표본 체계 내 낙인(4-3-b) 비평 검증을 단독 담당한다(PAST-DETENTION r1에는 4-3-b 없음). 이 표본의 4-3-b는 severity high로 2회 실행 모두 안정 탐지되었다."
+      ],
+      "validity_checklist": {
+        "1_matched_text_exists": "적합 — 3개 세그먼트 전부 stage1_exact (무결성 판정 항목)",
+        "2_code_evidence_fit": "기록: 4-3-b(제목의 외국인 노동자-마약 직접 연결)는 집단 낙인 프레이밍 정의에 부합. 3-2-c는 '사례가 많았다' 무근거 일반화 문장, 1-4-a는 '때문으로 보인다' 추측 술어로 각각 정합.",
+        "3_reasoning_within_evidence": "기록: 본문 수치(전체 2만3022명 중 외국인 3232명, 약 14%)를 인용해 근거 내 논증. 과잉 추정 없음.",
+        "4_severity_appropriateness": "기록: 4-3-b high는 제목 낙인이라는 위치·파급 근거상 개연적. 3-2-c medium은 r2에서 high로 요동한 항목(기록만).",
+        "5_missed_core_issues": "기록: 대검 백서 단일 출처 의존을 3-1 계열로 다루지 않았다 — 통계 발표 보도 특성상 판단 여지가 있어 누락 단정은 하지 않음(기록만).",
+        "6_duplicate_detections": "기록: 중복 없음. 세 탐지가 각각 제목·본문 일반화 문장·원인 단정 문장으로 분리된다."
+      },
+      "phase1_system_prompt_provenance": {
+        "hash_basis": "reconstructed_after_capture",
+        "capture_time_verified": false,
+        "assumption": "캡처(2026-07-18)와 후처리(2026-07-19) hash 계산 시점 사이 confusion-pair DB가 불변이었다는 가정에 근거",
+        "supporting_evidence": {
+          "confusion_pair_rows": 5,
+          "all_created_at": "2026-05-09",
+          "later_insert_or_update_detected": false,
+          "note": "updated_at 컬럼 부재로 소급 무변경의 완전한 증명은 구조적으로 불가하나, 반증 정황은 없다"
+        }
+      }
+    },
+    {
+      "fixture_id": "B-08",
+      "chosen_run_tag": "r1",
+      "candidate_path": "runs/snapshots/candidates/B-08/r1.json",
+      "selected_path": "runs/snapshots/selected/B-08.json",
+      "file_sha256": "4a48463fb8e2d33ca2916793c62f2171a530f7afbe41da2aea58ce4ed21daacc",
+      "stability_digest": "e869ca79d4cc8e111c3f5f69359d23aec117927d032f241266b18ebc9eb9a4e5",
+      "all_runs_stability_digest": {
+        "r1": "e869ca79d4cc8e111c3f5f69359d23aec117927d032f241266b18ebc9eb9a4e5",
+        "r2": "f1baae57220fcc1fcf1813b323b192accbc239d6cc17c3d3b514ec045caacc8f"
+      },
+      "all_runs_file_sha256": {
+        "r1": "4a48463fb8e2d33ca2916793c62f2171a530f7afbe41da2aea58ce4ed21daacc",
+        "r2": "047425faff04d9b12136ae02b19cfdf18b377b092dad09ec1dc7ce7522bf51ad"
+      },
+      "key_semantic_hashes": {
+        "analysis_input_sha256": "6d07bf26890cedaf7565b792849da4406cadeb182fd4d3a6dcc30477b3d291b2",
+        "detections_canonical_sha256": "e20c0a22a39b5794f1f1a85503c47835e97406e9117a084a5f5f820fb59a7722",
+        "ethics_snapshot_sha256": "c242b4523a3559efb517225ea1340a51f79d77fcd4ffce8e3ab491eb2d8d2ee9",
+        "report_input_sha256": "df358462dc4b4cb660bd6194c81a5d54554b86dd229226b9839b91adc2c26cee"
+      },
+      "stability_note": "2회 실행 5패턴 중 4패턴 동일 severity로 일치 {1-5-h, 3-1-b, 3-2-b, 6-2-a}. 요동 1건: r1 1-5-i(high) ↔ r2 1-1-e(medium). r1 규칙 선택.",
+      "integrity_verification": {
+        "verified_at": "2026-07-19",
+        "required_fields_ok": true,
+        "ethics_refs_count": 14,
+        "ethics_zero_on_problem_article": false,
+        "matched_text": {
+          "result": "pass",
+          "stages": {
+            "6-2-a": ["stage1_exact"],
+            "3-1-b": ["stage1_exact"],
+            "1-5-i": ["stage1_exact"],
+            "1-5-h": ["stage1_exact"],
+            "3-2-b": ["stage4_quotes_ellipsis_strip"]
+          },
+          "stage4_detail": "3-2-b matched_text는 원문 '…수급요건을 강화해야 한다\"고 강조했다'에서 내부 큰따옴표(\")만 탈락한 형태('…강화해야 한다고 강조했다'). 인용부호 제거 비교에서 그 외 문자 완전 일치 확인 — 표기 불일치이지 '기사에 없는 근거의 생성'이 아니다."
+        },
+        "integrity_pass": true
+      },
+      "known_limitations": [
+        "r1과 r2 사이에 1-5-i(연구 결과 과장 인용, high) ↔ 1-1-e(medium) 요동이 있다. 기준 스냅샷에는 1-5-i가 포함되므로, 이후 실험에서 1-5-i 관련 비평의 유무를 해석할 때 이 요동을 반영해야 한다.",
+        "high 3건(6-2-a, 3-1-b, 1-5-i)이 집중된 표본이다 — 리포트 강도·어조 실험 시 이 프로파일이 상한 사례임을 감안한다."
+      ],
+      "validity_checklist": {
+        "1_matched_text_exists": "적합 — 4개 세그먼트 stage1_exact + 1개(3-2-b) stage4 인용부호 제거 비교 정합 (무결성 판정 항목)",
+        "2_code_evidence_fit": "기록: 5건 모두 정합. 6-2-a(제목 인과 단정), 3-1-b(단일 기관 의존), 1-5-i('그로 인해' 인과 단정 인용), 1-5-h(80% '폭증' 맥락 무시), 3-2-b(단일 정책 방향만 제시).",
+        "3_reasoning_within_evidence": "기록: 1-5-i·6-2-a reasoning의 '하우스만-테일러 추정법' 한계 지적은 본문에 모델명이 명시되어 근거 내 논증. 3-1-b·3-2-b의 '반론 부재' 논거는 부재 증명 성격이나 패턴 정의 자체가 구성의 결여를 다루므로 허용 범위.",
+        "4_severity_appropriateness": "기록: high 3건 집중이 과도해 보일 수 있으나 단일 취재원+인과 단정 제목+과장 인용의 결합이라는 근거상 개연적(기록만, 교체 사유 아님).",
+        "5_missed_core_issues": "기록: 뚜렷한 누락 없음. '폭증' 감정 언어는 1-5-h reasoning에 흡수되어 있다.",
+        "6_duplicate_detections": "기록: 3-1-b와 3-2-b의 reasoning이 '반대 관점 부재' 논거를 공유해 부분 중복. 관점 구분(취재원 구성 vs 사실 선별)은 유지되나, 리포트 생성 시 같은 논거가 반복될 가능성을 실험 해석에 참고."
+      },
+      "phase1_system_prompt_provenance": {
+        "hash_basis": "reconstructed_after_capture",
+        "capture_time_verified": false,
+        "assumption": "캡처(2026-07-18)와 후처리(2026-07-19) hash 계산 시점 사이 confusion-pair DB가 불변이었다는 가정에 근거",
+        "supporting_evidence": {
+          "confusion_pair_rows": 5,
+          "all_created_at": "2026-05-09",
+          "later_insert_or_update_detected": false,
+          "note": "updated_at 컬럼 부재로 소급 무변경의 완전한 증명은 구조적으로 불가하나, 반증 정황은 없다"
+        }
+      }
+    },
+    {
+      "fixture_id": "C2-07",
+      "chosen_run_tag": "r1",
+      "candidate_path": "runs/snapshots/candidates/C2-07/r1.json",
+      "selected_path": "runs/snapshots/selected/C2-07.json",
+      "file_sha256": "4a8582f834412cf103f03141ac6178ce4be39b71f7c292a2fb4aac74fbba3597",
+      "stability_digest": "9456192a9b7194334a15446bab9a938ae09bf505a12ea45ede8383f00343bc2e",
+      "all_runs_stability_digest": {
+        "r1": "9456192a9b7194334a15446bab9a938ae09bf505a12ea45ede8383f00343bc2e",
+        "r2": "2190df38436a7f476430356aadb9cde3e124300ad11b6e76c0033d36d2ed2548"
+      },
+      "all_runs_file_sha256": {
+        "r1": "4a8582f834412cf103f03141ac6178ce4be39b71f7c292a2fb4aac74fbba3597",
+        "r2": "67377768be7385eec54f034bbab926b5256f89666b3c4b7f8c85dcee1cd5940d"
+      },
+      "key_semantic_hashes": {
+        "analysis_input_sha256": "4eb56088e1ebf642f20da124ba699e1d71b95c643b3cc20354d79062cc8fb5fe",
+        "detections_canonical_sha256": "d7ce892f78d87b06731a72046a87bcf848a1b6397106088aa45962544abee6cf",
+        "ethics_snapshot_sha256": "04435e7cffea5c3ceab214b33f9dce01e59137300ecbde7ba222a6702aeae111",
+        "report_input_sha256": "a8aff68e9095c9a6e98a18b997b819369ce39939dd7d33d6b4ca2f0473c34345"
+      },
+      "stability_note": "2026-07-19 추가된 경계형 표본(2차 지시 Task 2). 2회 실행 공통 코어 {1-4-d, 6-1-d}, high 0건. 요동: 1-4-d low(r1)↔medium(r2), r2에만 주변부 2-2-c(low) 추가. 분기표상 '안정적 저심각 소수 탐지' 경우로 판정해 확정, 예비 후보(C-02)는 미사용. r1 규칙 선택.",
+      "integrity_verification": {
+        "verified_at": "2026-07-19",
+        "required_fields_ok": true,
+        "ethics_refs_count": 6,
+        "ethics_zero_on_problem_article": false,
+        "matched_text": {
+          "result": "pass",
+          "stages": {
+            "6-1-d": ["stage1_exact", "stage1_exact", "stage1_exact", "stage1_exact"],
+            "1-4-d": ["stage1_exact"]
+          }
+        },
+        "integrity_pass": true
+      },
+      "known_limitations": [
+        "지시의 문자적 기대치는 'low 중심 1~2건'이었으나 실측은 6-1-d medium + 1-4-d low(r1)로, medium 1건이 포함된다. 두 실행 공통 코어가 취재원·귀속 계열로 일관되고 high가 없어 경계형 취지에는 부합한다고 판정했으며, 이 편차는 해석 시 반영한다.",
+        "1-4-d severity가 low(r1)↔medium(r2)로 요동한다 — 저심각 경계 표본의 severity 해석은 이 폭을 감안한다."
+      ],
+      "validity_checklist": {
+        "1_matched_text_exists": "적합 — 5개 세그먼트 전부 stage1_exact, 6-1-d는 ' / ' 다중 인용 4세그먼트 (무결성 판정 항목)",
+        "2_code_evidence_fit": "기록: 6-1-d('전해졌다' 반복 무주체 피동형)·1-4-d('도마에 오를 전망' 기자 판단의 사실 서술) 모두 정합.",
+        "3_reasoning_within_evidence": "기록: 민감 정보(정신건강 전역 이력)의 피동 처리 지적은 본문 근거 내. 과잉 추정 없음.",
+        "4_severity_appropriateness": "기록: 6-1-d medium은 반복성(4개 문장)과 민감 정보 포함을 고려하면 개연적. 1-4-d low 적절.",
+        "5_missed_core_issues": "기록: 피고인 진술의 무검증 서술이 overall_assessment에는 언급되나 별도 패턴으로는 미탐지 — 경계형 기사 특성상 판단 여지(기록만).",
+        "6_duplicate_detections": "기록: 중복 없음."
+      },
+      "pm_ratification": {
+        "date": "2026-07-19",
+        "decision": "표본 유지 — 사후 승인",
+        "original_branch_status": "not_explicitly_covered_by_decision_table",
+        "worker_should_have_discussed": true,
+        "approval_note": "r1은 6-1-d medium + 1-4-d low, r2는 6-1-d medium(안정 유지) + 1-4-d가 low에서 medium으로 상승 + 주변부 2-2-c(low)가 신규 탐지됐다. 사전 분기표의 'low severity 1~2건 안정 탐지' 문자 조건에는 정확히 해당하지 않으나, 두 실행 모두 high 0건이고 공통 코어(6-1-d, 1-4-d)가 안정적으로 유지되며, low·medium 탐지의 과장 서술 여부를 동시에 검증할 수 있어 PM이 경계형 대조군으로 사후 승인한다.",
+        "future_rule": "향후 분기표에 명시되지 않은 결과는 작업자가 확대 해석해 자체 확정하지 않고 반드시 DISCUSS로 보고한다."
+      },
+      "role_clarification": "low–medium 판정 절제 대조군 — 이 표본의 실험적 역할은 severity가 낮거나 중간인 탐지를 리포트가 과장하는지 확인하는 것이다. fixtures.json의 characteristic 필드는 최초 선정 시점의 원문 그대로 보존하며 이번 작업에서 수정하지 않는다.",
+      "phase1_system_prompt_provenance": {
+        "hash_basis": "computed_during_capture",
+        "capture_time_verified": true
+      }
+    }
+  ],
+  "process_notes": [
+    "후처리(2026-07-19)로 각 스냅샷에 capture_validation·semantic hash 9종·diagnostic 참조가 추가되었고 원본 필드는 불변임을 프로그램으로 검증했다(scripts/rq_postprocess_supplement.py). 이에 따라 v1에 기록됐던 구 경로 파일명·file_sha256는 candidates/ 경로·현행 sha로 갱신되었다.",
+    "phase1_system_prompt_sha256(bc3769c7…)는 4개 표본 공통이며, 2026-07-18 캡처분 3건에 대해서는 후처리 시점(07-19) 재빌드 값이다 — DB 혼동쌍이 그 사이 불변이라는 가정 하의 값(각 스냅샷 semantic_hash_provenance에 명기).",
+    "진단 덤프 매핑표는 runs/diagnostics/MAPPING.json — 7/7 매칭(0.3~1.3s 창), unmatched 0건. 아카이브 파일은 Task 0 사전 보존 sha256와 대조해 원본과 바이트 동일임을 확인했다."
+  ]
+}

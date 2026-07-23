@@ -1,0 +1,202 @@
+{
+  "created": "2026-07-19T07:05:51.789542+09:00",
+  "procedure": [
+    "1) 원문 그대로 exact substring",
+    "2) 양쪽 NFKC 정규화",
+    "3) 줄바꿈·연속 공백 → 단일 공백",
+    "4) 따옴표(곡선/일반 통일 → 최종적으로 인용부호 제거 비교)·말줄임표 표기 정규화 — 인용부호 외 문자는 완전 일치 요구(패러프레이즈 통과 불가)",
+    "5) 그래도 불일치 → DISCUSS (환각 단정·r1 교체 없음)"
+  ],
+  "note_multi_quote": "Phase 1 프롬프트가 다중 인용을 ' / ' 구분 단일 문자열로 허용(pattern_matcher.py 650-654) — 세그먼트별로 검증한다. 검색 공간은 제목+본문(제목 인용 패턴 대비).",
+  "fixtures": {
+    "PAST-DETENTION": {
+      "file": "docs/report-quality-recovery/runs/snapshots/candidates/PAST-DETENTION/r1.json",
+      "required_fields_ok": true,
+      "ethics_zero_on_problem_article": false,
+      "detections": [
+        {
+          "pattern_code": "6-2-c",
+          "segments": [
+            {
+              "segment": "살인 전과자도 있는 외국인보호소, '계엄 정국'에 일괄 석방 우려",
+              "matched_stage": "stage1_exact"
+            }
+          ],
+          "all_matched": true
+        },
+        {
+          "pattern_code": "2-2-d",
+          "segments": [
+            {
+              "segment": "강제퇴거(강제출국) 처분을 받고도 한국을 떠나지 않아 외국인보호소에 머물고 있는 불법체류 외국인들이 다시 쏟…",
+              "matched_stage": "stage1_exact"
+            }
+          ],
+          "all_matched": true
+        },
+        {
+          "pattern_code": "2-2-c",
+          "segments": [
+            {
+              "segment": "보호소에 수용된 외국인 중엔 살인 등 강력범죄 전과자도 다수 포함돼 있어 입법을 서둘러야 한다는 지적이 나온…",
+              "matched_stage": "stage1_exact"
+            }
+          ],
+          "all_matched": true
+        },
+        {
+          "pattern_code": "3-2-c",
+          "segments": [
+            {
+              "segment": "살인 전과자도 있는 외국인보호소",
+              "matched_stage": "stage1_exact"
+            },
+            {
+              "segment": "고의로 안 나가는 장기보호 외국인 상당수 전과자",
+              "matched_stage": "stage1_exact"
+            }
+          ],
+          "all_matched": true
+        }
+      ],
+      "integrity_pass": true
+    },
+    "E-12": {
+      "file": "docs/report-quality-recovery/runs/snapshots/candidates/E-12/r1.json",
+      "required_fields_ok": true,
+      "ethics_zero_on_problem_article": false,
+      "detections": [
+        {
+          "pattern_code": "4-3-b",
+          "segments": [
+            {
+              "segment": "공단·농장···외국인 노동자 모인 곳에 마약이 있었다",
+              "matched_stage": "stage1_exact"
+            }
+          ],
+          "all_matched": true
+        },
+        {
+          "pattern_code": "3-2-c",
+          "segments": [
+            {
+              "segment": "외국인 마약사범은 주로 외국인 근로자를 중심으로, 산업단지나 대규모 농장을 통해 유통되는 사례가 많았다.",
+              "matched_stage": "stage1_exact"
+            }
+          ],
+          "all_matched": true
+        },
+        {
+          "pattern_code": "1-4-a",
+          "segments": [
+            {
+              "segment": "최근 수년간 마약사범이 크게 증가한 것은 온라인 플랫폼 거래 활성화 때문으로 보인다.",
+              "matched_stage": "stage1_exact"
+            }
+          ],
+          "all_matched": true
+        }
+      ],
+      "integrity_pass": true
+    },
+    "B-08": {
+      "file": "docs/report-quality-recovery/runs/snapshots/candidates/B-08/r1.json",
+      "required_fields_ok": true,
+      "ethics_zero_on_problem_article": false,
+      "detections": [
+        {
+          "pattern_code": "6-2-a",
+          "segments": [
+            {
+              "segment": "실업급여 늘리자…6년 만에 비정규직 24만명 급증",
+              "matched_stage": "stage1_exact"
+            }
+          ],
+          "all_matched": true
+        },
+        {
+          "pattern_code": "3-1-b",
+          "segments": [
+            {
+              "segment": "파이터치연구원은 18일 '실업급여가 비정규직에 미치는 영향'이란 보고서에서 이같은 분석 결과를 내놨다.",
+              "matched_stage": "stage1_exact"
+            }
+          ],
+          "all_matched": true
+        },
+        {
+          "pattern_code": "1-5-i",
+          "segments": [
+            {
+              "segment": "이 분석을 최근 변경된 실업급여 제도에 적용하면 실업급여가 인상되면서 그로 인해 비정규직이 24만1000명 …",
+              "matched_stage": "stage1_exact"
+            }
+          ],
+          "all_matched": true
+        },
+        {
+          "pattern_code": "1-5-h",
+          "segments": [
+            {
+              "segment": "실업급여 지급액도 2018년 6조7000억원에서 2023년 11조8000억원으로 약 80% 폭증했다.",
+              "matched_stage": "stage1_exact"
+            }
+          ],
+          "all_matched": true
+        },
+        {
+          "pattern_code": "3-2-b",
+          "segments": [
+            {
+              "segment": "현재의 실업급여 지급수준을 변경되기 이전 수준으로 조정하고, 수급요건을 강화해야 한다고 강조했다.",
+              "matched_stage": "stage4_quotes_ellipsis_strip"
+            }
+          ],
+          "all_matched": true
+        }
+      ],
+      "integrity_pass": true
+    },
+    "C2-07": {
+      "file": "docs/report-quality-recovery/runs/snapshots/candidates/C2-07/r1.json",
+      "required_fields_ok": true,
+      "ethics_zero_on_problem_article": false,
+      "detections": [
+        {
+          "pattern_code": "6-1-d",
+          "segments": [
+            {
+              "segment": "조씨와 최씨는 인터넷을 통해 접촉한 후 대리 입영에 관한 계획을 세운 것으로 전해졌다.",
+              "matched_stage": "stage1_exact"
+            },
+            {
+              "segment": "조씨는 대리 입영한 상태로 실제 3개월간 군 생활을 했던 것으로 전해졌다.",
+              "matched_stage": "stage1_exact"
+            },
+            {
+              "segment": "조사 결과 조씨는 대리 입영 이전 본인 이름으로 입대했다가 정신건강 문제로 전역한 이력도 있었던 것으로 알려…",
+              "matched_stage": "stage1_exact"
+            },
+            {
+              "segment": "검찰은 조만간 공범 최씨도 재판에 넘길 것으로 전해졌다.",
+              "matched_stage": "stage1_exact"
+            }
+          ],
+          "all_matched": true
+        },
+        {
+          "pattern_code": "1-4-d",
+          "segments": [
+            {
+              "segment": "사전에 대리 입영을 방지하지 못한 병무청 대응도 도마에 오를 전망이다.",
+              "matched_stage": "stage1_exact"
+            }
+          ],
+          "all_matched": true
+        }
+      ],
+      "integrity_pass": true
+    }
+  },
+  "any_discuss": false
+}
