@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, ComponentType } from 'react';
 import dynamic from 'next/dynamic';
-import { ExternalLink, FileDown, ArrowLeft, Users, NotebookPen, BookOpenCheck, Newspaper } from 'lucide-react';
+import { ExternalLink, FileDown, ArrowLeft, Users, NotebookPen, BookOpenCheck, Newspaper, Link2 } from 'lucide-react';
 import type { AnalysisResult } from '../types';
 
 const TxtPreviewModal = dynamic(() => import('./TxtPreviewModal').then(mod => mod.TxtPreviewModal), {
@@ -408,6 +408,25 @@ export function ResultViewer({ result, onReset }: ResultViewerProps) {
           {/* Right: SNS Share Buttons */}
           {sharePath && (
             <div className="flex gap-2 order-3">
+              {/* Copy Link */}
+              <button
+                onClick={() => {
+                  const shareUrl = getShareUrl();
+                  if (!shareUrl) return;
+
+                  navigator.clipboard.writeText(shareUrl).then(() => {
+                    alert('리포트 공유 링크가 클립보드에 복사되었습니다.\n원하는 곳에 붙여넣어 공유해주세요.');
+                  }).catch(() => {
+                    alert('클립보드 복사에 실패했습니다. 브라우저 권한을 확인해주세요.');
+                  });
+                }}
+                className="w-10 h-10 rounded-full bg-navy-700 text-white flex items-center justify-center hover:scale-110 transition-transform shadow-sm"
+                title="리포트 링크 복사"
+                aria-label="리포트 링크 복사"
+              >
+                <Link2 className="w-5 h-5" />
+              </button>
+
               {/* Facebook */}
               <button
                 onClick={() => {
