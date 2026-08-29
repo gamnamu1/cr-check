@@ -1,6 +1,7 @@
 import { useState, useMemo, useCallback, ComponentType } from 'react';
 import dynamic from 'next/dynamic';
 import { ExternalLink, FileDown, ArrowLeft, Users, NotebookPen, BookOpenCheck, Newspaper, Link2 } from 'lucide-react';
+import { truncateShareTitle } from '../lib/shareTitle';
 import type { AnalysisResult } from '../types';
 
 const TxtPreviewModal = dynamic(() => import('./TxtPreviewModal').then(mod => mod.TxtPreviewModal), {
@@ -228,8 +229,7 @@ export function ResultViewer({ result, onReset }: ResultViewerProps) {
     ? `/report/${encodeURIComponent(result.share_id)}`
     : null;
 
-  const shareTitle =
-    result.article_info.title?.trim() || '제목 미확인';
+  const shareTitle = truncateShareTitle(result.article_info.title ?? '') || '제목 미확인';
 
   const getShareUrl = () => {
     if (!sharePath) return null;
