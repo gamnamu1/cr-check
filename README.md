@@ -219,7 +219,8 @@ cr-check/
 │   └── lib/
 │       ├── api/                      # 백엔드 호출
 │       ├── constants/
-│       └── config.ts                 # API URL 등 설정
+│       ├── config.ts                 # API URL 등 설정
+│       └── shareTitle.ts             # SNS 공유용 기사 제목 축약
 ├── docs/                              # 설계 문서 + 데이터셋
 ├── supabase/migrations/               # DB 마이그레이션 (SSoT)
 └── scripts/                           # 벤치마크 + 임베딩 생성

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import { truncateShareTitle } from "@/lib/shareTitle";
+
 // 서버(Node.js) 환경에서 실행되므로 절대 URL이 필요하다.
 // 로컬: http://localhost:8000
 // 프로덕션: NEXT_PUBLIC_API_URL에서 주입 (예: https://cr-check-api.railway.app)
@@ -38,28 +40,31 @@ export async function generateMetadata({
     }
 
     const data = (await res.json()) as ReportApiResponse;
-    const title = data.article_info?.title || "분석 리포트";
+    // 브라우저 탭 제목은 원제목, SNS 카드 제목은 축약본을 쓴다.
+    const fullTitle = data.article_info?.title || "분석 리포트";
+    const shortTitle =
+      truncateShareTitle(data.article_info?.title ?? "") || "분석 리포트";
     const publisher = data.article_info?.publisher || "";
 
-    const ogTitle = `[CR-Check] ${title}`;
     const ogDescription = publisher
       ? `${publisher} 기사에 대한 시민 주도 저널리즘 품질 분석 리포트`
       : "시민 주도 뉴스 품질 분석 리포트";
 
     return {
-      title: ogTitle,
+      title: `[CR-Check] ${fullTitle}`,
       description: ogDescription,
       openGraph: {
-        title: ogTitle,
-        description: "시민 주도 뉴스 품질 분석 리포트",
+        title: shortTitle,
+        description: ogDescription,
         type: "article",
         url: `${SITE_URL}/report/${id}`,
+        siteName: "CR-Check",
         images: [`${SITE_URL}/og-image.png`],
       },
       twitter: {
         card: "summary",
-        title: ogTitle,
-        description: "시민 주도 뉴스 품질 분석 리포트",
+        title: shortTitle,
+        description: ogDescription,
       },
     };
   } catch (e) {
