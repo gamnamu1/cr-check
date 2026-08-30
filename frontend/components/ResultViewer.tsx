@@ -2,6 +2,7 @@ import { useState, useMemo, useCallback, ComponentType } from 'react';
 import dynamic from 'next/dynamic';
 import { ExternalLink, FileDown, ArrowLeft, Users, NotebookPen, BookOpenCheck, Newspaper, Link2 } from 'lucide-react';
 import { truncateShareTitle } from '../lib/shareTitle';
+import { SITE_URL } from '../lib/site';
 import type { AnalysisResult } from '../types';
 
 const TxtPreviewModal = dynamic(() => import('./TxtPreviewModal').then(mod => mod.TxtPreviewModal), {
@@ -234,7 +235,7 @@ export function ResultViewer({ result, onReset }: ResultViewerProps) {
   const getShareUrl = () => {
     if (!sharePath) return null;
 
-    return `${window.location.origin}${sharePath}`;
+    return `${SITE_URL}${sharePath}`;
   };
 
   const shareMessage =

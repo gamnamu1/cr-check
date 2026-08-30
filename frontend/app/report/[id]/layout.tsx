@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 
 import { truncateShareTitle } from "@/lib/shareTitle";
+import { SITE_URL } from "@/lib/site";
 
 // 서버(Node.js) 환경에서 실행되므로 절대 URL이 필요하다.
 // 로컬: http://localhost:8000
 // 프로덕션: NEXT_PUBLIC_API_URL에서 주입 (예: https://cr-check-api.railway.app)
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL || "https://cr-check.vercel.app";
 
 interface ReportArticleInfo {
   title?: string;
@@ -26,7 +25,11 @@ export async function generateMetadata({
   const { id } = await params;
 
   // 기본값 (fetch 실패·404 시 fallback)
-  const fallback: Metadata = { title: "CR-Check 리포트" };
+  const fallback: Metadata = {
+    title: "CR-Check 리포트",
+    alternates: { canonical: `/report/${id}` },
+    robots: { index: false, follow: true },
+  };
 
   try {
     // 백엔드가 Cache-Control: public, max-age=86400 을 보내지만
@@ -53,6 +56,8 @@ export async function generateMetadata({
     return {
       title: `[CR-Check] ${fullTitle}`,
       description: ogDescription,
+      alternates: { canonical: `/report/${id}` },
+      robots: { index: false, follow: true },
       openGraph: {
         title: shortTitle,
         description: ogDescription,
