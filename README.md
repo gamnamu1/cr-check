@@ -2,11 +2,10 @@
 
 **AI 기반 한국어 뉴스 기사 품질 분석 플랫폼**
 
-> CR-Project(시민 주도 언론개혁 이니셔티브)의 핵심 도구.
-> 시민이 뉴스 URL을 입력하면 저널리즘 윤리 기준에 근거한 분석 리포트를 생성합니다.
-> 119개 문제적 보도관행 패턴에서 출발해 정제된 세부 패턴과, 언론인이 실제로 서명한 14개 언론윤리규범 문서를 결합해 판단 근거로 삼습니다.
+> 시민이 뉴스 URL을 입력하면 언론윤리 규범에 근거한 분석 리포트를 생성합니다.
+> 119개 문제적 보도관행 패턴에서 출발해 정제된 세부 패턴과, 언론인들이 작성한 언론윤리규범 조항들을 결합해 판단 근거로 삼습니다.
 
-**프로덕션**: https://cr-check.vercel.app
+**프로덕션**: https://cr-check.kr
 
 ---
 
@@ -72,6 +71,12 @@ CR-Check의 RAG는 단순 벡터 검색만으로 구성되지 않습니다.
 | Embedding | OpenAI text-embedding-3-small (1536차원) |
 | Backend 배포 | Railway |
 | Frontend 배포 | Vercel |
+
+## 배포
+
+프론트엔드는 Vercel, 백엔드는 Railway에 배포되며, `main` 브랜치에 병합되면 각각 자동으로 재배포됩니다.
+
+**CORS 제약** — 브라우저가 백엔드 API를 직접 호출하는 구조이므로, 새 도메인을 연결할 때는 `backend/main.py`의 `allow_origins`에도 그 오리진을 등록해야 합니다. 누락하면 페이지는 열리지만 분석과 리포트 조회가 모두 CORS로 차단됩니다.
 
 ## 분석 파이프라인
 
@@ -153,9 +158,17 @@ Phase 2 모델에는 확정된 패턴에 연결된 윤리규범 원문만 제공
 ```bash
 cd backend
 pip install -r requirements.txt
-cp .env.example .env  # API 키 설정
-uvicorn main:app --reload --port 8080
+uvicorn main:app --reload --port 8000
 ```
+
+환경변수는 `backend/.env` 또는 저장소 루트의 `.env`에 설정합니다.
+
+| 변수 | 용도 |
+|---|---|
+| `ANTHROPIC_API_KEY` | Phase 1·2 모델 호출 |
+| `OPENAI_API_KEY` | 임베딩 생성 |
+| `SUPABASE_URL` | Supabase 프로젝트 URL |
+| `SUPABASE_SERVICE_ROLE_KEY` | DB 접근 |
 
 ### 프론트엔드
 
@@ -164,6 +177,14 @@ cd frontend
 npm install
 npm run dev  # http://localhost:3000
 ```
+
+| 변수 | 용도 |
+|---|---|
+| `NEXT_PUBLIC_API_URL` | 백엔드 API 주소 (기본 `http://localhost:8000`) |
+| `NEXT_PUBLIC_SITE_URL` | 사이트 절대 URL. 미설정 시 `lib/site.ts`의 기본값 사용 |
+| `NEXT_PUBLIC_ANALYSIS_TIMEOUT` | 분석 타임아웃 ms (기본 300000) |
+
+`NEXT_PUBLIC_*` 값은 빌드 시점에 번들로 치환됩니다. 배포 플랫폼 대시보드에서 값을 바꾼 뒤에는 재배포해야 반영되며, 대시보드에 값이 있으면 코드의 기본값보다 우선합니다.
 
 ## API 엔드포인트
 
@@ -211,8 +232,16 @@ cr-check/
 │       └── db.py                     # Supabase 연결 (로컬/클라우드 분기)
 ├── frontend/
 │   ├── app/
-│   │   ├── report/[id]/              # 공유 URL 페이지
-│   │   └── result/                   # 분석 결과 페이지
+│   │   ├── layout.tsx                # 루트 레이아웃 + 사이트 메타데이터
+│   │   ├── page.tsx                  # 기사 URL 입력 화면
+│   │   ├── robots.ts                 # robots.txt 생성
+│   │   ├── sitemap.ts                # sitemap.xml 생성 (홈만 포함)
+│   │   ├── report/[id]/
+│   │   │   ├── layout.tsx            # 공유 리포트 메타데이터 (canonical, noindex)
+│   │   │   └── page.tsx              # 공유 URL 페이지
+│   │   └── result/
+│   │       ├── layout.tsx            # 결과 화면 noindex 선언
+│   │       └── page.tsx              # 분석 결과 페이지
 │   ├── components/
 │   │   ├── ResultViewer.tsx          # 3종 탭 리포트 렌더러
 │   │   └── CachedBanner.tsx
@@ -220,7 +249,8 @@ cr-check/
 │       ├── api/                      # 백엔드 호출
 │       ├── constants/
 │       ├── config.ts                 # API URL 등 설정
-│       └── shareTitle.ts             # SNS 공유용 기사 제목 축약
+│       ├── shareTitle.ts             # SNS 공유용 기사 제목 축약
+│       └── site.ts                   # 사이트 URL 단일 진실 공급원
 ├── docs/                              # 설계 문서 + 데이터셋
 ├── supabase/migrations/               # DB 마이그레이션 (SSoT)
 └── scripts/                           # 벤치마크 + 임베딩 생성
@@ -248,6 +278,14 @@ cr-check/
 - **법적 판단이 아님**: 언론중재, 명예훼손, 차별, 개인정보 보호 등에 대한 법적 판단을 대신하지 않습니다.
 - **기사 밖 맥락의 한계**: 연속 보도, 지면 배치, 영상·사진 구성 등 URL 본문 밖의 편집 맥락은 충분히 반영되지 않을 수 있습니다.
 
+## 검색 색인 정책
+
+리포트 상세(`/report/{share_id}`)와 결과 화면(`/result`)은 메타데이터 `noindex`로 검색 색인에서 제외하며, `sitemap.xml`에는 홈만 포함합니다.
+
+`robots.txt`에서는 크롤링을 막지 않습니다. 크롤러가 각 페이지에 도달해야 그 `noindex`를 읽을 수 있기 때문입니다. `Disallow`는 크롤링 차단이지 색인 금지가 아니며, 크롤링만 막으면 검색엔진이 내용을 읽지 못한 채 URL만 색인할 수 있습니다.
+
+이 정책의 근거는 CR-Check가 만드는 리포트가 사람의 검수를 거치지 않은 초안이라는 점입니다. 검수를 통과한 결과를 공개하고 색인하는 역할은 자매 저장소 cr-report가 맡습니다. 접근을 통제하는 장치가 아니라, 검수 전 결과를 검색엔진에 적극 유통하지 않는다는 편집 정책입니다.
+
 ## 개발 방식 — 인간-AI 협업 구조
 
 이 프로젝트는 처음부터 끝까지 **한 명의 기획자와 여러 AI 도구의 협업**으로 구축됐습니다.
@@ -271,8 +309,8 @@ GNU Affero General Public License v3.0 (AGPL-3.0).
 
 ## 문의
 
-GitHub Issues 또는 gamnamu2915@gmail.com
+GitHub Issues 또는 cr@cr-project.org
 
 ---
 
-**CR-Check** — 더 나은 언론을 위한 시민 주도 언론윤리 분석 도구
+**CR-Check** — 신뢰 받는 언론을 위한 시민 주도 언론윤리 분석 도구
