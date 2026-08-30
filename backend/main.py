@@ -45,6 +45,8 @@ app.add_middleware(
         "https://cr-check.com",   # 프로덕션 (예시)
         "https://cr-check.vercel.app", # Vercel 배포
         "https://www.cr-check.vercel.app",
+        "https://cr-check.kr",  # 정식 도메인
+        "https://www.cr-check.kr",  # www 예비 (미사용 확정 시에도 무해)
     ],
     allow_credentials=True,
     allow_methods=["*"],
