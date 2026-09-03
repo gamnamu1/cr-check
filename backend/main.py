@@ -18,6 +18,8 @@ from typing import Dict, Any, Optional
 import os
 
 from scraper import ArticleScraper
+# [PR1] 기사 추출 전용 엔드포인트 (POST /extract) — 분석 파이프라인과 완전히 분리
+from extract_api import router as extract_router
 # [M6] analyzer → pipeline 교체. analyzer.py 파일 자체는 보존 (참조용)
 from core.pipeline import analyze_article as run_pipeline, AnalysisResult
 # [Phase D] 분석 결과 아카이빙 + 캐시 조회 + 공유 링크
@@ -55,6 +57,9 @@ app.add_middleware(
 
 # 전역 인스턴스 생성
 scraper = ArticleScraper()
+
+# [PR1] POST /extract 등록. 기존 /analyze 경로에는 영향을 주지 않는다.
+app.include_router(extract_router)
 
 
 # 요청/응답 모델
