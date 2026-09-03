@@ -56,142 +56,162 @@ class ArticleScraper:
             response = requests.get(url, headers=self.headers, timeout=10)
             response.raise_for_status()
             
-            # 인코딩 처리
-            if any(domain in url for domain in ['news.nate.com', 'kmib.co.kr']):
-                response.encoding = 'euc-kr'
-            elif any(domain in url for domain in ['seoul.co.kr', 'hankookilbo.com', 'munhwa.com', 'segye.com', 'khan.co.kr', 'naeil.com', 'asiatoday.co.kr', 'edaily.co.kr', 'ekn.kr', 'asiae.co.kr', 'sedaily.com', 'viva100.com', 'mk.co.kr', 'dnews.co.kr', 'biz.heraldcorp.com', 'fnnews.com', 'etoday.co.kr']):
-                response.encoding = 'utf-8'
-            elif response.encoding == 'ISO-8859-1':
-                # 헤더에 charset이 없어서 기본값(ISO-8859-1)으로 설정된 경우, 내용 기반 추측 사용
-                response.encoding = response.apparent_encoding
-
-            # HTML 파싱
-            soup = BeautifulSoup(response.text, 'html.parser')
-
-            # 네이버 뉴스 감지
-            if 'news.naver.com' in url:
-                return self._scrape_naver(soup, url)
-            # 다음 뉴스 감지
-            elif 'news.daum.net' in url or 'v.daum.net' in url:
-                return self._scrape_daum(soup, url)
-            # 네이트 뉴스 감지
-            elif 'news.nate.com' in url:
-                return self._scrape_nate(soup, url)
-            # 줌 뉴스 감지
-            elif 'news.zum.com' in url:
-                return self._scrape_zum(soup, url)
-            # 통신사 직접 URL
-            elif 'yna.co.kr' in url:
-                return self._scrape_yonhap(soup, url)
-            elif 'newsis.com' in url:
-                return self._scrape_newsis(soup, url)
-            elif 'news1.kr' in url:
-                return self._scrape_news1(soup, url)
-            elif 'newspim.com' in url:
-                return self._scrape_newspim(soup, url)
-            # 중앙일간지 직접 URL
-            elif 'khan.co.kr' in url:
-                return self._scrape_khan(soup, url)
-            elif 'kmib.co.kr' in url:
-                return self._scrape_kmib(soup, url)
-            elif 'naeil.com' in url:
-                return self._scrape_naeil(soup, url)
-            elif 'donga.com' in url:
-                return self._scrape_donga(soup, url)
-            elif 'munhwa.com' in url:
-                return self._scrape_munhwa(soup, url)
-            elif 'seoul.co.kr' in url:
-                return self._scrape_seoul(soup, url)
-            elif 'segye.com' in url:
-                return self._scrape_segye(soup, url)
-            elif 'asiatoday.co.kr' in url:
-                return self._scrape_asiatoday(soup, url)
-            elif 'chosun.com' in url:
-                return self._scrape_chosun(soup, url)
-            elif 'joongang.co.kr' in url:
-                return self._scrape_joongang(soup, url)
-            elif 'hani.co.kr' in url:
-                return self._scrape_hani(soup, url)
-            elif 'hankookilbo.com' in url:
-                return self._scrape_hankook(soup, url)
-            # 경제지
-            elif 'edaily.co.kr' in url:
-                return self._scrape_edaily(soup, url)
-            elif 'ekn.kr' in url:
-                return self._scrape_ekn(soup, url)
-            elif 'asiae.co.kr' in url:
-                return self._scrape_asiae(soup, url)
-            elif 'sedaily.com' in url:
-                return self._scrape_sedaily(soup, url)
-            elif 'viva100.com' in url:
-                return self._scrape_viva100(soup, url)
-            elif 'mk.co.kr' in url:
-                return self._scrape_mk(soup, url)
-            elif 'hankyung.com' in url:
-                return self._scrape_hankyung(soup, url)
-            elif 'dnews.co.kr' in url:
-                return self._scrape_dnews(soup, url)
-            elif 'biz.heraldcorp.com' in url:
-                return self._scrape_herald(soup, url)
-            elif 'fnnews.com' in url:
-                return self._scrape_fnnews(soup, url)
-            elif 'etoday.co.kr' in url:
-                return self._scrape_etoday(soup, url)
-            # 전문지
-            elif 'dt.co.kr' in url:
-                return self._scrape_dt(soup, url)
-            elif 'mediatoday.co.kr' in url:
-                return self._scrape_mediatoday(soup, url)
-            elif 'mediaus.co.kr' in url:
-                return self._scrape_mediaus(soup, url)
-            elif 'journalist.or.kr' in url:
-                return self._scrape_journalist_kr(soup, url)
-            # 인터넷신문
-            elif 'pennmike.com' in url:
-                return self._scrape_pennmike(soup, url)
-            elif 'pressian.com' in url:
-                return self._scrape_pressian(soup, url)
-            elif 'mindlenews.com' in url:
-                return self._scrape_mindle(soup, url)
-            elif 'ohmynews.com' in url:
-                return self._scrape_ohmynews(soup, url)
-            elif 'dailian.co.kr' in url:
-                return self._scrape_dailian(soup, url)
-            
-            # 지역일반 (NDSoft 기반)
-            elif any(x in url for x in ['kado.net', 'jbnews.com', 'ccdailynews.com', 'hidomin.com', 'idomin.com', 'kihoilbo.co.kr', 'incheonilbo.com', 'kyongbuk.co.kr', 'daejonilbo.com', 'idaegu.com', 'jnilbo.com', 'jejudomin.co.kr']):
-                publisher_map = {
-                    'kado.net': '강원도민일보', 'jbnews.com': '중부매일', 'ccdailynews.com': '충청일보',
-                    'hidomin.com': '경북도민일보', 'idomin.com': '경남도민일보', 'kihoilbo.co.kr': '기호일보',
-                    'incheonilbo.com': '인천일보', 'kyongbuk.co.kr': '경북일보', 'daejonilbo.com': '대전일보',
-                    'idaegu.com': '대구일보', 'jnilbo.com': '전남일보', 'jejudomin.co.kr': '제주도민일보'
-                }
-                publisher = next((v for k, v in publisher_map.items() if k in url), "지역언론")
-                return self._scrape_ndsoft_generic(soup, url, publisher)
-
-            # 지역일반 (개별 구현)
-            elif 'imaeil.com' in url:
-                return self._scrape_imaeil(soup, url)
-            elif 'yeongnam.com' in url:
-                return self._scrape_yeongnam(soup, url)
-            elif 'kgnews.co.kr' in url:
-                return self._scrape_kgnews(soup, url)
-            elif 'kyeonggi.com' in url:
-                return self._scrape_kyeonggi(soup, url)
-            elif 'busan.com' in url:
-                return self._scrape_busan(soup, url)
-            elif 'kookje.co.kr' in url:
-                return self._scrape_kookje(soup, url)
-            elif 'kwnews.co.kr' in url:
-                return self._scrape_kwnews(soup, url)
-            # 일반 뉴스 사이트
-            else:
-                return self._scrape_generic(soup, url)
+            # [PR1] fetch 이후 단계(인코딩 판별 → soup → 매체별 분기)를 _parse_response로 분리.
+            #       parse_url·original_url에 모두 입력 url을 넘겨 기존 동작을 그대로 보존한다.
+            return self._parse_response(response, parse_url=url, original_url=url)
 
         except requests.RequestException as e:
             raise ValueError(f"기사를 가져올 수 없습니다: {str(e)}")
         except Exception as e:
             raise ValueError(f"기사 파싱 중 오류 발생: {str(e)}")
+
+    def _parse_response(self, response, parse_url: str, original_url: str) -> Dict[str, str]:
+        """fetch를 마친 응답을 기사 dict로 변환한다 (scrape()에서 분리한 단계).
+
+        Args:
+            response: 이미 받아 둔 응답 객체. 기존 인코딩 로직이 그대로 동작하도록
+                `encoding`·`apparent_encoding`·`text`를 제공해야 한다.
+            parse_url: 인코딩·매체별 파서 분기의 기준 URL.
+                scrape()는 입력 URL을, /extract는 검증된 리디렉션 최종 URL을 넘긴다.
+            original_url: 반환 dict의 "url" 값으로 쓸 원 요청 URL.
+        """
+        # 인코딩 처리
+        if any(domain in parse_url for domain in ['news.nate.com', 'kmib.co.kr']):
+            response.encoding = 'euc-kr'
+        elif any(domain in parse_url for domain in ['seoul.co.kr', 'hankookilbo.com', 'munhwa.com', 'segye.com', 'khan.co.kr', 'naeil.com', 'asiatoday.co.kr', 'edaily.co.kr', 'ekn.kr', 'asiae.co.kr', 'sedaily.com', 'viva100.com', 'mk.co.kr', 'dnews.co.kr', 'biz.heraldcorp.com', 'fnnews.com', 'etoday.co.kr']):
+            response.encoding = 'utf-8'
+        elif response.encoding == 'ISO-8859-1':
+            # 헤더에 charset이 없어서 기본값(ISO-8859-1)으로 설정된 경우, 내용 기반 추측 사용
+            response.encoding = response.apparent_encoding
+
+        # HTML 파싱
+        soup = BeautifulSoup(response.text, 'html.parser')
+
+        article = self._dispatch_parser(soup, parse_url)
+        article["url"] = original_url
+        return article
+
+    def _dispatch_parser(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
+        """URL 도메인에 따라 매체별 파서를 고른다 (scrape()에서 그대로 옮긴 분기)."""
+        # 네이버 뉴스 감지
+        if 'news.naver.com' in url:
+            return self._scrape_naver(soup, url)
+        # 다음 뉴스 감지
+        elif 'news.daum.net' in url or 'v.daum.net' in url:
+            return self._scrape_daum(soup, url)
+        # 네이트 뉴스 감지
+        elif 'news.nate.com' in url:
+            return self._scrape_nate(soup, url)
+        # 줌 뉴스 감지
+        elif 'news.zum.com' in url:
+            return self._scrape_zum(soup, url)
+        # 통신사 직접 URL
+        elif 'yna.co.kr' in url:
+            return self._scrape_yonhap(soup, url)
+        elif 'newsis.com' in url:
+            return self._scrape_newsis(soup, url)
+        elif 'news1.kr' in url:
+            return self._scrape_news1(soup, url)
+        elif 'newspim.com' in url:
+            return self._scrape_newspim(soup, url)
+        # 중앙일간지 직접 URL
+        elif 'khan.co.kr' in url:
+            return self._scrape_khan(soup, url)
+        elif 'kmib.co.kr' in url:
+            return self._scrape_kmib(soup, url)
+        elif 'naeil.com' in url:
+            return self._scrape_naeil(soup, url)
+        elif 'donga.com' in url:
+            return self._scrape_donga(soup, url)
+        elif 'munhwa.com' in url:
+            return self._scrape_munhwa(soup, url)
+        elif 'seoul.co.kr' in url:
+            return self._scrape_seoul(soup, url)
+        elif 'segye.com' in url:
+            return self._scrape_segye(soup, url)
+        elif 'asiatoday.co.kr' in url:
+            return self._scrape_asiatoday(soup, url)
+        elif 'chosun.com' in url:
+            return self._scrape_chosun(soup, url)
+        elif 'joongang.co.kr' in url:
+            return self._scrape_joongang(soup, url)
+        elif 'hani.co.kr' in url:
+            return self._scrape_hani(soup, url)
+        elif 'hankookilbo.com' in url:
+            return self._scrape_hankook(soup, url)
+        # 경제지
+        elif 'edaily.co.kr' in url:
+            return self._scrape_edaily(soup, url)
+        elif 'ekn.kr' in url:
+            return self._scrape_ekn(soup, url)
+        elif 'asiae.co.kr' in url:
+            return self._scrape_asiae(soup, url)
+        elif 'sedaily.com' in url:
+            return self._scrape_sedaily(soup, url)
+        elif 'viva100.com' in url:
+            return self._scrape_viva100(soup, url)
+        elif 'mk.co.kr' in url:
+            return self._scrape_mk(soup, url)
+        elif 'hankyung.com' in url:
+            return self._scrape_hankyung(soup, url)
+        elif 'dnews.co.kr' in url:
+            return self._scrape_dnews(soup, url)
+        elif 'biz.heraldcorp.com' in url:
+            return self._scrape_herald(soup, url)
+        elif 'fnnews.com' in url:
+            return self._scrape_fnnews(soup, url)
+        elif 'etoday.co.kr' in url:
+            return self._scrape_etoday(soup, url)
+        # 전문지
+        elif 'dt.co.kr' in url:
+            return self._scrape_dt(soup, url)
+        elif 'mediatoday.co.kr' in url:
+            return self._scrape_mediatoday(soup, url)
+        elif 'mediaus.co.kr' in url:
+            return self._scrape_mediaus(soup, url)
+        elif 'journalist.or.kr' in url:
+            return self._scrape_journalist_kr(soup, url)
+        # 인터넷신문
+        elif 'pennmike.com' in url:
+            return self._scrape_pennmike(soup, url)
+        elif 'pressian.com' in url:
+            return self._scrape_pressian(soup, url)
+        elif 'mindlenews.com' in url:
+            return self._scrape_mindle(soup, url)
+        elif 'ohmynews.com' in url:
+            return self._scrape_ohmynews(soup, url)
+        elif 'dailian.co.kr' in url:
+            return self._scrape_dailian(soup, url)
+
+        # 지역일반 (NDSoft 기반)
+        elif any(x in url for x in ['kado.net', 'jbnews.com', 'ccdailynews.com', 'hidomin.com', 'idomin.com', 'kihoilbo.co.kr', 'incheonilbo.com', 'kyongbuk.co.kr', 'daejonilbo.com', 'idaegu.com', 'jnilbo.com', 'jejudomin.co.kr']):
+            publisher_map = {
+                'kado.net': '강원도민일보', 'jbnews.com': '중부매일', 'ccdailynews.com': '충청일보',
+                'hidomin.com': '경북도민일보', 'idomin.com': '경남도민일보', 'kihoilbo.co.kr': '기호일보',
+                'incheonilbo.com': '인천일보', 'kyongbuk.co.kr': '경북일보', 'daejonilbo.com': '대전일보',
+                'idaegu.com': '대구일보', 'jnilbo.com': '전남일보', 'jejudomin.co.kr': '제주도민일보'
+            }
+            publisher = next((v for k, v in publisher_map.items() if k in url), "지역언론")
+            return self._scrape_ndsoft_generic(soup, url, publisher)
+
+        # 지역일반 (개별 구현)
+        elif 'imaeil.com' in url:
+            return self._scrape_imaeil(soup, url)
+        elif 'yeongnam.com' in url:
+            return self._scrape_yeongnam(soup, url)
+        elif 'kgnews.co.kr' in url:
+            return self._scrape_kgnews(soup, url)
+        elif 'kyeonggi.com' in url:
+            return self._scrape_kyeonggi(soup, url)
+        elif 'busan.com' in url:
+            return self._scrape_busan(soup, url)
+        elif 'kookje.co.kr' in url:
+            return self._scrape_kookje(soup, url)
+        elif 'kwnews.co.kr' in url:
+            return self._scrape_kwnews(soup, url)
+        # 일반 뉴스 사이트
+        else:
+            return self._scrape_generic(soup, url)
 
     def _scrape_naver(self, soup: BeautifulSoup, url: str) -> Dict[str, str]:
         """네이버 뉴스 스크래핑"""
