@@ -60,8 +60,8 @@ _ERROR_STATUS = {
 # ArticleScraper._dispatch_parser의 분기 도메인에서 뽑아낸 목록이므로,
 # 스크레이퍼에 매체를 추가·삭제할 때 이 표도 함께 손봐야 한다
 # (어긋나도 source_kind 라벨만 달라질 뿐 추출 결과에는 영향이 없다).
-_PORTAL_DOMAINS = ("news.naver.com", "news.daum.net", "v.daum.net", "news.nate.com",
-                   "news.zum.com")
+_PORTAL_DOMAINS = ("news.naver.com", "entertain.naver.com", "news.daum.net", "v.daum.net",
+                   "news.nate.com", "news.zum.com")
 _OUTLET_DOMAINS = (
     "yna.co.kr", "newsis.com", "news1.kr",
     "newspim.com", "khan.co.kr", "kmib.co.kr", "naeil.com",
@@ -77,6 +77,7 @@ _OUTLET_DOMAINS = (
     "kyongbuk.co.kr", "daejonilbo.com", "idaegu.com", "jnilbo.com",
     "jejudomin.co.kr", "imaeil.com", "yeongnam.com", "kgnews.co.kr",
     "kyeonggi.com", "busan.com", "kookje.co.kr", "kwnews.co.kr",
+    "metroseoul.co.kr", "mediapen.com",
 )
 
 _SCHEME_RE = re.compile(r"^[a-zA-Z][a-zA-Z0-9+.\-]*://")
