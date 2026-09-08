@@ -416,15 +416,46 @@ class ArticleScraper:
         if not content:
             raise ValueError("네이트 뉴스 본문을 찾을 수 없습니다.")
 
-        # 기자: 본문 마지막 줄이 통째로 바이라인인 경우만 읽는다.
-        # 본문 전체를 훑어 'OOO 기자'를 줍지 않는다(사진기자 오인 경로).
+        # 기자: 머리 dateline 과 후미 바이라인을 '둘 다' 찾아 대조한다.
+        # 본문 전체를 훑어 'OOO 기자'를 줍지 않는다(사진기자 오인 경로) — 검사 범위는
+        # 첫 2개 논리 줄과, 비기사성 후미 줄만 건너뛰는 역방향 탐색으로 한정한다.
+        lines = content.rstrip().split("\n")
+        head_names = self._nate_head_byline_names(lines, publisher)
+        tail_index, tail_names = self._nate_tail_byline(lines, publisher)
+
+        head_journalist = self._normalize_journalist(head_names, publisher)
+        tail_journalist = self._normalize_journalist(tail_names, publisher)
+
         journalist = "미확인"
-        last_line = content.rstrip().split("\n")[-1].strip()
-        if len(last_line) <= 60:
-            match = self._BYLINE_LINE_RE.match(last_line)
-            if match:
-                journalist = self._normalize_journalist(
-                    re.split(r'\s*[·,]\s*', match.group(1)), publisher)
+        remove_index = None
+        if head_journalist != "미확인" and tail_journalist != "미확인":
+            if head_journalist == tail_journalist:
+                journalist = tail_journalist
+                remove_index = tail_index
+            # 두 경로가 다른 이름을 주면 자동으로 고르지 않는다. 어느 쪽이 취재기자인지
+            # 가릴 근거가 없고, 잘못 고른 이름은 시민이 검증할 수단이 없기 때문이다.
+            # 이때는 본문도 그대로 둔다.
+        elif tail_journalist != "미확인":
+            journalist = tail_journalist
+            remove_index = tail_index
+        elif head_journalist != "미확인":
+            journalist = head_journalist
+
+        # 후미 바이라인으로 추출에 성공한 경우에만, 줄 인덱스로 지목해 정확히 그 줄만
+        # 뺀다(부분 문자열 치환으로 번지지 않게 한다). 남는 빈 줄은 _clean_text 가 정리한다.
+        #
+        # 머리 dateline 은 제거하지 않는다 — 기사 출처를 보여주는 검증 대상 정보이고,
+        # "리포트가 인용한 문장이 원문에 그대로 있어야 한다"는 CR 검수 구조와 충돌한다.
+        # 추출에 실패했을 때도 본문을 건드리지 않는다 — 시민이 기자명을 수동으로 채울
+        # 근거를 본문에 남겨 두어야 한다.
+        # 단, 그 줄을 빼서 본문이 길이 게이트 미만이 되면 제거를 취소한다.
+        # 기자명은 그대로 두되 본문은 살린다 — 짧은 기사에서 기자명을 얻는 대가로
+        # 기사 전체가 ARTICLE_NOT_FOUND 로 거부되면 남는 것이 없기 때문이다.
+        if remove_index is not None:
+            trimmed = self._clean_text("\n".join(
+                line for i, line in enumerate(lines) if i != remove_index))
+            if len(trimmed.strip()) >= self._NATE_MIN_CONTENT_AFTER_REMOVAL:
+                content = trimmed
 
         return {
             "title": title,
@@ -2430,3 +2461,205 @@ class ArticleScraper:
                 return True
             node = node.parent
         return False
+
+    # ========================================================================
+    # 네이트 전용 바이라인 규칙
+    #
+    # 아래 상수·helper 는 바로 위 _BYLINE_LINE_RE 와 _byline_line_names() 의
+    # **네이트 확장판**이다. 원본은 여러 매체 파서가 공유하는 전역 공통 로직이라
+    # 그대로 두고, 네이트에서만 실측된 프리픽스·후미 구조를 여기서 따로 받는다.
+    # 원본을 고칠 일이 생기면 이 블록도 함께 검토해야 한다.
+    # ========================================================================
+
+    _NATE_BYLINE_LINE_MAX = 60   # _byline_line_names 와 같은 상한
+    _NATE_PREFIX_MAX = 20        # 실측 최대 18자: '아주경제=생폴드방스(프랑스)='
+    _NATE_TAIL_SKIP_MAX = 25     # 실측 최대 15줄. 본문 안쪽으로 무한정 올라가지 않는다
+
+    _NATE_MIN_CONTENT_AFTER_REMOVAL = 100
+    # extract_api.MIN_CONTENT_CHARS 와 같은 기준이다. 그 값이 바뀌면 함께 검토한다.
+    # (상수를 import 하지 않는다 — 스크레이퍼가 API 레이어에 의존할 이유가 없다.)
+    # 바이라인 줄을 빼서 이 길이 미만이 되면 제거를 취소한다 — 기자명을 얻으려다
+    # 기사 자체가 ARTICLE_NOT_FOUND 로 거부되는 것을 막기 위해서다.
+
+    _NATE_EMAIL = r'[\w.+-]+@[\w.-]+'
+    _NATE_TITLE = r'(?:기자|에디터|특파원)'
+    # 이름 표기는 원본 _BYLINE_LINE_RE 와 같게 둔다(가운뎃점·쉼표만).
+    _NATE_NAMES = r'[가-힣]{2,4}(?:\s*[·,]\s*[가-힣]{2,4})*'
+
+    # 실측 프리픽스: '포항=' · '생폴드방스=' · '부산/' · '아주경제=생폴드방스(프랑스)='
+    # 와일드카드로 뭉뚱그리지 않고 세그먼트+구분자 구조로만 표현한다.
+    _NATE_PREFIX_SEGMENT = r'[가-힣A-Za-z]{2,10}(?:\([가-힣A-Za-z]{2,8}\))?'
+    _NATE_BYLINE_SEP_RE = re.compile(
+        r'^(?P<prefix>(?:' + _NATE_PREFIX_SEGMENT + r'\s*[=/]\s*){1,2})?'
+        r'(?P<names>' + _NATE_NAMES + r')\s*' + _NATE_TITLE + r'\b')
+    # 실측 '데일리안 이정희 기자' — 구분자가 없어 앞 토큰이 매체명인지 이름인지
+    # 문법만으로는 가릴 수 없다. publisher 와 정확히 일치할 때만 프리픽스로 인정한다.
+    _NATE_BYLINE_MEDIA_RE = re.compile(
+        r'^(?P<media>[가-힣]{2,6})\s+(?P<names>' + _NATE_NAMES + r')\s*' + _NATE_TITLE + r'\b')
+
+    # 이름·직함 뒤에 남는 것은 '빈 값 / email / (email)' 셋뿐이다.
+    # _byline_line_names 의 tail 검증과 같은 목적이며, 실측된 (email) 형만 더 받는다.
+    # 문자 클래스를 넓히는 대신 허용 형태를 명시적으로 나열한다.
+    _NATE_BYLINE_TAIL_RE = re.compile(
+        r'^(?:' + _NATE_EMAIL + r'|\(' + _NATE_EMAIL + r'\))$')
+
+    # --- 머리 dateline -----------------------------------------------------
+    # '[' 또는 '(' 로 시작하는 구조화된 형태만 받는다. 첫 줄이라도 그 형태가
+    # 아니면 읽지 않는다. '인턴' 은 직함 수식어라 이름 후보로 넘기지 않는다
+    # (이번 표본에서 확인된 수식어만 처리한다).
+    _NATE_HEAD_NAME = r'(?!인턴)[가-힣]{2,4}'
+    _NATE_HEAD_NAMES = _NATE_HEAD_NAME + r'(?:\s+' + _NATE_HEAD_NAME + r')*'
+    _NATE_HEAD_MEDIA = r'[가-힣A-Za-z]{2,10}'
+    _NATE_HEAD_REGION = r'[가-힣A-Za-z]{1,12}'
+    _NATE_HEAD_TITLE = r'\s*(?:인턴\s*)?' + _NATE_TITLE
+
+    # H1  '[서울=뉴시스] 김종민 기자 =' · '(서울=연합뉴스) 김지헌 민선희 김철선 기자 ='
+    #     괄호 안이 '지역=매체' 구조이고 그 매체가 publisher 와 일치할 때만 인정한다.
+    #     임의의 '[제목/라벨] 이름 기자' 형태로 넓히지 않는다.
+    _NATE_HEAD_H1_BRACKET_RE = re.compile(
+        r'^\[\s*' + _NATE_HEAD_REGION + r'\s*=\s*(?P<media>' + _NATE_HEAD_MEDIA + r')\s*\]\s*'
+        r'(?P<names>' + _NATE_HEAD_NAMES + r')' + _NATE_HEAD_TITLE + r'\s*=')
+    _NATE_HEAD_H1_PAREN_RE = re.compile(
+        r'^\(\s*' + _NATE_HEAD_REGION + r'\s*=\s*(?P<media>' + _NATE_HEAD_MEDIA + r')\s*\)\s*'
+        r'(?P<names>' + _NATE_HEAD_NAMES + r')' + _NATE_HEAD_TITLE + r'\s*=')
+    # H2  '[헤럴드경제=나은정 기자]' — '=' 왼쪽 매체 토큰이 publisher 와 일치할 때만.
+    _NATE_HEAD_H2_RE = re.compile(
+        r'^\[\s*(?P<media>' + _NATE_HEAD_MEDIA + r')\s*=\s*'
+        r'(?P<names>' + _NATE_HEAD_NAMES + r')' + _NATE_HEAD_TITLE + r'\s*\]')
+    # H3  '[스포츠동아 이정연 기자]' · '[스타뉴스 | 박소영 기자]'
+    #     첫 토큰이 publisher 와 일치할 때만 읽는다. 매체와 이름 사이의 구분자는
+    #     실측된 두 형태(공백 1개 이상 / 파이프)만 받는다 — publisher 비교가 나중에
+    #     바뀌더라도 '[매체이름기자]' 같은 무구분자 형태가 새어 들어오지 않게 한다.
+    _NATE_HEAD_H3_SEP = r'(?:\s+|\s*\|\s*)'
+    _NATE_HEAD_H3_RE = re.compile(
+        r'^\[\s*(?P<media>' + _NATE_HEAD_MEDIA + r')' + _NATE_HEAD_H3_SEP +
+        r'(?P<names>' + _NATE_HEAD_NAMES + r')' + _NATE_HEAD_TITLE + r'\s*\]')
+    # '[mdtoday = 최민석 기자]' 류 영문 매체키는 넣지 않는다 — publisher 와 대조할 수
+    # 없어 1건을 위해 매체 특수 분기를 두게 된다.
+    _NATE_HEAD_PATTERNS = (_NATE_HEAD_H1_BRACKET_RE, _NATE_HEAD_H1_PAREN_RE,
+                           _NATE_HEAD_H2_RE, _NATE_HEAD_H3_RE)
+
+    # --- 후미 건너뛰기 규칙 S1~S6 ------------------------------------------
+    # **규칙 추가는 실측 확인 후에만 한다.** 아래 기호·키워드·구조는 전부 네이트
+    # 최신뉴스 25건 스냅샷에서 실제로 관측한 것이다. "있을 법하다"는 이유로
+    # 기호나 키워드를 넓히지 않는다.
+    _NATE_TAIL_COPYRIGHT_RE = re.compile(r'ⓒ|©|[Cc]opyright|저작권자')          # S1
+    # S2 — 실측 4종('▶' '▶ /' '☞' '·')의 구조만 표현한다. 문자 클래스 조합식을 쓰면
+    #      '/' 단독·'////'·'▶☞' 처럼 관측되지 않은 조합까지 생성적으로 허용된다.
+    _NATE_TAIL_MARKER_RE = re.compile(r'^(?:▶(?:\s*/)?|☞|·)$')
+    # S3·S4 — 대괄호에서 본 키워드와 독립 줄에서 본 키워드를 나눠 둔다.
+    #         한쪽에서만 관측된 키워드가 다른 쪽으로 자동 확장되지 않게 하려는 것이며,
+    #         이 구성 자체가 "어디서 실측됐는가"의 기록이다.
+    _NATE_TAIL_SECTION_COMMON = r'관련기사'                    # 양쪽에서 관측
+    _NATE_TAIL_SECTION_BRACKET_ONLY = r'주요\s*뉴스|다른기사|인기기사'  # 대괄호에서만 관측
+    _NATE_TAIL_SECTION_LINE_ONLY = r'많이\s*본'                # 독립 줄에서만 관측
+    _NATE_TAIL_SECTION_BRACKET_RE = re.compile(                                 # S3
+        r'^\[[^\]]*(?:' + _NATE_TAIL_SECTION_COMMON + r'|'
+        + _NATE_TAIL_SECTION_BRACKET_ONLY + r')[^\]]*\]$')
+    _NATE_TAIL_SECTION_RE = re.compile(                                         # S4
+        _NATE_TAIL_SECTION_COMMON + r'|' + _NATE_TAIL_SECTION_LINE_ONLY)
+    _NATE_TAIL_CONTACT_RE = re.compile(r'제보|카카오톡|\[전화\]|\[메일\]|채널\s*추가')  # S5
+    # S6 — 직함 없는 '이름 (이메일)' 줄. 이 줄에서 기자명을 읽지는 않는다(건너뛰기 전용).
+    #      공동 이름을 '.' 로 잇는 표기가 이 줄에서만 관측돼 여기서만 '.' 을 더 받는다.
+    #      기자명 추출용 _NATE_NAMES 는 넓히지 않는다.
+    _NATE_TAIL_NAME_EMAIL_RE = re.compile(
+        r'^(?:[A-Z]{2,4}\s+)?[가-힣]{2,4}(?:\s*[·,.]\s*[가-힣]{2,4})*\s*\(?'
+        + _NATE_EMAIL + r'\)?$')
+
+    def _nate_same_publisher(self, token: Optional[str], publisher: Optional[str]) -> bool:
+        """매체 토큰이 publisher 와 같은가.
+
+        데일리안형 프리픽스와 머리 dateline H1·H2·H3 네 곳이 이 helper 하나를 쓴다.
+        네 곳이 같은 정규화 규칙을 쓰게 하려는 것이다.
+        """
+        if not token or not publisher or publisher == "미확인":
+            return False
+        return self._clean_inline(token) == self._clean_inline(publisher)
+
+    def _nate_byline_tail_ok(self, text: str, end: int) -> bool:
+        """이름·직함 뒤에 남는 것이 '빈 값 / email / (email)' 인지."""
+        tail = text[end:].strip()
+        return not tail or bool(self._NATE_BYLINE_TAIL_RE.match(tail))
+
+    def _nate_byline_names(self, line: str, publisher: Optional[str]) -> List[str]:
+        """줄 전체가 바이라인이면 이름 후보 리스트를 돌려준다."""
+        if not line or len(line) > self._NATE_BYLINE_LINE_MAX:
+            return []
+
+        match = self._NATE_BYLINE_SEP_RE.match(line)
+        if match:
+            prefix = match.group('prefix') or ''
+            # 프리픽스 길이 상한은 정규식에 맡기지 않고 여기서 명시적으로 검사한다.
+            if (len(prefix) <= self._NATE_PREFIX_MAX
+                    and self._nate_byline_tail_ok(line, match.end())):
+                return re.split(r'\s*[·,]\s*', match.group('names'))
+
+        match = self._NATE_BYLINE_MEDIA_RE.match(line)
+        if (match and self._nate_same_publisher(match.group('media'), publisher)
+                and self._nate_byline_tail_ok(line, match.end())):
+            return re.split(r'\s*[·,]\s*', match.group('names'))
+
+        return []
+
+    def _nate_skippable_tail(self, line: str) -> bool:
+        """후미의 비기사성 줄인가. 본문 문장은 아래 어느 규칙에도 걸리지 않는다."""
+        if len(line) <= 120 and self._NATE_TAIL_COPYRIGHT_RE.search(line):
+            return True                                          # S1 저작권
+        if len(line) <= 8 and self._NATE_TAIL_MARKER_RE.match(line):
+            return True                                          # S2 표지 문자 전용 줄
+        if self._NATE_TAIL_SECTION_BRACKET_RE.match(line):
+            return True                                          # S3 '[관련기사]' 류
+        if len(line) <= 20 and self._NATE_TAIL_SECTION_RE.search(line):
+            return True                                          # S4 '이 시각 많이 본 뉴스' 류
+        if len(line) <= 60 and self._NATE_TAIL_CONTACT_RE.search(line):
+            return True                                          # S5 제보·연락처
+        if '기자' not in line and self._NATE_TAIL_NAME_EMAIL_RE.match(line):
+            return True                                          # S6 직함 없는 '이름 (이메일)'
+        return False
+
+    def _nate_tail_byline(self, lines: List[str], publisher: Optional[str]):
+        """후미에서 역방향으로 바이라인 줄을 찾는다.
+
+        content[-1] 한 줄만 보던 방식을 넓힌 것이다. 고정 N줄 확대는 쓰지 않는다 —
+        실측에서 바이라인이 뒤에서 19번째에 있는 기사가 있어 원리적으로 닿지 않는다.
+        비기사성 후미 줄만 건너뛰고, 건너뛸 수 없는 실질 텍스트를 만나면 즉시 멈춘다.
+
+        반환: (줄 인덱스, 이름 리스트). 못 찾으면 (None, []).
+        """
+        skipped = 0
+        for index in range(len(lines) - 1, -1, -1):
+            line = lines[index].strip()
+            if not line:
+                continue                     # 빈 줄은 탐색 중단 요소가 아니라 무시한다
+            names = self._nate_byline_names(line, publisher)
+            if names:
+                return index, names
+            if not self._nate_skippable_tail(line):
+                break                        # 본문 문장으로 보이는 줄 — 더 올라가지 않는다
+            skipped += 1
+            if skipped >= self._NATE_TAIL_SKIP_MAX:
+                break
+        return None, []
+
+    def _nate_head_byline_names(self, lines: List[str], publisher: Optional[str]) -> List[str]:
+        """본문 첫 2개(비어 있지 않은) 논리 줄에서 구조화된 dateline 을 읽는다.
+
+        _block_text 가 만드는 개행 단위가 곧 논리 줄이다. 문자 수로 잘라 보지 않는다.
+        본문 전체를 훑지 않는 이유는 사진 캡션의 'OOO 기자'를 취재기자로 오인하는
+        경로를 막기 위해서다.
+        """
+        seen = 0
+        for raw in lines:
+            line = raw.strip()
+            if not line:
+                continue
+            seen += 1
+            if seen > 2:
+                break
+            if line[0] not in '[(':
+                continue
+            for pattern in self._NATE_HEAD_PATTERNS:
+                match = pattern.match(line)
+                if match and self._nate_same_publisher(match.group('media'), publisher):
+                    return re.split(r'\s+', match.group('names').strip())
+        return []
