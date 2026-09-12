@@ -7,6 +7,10 @@
 기존 `/analyze` 경로와는 fetch 계층부터 분리돼 있다.
 - `/analyze` : ArticleScraper.scrape() → requests.get (기존 그대로)
 - `/extract` : safe_fetch() → ArticleScraper._parse_response()
+
+가져오기와 파싱은 워커 스레드 하나에서 연속으로 돌고(`_extract_blocking`),
+그 구간은 워커 프로세스별 동시 추출 상한(`MAX_CONCURRENT_EXTRACTIONS`)이 지킨다.
+상한을 넘는 요청은 대기열에 쌓지 않고 그 자리에서 503 EXTRACTOR_BUSY로 돌려보낸다.
 """
 
 import hmac
@@ -15,7 +19,7 @@ import re
 import threading
 import time
 from datetime import date
-from typing import Dict, List, Optional
+from typing import List, Optional
 from urllib.parse import urlsplit
 
 from fastapi import APIRouter, Request
@@ -32,10 +36,6 @@ EXTRACTOR_VERSION = "2026.09.1"
 # 로그인 화면처럼 200으로 오지만 본문이 없는 페이지를 걸러낸다.
 MIN_CONTENT_CHARS = 100
 
-# 프록시 뒤에서는 사실상 전역 상한이므로, 시민별 제한은 cr-report 프록시가 담당한다.
-RATE_LIMIT_PER_MINUTE = 120
-RATE_LIMIT_WINDOW_SECONDS = 60
-
 # 스크레이퍼가 메타데이터를 찾지 못했을 때 쓰는 자리표시자.
 # main.py의 동명 상수와 같은 기준이며, /extract에서는 이 값을 null + warning으로 바꾼다.
 _INVALID_META = {"미확인", "", "N/A", "unknown", "Unknown"}
@@ -48,9 +48,11 @@ _ERROR_STATUS = {
     "RESPONSE_TOO_LARGE": 413,
     "UNSUPPORTED_CONTENT_TYPE": 415,
     "ARTICLE_NOT_FOUND": 422,
-    "RATE_LIMITED": 429,
     "EXTRACTOR_ERROR": 500,
+    # 503이 둘이다 — 키 미설정으로 엔드포인트가 잠긴 상태(DISABLED)와
+    # 동시 추출 상한이 찬 일시적 혼잡(BUSY). 호출 측은 code로만 분기한다.
     "EXTRACTOR_DISABLED": 503,
+    "EXTRACTOR_BUSY": 503,
     "SOURCE_FETCH_FAILED": 502,
     "SOURCE_TIMEOUT": 504,
 }
@@ -131,43 +133,149 @@ class ExtractErrorResponse(BaseModel):
 
 
 # ---------------------------------------------------------------------------
-# 레이트 리밋 (인메모리, 베스트에포트)
+# 동시 추출 제한 · 슬롯 수명 (인메모리, 워커 프로세스별)
 # ---------------------------------------------------------------------------
+#
+# 중계 환경의 IP별 요청 빈도 제한은 실제 실행 중인 추출 작업량을 직접 제어하지
+# 못한다. 이를 워커별 동시 작업 제한으로 교체하고, 혼잡 시 503 EXTRACTOR_BUSY를
+# 반환한다. 시민별 429 RATE_LIMITED는 cr-report 프록시(IP당 20회/분)가 계속 담당한다.
 
-_rate_lock = threading.Lock()
-_rate_hits: Dict[str, List[float]] = {}
+# 워커 프로세스별 동시 추출 상한. uvicorn 워커가 2개이므로 서비스 전체 상한은 2배가 된다.
+# 이 값은 동시에 받아들일 추출 작업의 설정 상한이며, 초당·분당 처리량을 보장하는 수치가 아니다.
+MAX_CONCURRENT_EXTRACTIONS = 20
+
+# 예약 상태. pending → running → released, 또는 pending → released(취소)로만 전이한다.
+_PENDING = "pending"
+_RUNNING = "running"
+_RELEASED = "released"
+
+# 상태 전이와 점유 수 갱신은 전부 이 락 아래에서만 한다. 점유 수 감소는
+# released 전이 한 곳에만 묶여 있어, 확보한 슬롯은 정확히 한 번만 반환된다.
+_slot_lock = threading.Lock()
+_active_extractions = 0
 
 
-def _allow_request(client_ip: str, now: float) -> bool:
-    """IP별 분당 요청 수 제한.
+class _Reservation:
+    """추출 슬롯 1개의 예약. `state`는 `_slot_lock` 아래에서만 읽고 쓴다."""
 
-    서버 전체가 감당할 방어 상한이다. 시민 단위 제한은 cr-report 프록시 소관.
+    __slots__ = ("state",)
 
-    베스트에포트임에 유의: 인메모리라 프로세스가 재시작하면 초기화되고,
-    워커가 여러 개면 워커별로 따로 센다(전체 상한은 워커 수만큼 늘어난다).
-    외부 저장소(Redis 등)는 도입하지 않는다.
+    def __init__(self) -> None:
+        self.state = _PENDING
+
+
+def _reserve() -> Optional["_Reservation"]:
+    """라우트에서 `run_in_threadpool` 진입 *전에* 호출한다.
+
+    점유 수가 상한 미만이면 pending 예약을 만들고 점유 수를 1 늘린다. 상한이면
+    None이고, 라우트는 대기열이나 스레드 자리를 기다리지 않고 그 자리에서 거절한다.
+
+    아직 시작하지 않은 예약도 점유 수에 포함된다 — 스레드 자리를 기다리는 요청이
+    상한을 차지하므로, 극단적으로는 전부 대기 중인데 503만 나가는 구간이 생길 수
+    있다. 시민이 타임아웃까지 기다리는 것보다 즉시 안내를 받는 편이 낫다고 보고
+    택한 보수적 동작이다.
     """
-    cutoff = now - RATE_LIMIT_WINDOW_SECONDS
-    with _rate_lock:
-        # 1분이 지난 항목을 매 요청마다 정리해 dict가 무한히 자라지 않게 한다.
-        for ip in list(_rate_hits):
-            fresh = [t for t in _rate_hits[ip] if t > cutoff]
-            if fresh:
-                _rate_hits[ip] = fresh
-            else:
-                del _rate_hits[ip]
+    global _active_extractions
+    with _slot_lock:
+        if _active_extractions >= MAX_CONCURRENT_EXTRACTIONS:
+            return None
+        _active_extractions += 1
+        return _Reservation()
 
-        hits = _rate_hits.setdefault(client_ip, [])
-        if len(hits) >= RATE_LIMIT_PER_MINUTE:
+
+def _mark_started(reservation: "_Reservation") -> bool:
+    """동기 함수 첫 줄. pending이면 running으로 전이하고 True.
+
+    이미 released면 False — 취소로 예약이 반환된 뒤 뒤늦게 스레드 자리가 난
+    경우이므로, 가져오기·파싱을 시작하지 않는다.
+    """
+    with _slot_lock:
+        if reservation.state != _PENDING:
             return False
-        hits.append(now)
+        reservation.state = _RUNNING
         return True
 
 
-def _reset_rate_limit() -> None:
-    """테스트 전용 — 카운터 초기화."""
-    with _rate_lock:
-        _rate_hits.clear()
+def _release_if_pending(reservation: "_Reservation") -> None:
+    """라우트 `finally`. 아직 시작 전인 예약만 반환한다.
+
+    running이면 아무것도 하지 않는다 — 반환 책임은 스레드에 있다. 실행 중인
+    작업의 자리를 미리 비우면 실제 동시 작업이 상한을 넘는다.
+    """
+    global _active_extractions
+    with _slot_lock:
+        if reservation.state != _PENDING:
+            return
+        reservation.state = _RELEASED
+        _active_extractions -= 1
+
+
+def _release(reservation: "_Reservation") -> None:
+    """동기 함수 `finally`. 실행 중이던 예약만 반환한다."""
+    global _active_extractions
+    with _slot_lock:
+        if reservation.state != _RUNNING:
+            return
+        reservation.state = _RELEASED
+        _active_extractions -= 1
+
+
+class _ExtractStageError(Exception):
+    """가져오기·파싱 단계에서 확정한 오류 코드·메시지를 라우트로 옮기는 내부 전달자.
+
+    두 단계를 한 동기 함수로 묶었으므로, 어느 단계에서 난 오류인지를 여기에 담아
+    나른다. 단계별 코드·메시지 대응은 `_extract_blocking`에 그대로 남아 있다.
+    """
+
+    def __init__(self, code: str, message: str) -> None:
+        super().__init__(code)
+        self.code = code
+        self.message = message
+
+
+# 예약이 이미 반환된 뒤 스레드가 뒤늦게 실행됐을 때의 반환값. 아래 주석 참조.
+_CANCELLED = object()
+
+
+def _extract_blocking(url: str, reservation: "_Reservation"):
+    """가져오기와 파싱을 한 슬롯 점유 구간 안에서 연속으로 실행한다.
+
+    두 단계 사이에서 슬롯을 반환했다가 다시 잡으면, 파싱 중인 요청이 새 요청을
+    들여보내 실제 동시 작업이 상한을 넘는다. 그래서 스레드 제출을 한 번으로 묶었다.
+
+    `safe_fetch`와 `_scraper`는 모듈 전역으로 참조한다 — 시험이
+    `patch.object(extract_api, "safe_fetch", ...)`로 모듈 속성을 패치하기 때문에,
+    다른 모듈로 옮기거나 지역 이름에 묶으면 그 패치가 무력해진다.
+    """
+    if not _mark_started(reservation):
+        # 예약이 이미 반환됐다 — 가져오기·파싱에 들어가지 않고 그대로 끝낸다.
+        return _CANCELLED
+    try:
+        try:
+            fetch_result = safe_fetch(url)
+        except SafeFetchError as exc:
+            raise _ExtractStageError(exc.code, exc.message) from None
+        except Exception:
+            raise _ExtractStageError(
+                "EXTRACTOR_ERROR", "기사를 가져오는 중 오류가 발생했습니다.") from None
+
+        try:
+            article_data = _scraper._parse_response(
+                fetch_result.response,
+                parse_url=fetch_result.final_url,   # /extract만 최종 URL 기준
+                original_url=url,                   # 정규화된 요청 URL
+            )
+        except ValueError:
+            raise _ExtractStageError(
+                "ARTICLE_NOT_FOUND", "기사 제목 또는 본문을 추출하지 못했습니다.") from None
+        except Exception:
+            # 예외 문자열·스택·내부 경로는 응답에 담지 않는다.
+            raise _ExtractStageError(
+                "EXTRACTOR_ERROR", "기사 파싱 중 오류가 발생했습니다.") from None
+
+        return fetch_result, article_data
+    finally:
+        _release(reservation)
 
 
 # ---------------------------------------------------------------------------
@@ -188,10 +296,6 @@ async def extract_article(request: Request):
     if not hmac.compare_digest(provided_key, expected_key):
         return _error("UNAUTHORIZED_CALLER", "호출 권한을 확인하지 못했습니다.", "-", started)
 
-    client_ip = request.client.host if request.client else "unknown"
-    if not _allow_request(client_ip, time.monotonic()):
-        return _error("RATE_LIMITED", "요청 빈도 상한을 넘었습니다.", "-", started)
-
     try:
         payload = await request.json()
     except Exception:
@@ -211,25 +315,34 @@ async def extract_article(request: Request):
 
     domain = _domain_of(url)
 
+    # 예약은 스레드풀 진입 *전*이다. 스레드 자리를 얻은 뒤에 상한을 판단하면,
+    # 공유 스레드풀이 찼을 때 거절하려고도 기다리게 된다.
+    reservation = _reserve()
+    if reservation is None:
+        return _error("EXTRACTOR_BUSY", "추출 요청이 많아 지금은 처리하지 못했습니다.",
+                      domain, started)
+
+    # 예약 성공 직후, 다른 await 없이 try로 들어간다. 예약과 정리 책임 등록 사이에
+    # await 지점이 있으면 그 틈에서 취소될 때 아무도 슬롯을 반환하지 않는다.
     try:
-        fetch_result = await run_in_threadpool(safe_fetch, url)
-    except SafeFetchError as exc:
+        outcome = await run_in_threadpool(_extract_blocking, url, reservation)
+    except _ExtractStageError as exc:
         return _error(exc.code, exc.message, domain, started)
     except Exception:
+        # 동기 함수가 시작되기 전, 스레드 제출 단계에서 난 예외. 여기서 잡지 않으면
+        # 프레임워크 기본 500(text/plain)이 나가 오류 계약이 깨진다.
+        # BaseException은 잡지 않는다 — CancelledError가 이 절에 걸리면 안 된다.
+        return _error("EXTRACTOR_ERROR", "기사를 가져오는 중 오류가 발생했습니다.", domain, started)
+    finally:
+        _release_if_pending(reservation)
+
+    if outcome is _CANCELLED:
+        # 도달하지 않는 값 — `_mark_started()`가 False인 것은 예약이 취소로 이미
+        # 반환된 경우뿐이고, 그때 이 코루틴은 CancelledError로 빠져나가 리턴값을
+        # 소비하지 않는다. 방어적으로만 남긴다.
         return _error("EXTRACTOR_ERROR", "기사를 가져오는 중 오류가 발생했습니다.", domain, started)
 
-    try:
-        article_data = await run_in_threadpool(
-            _scraper._parse_response,
-            fetch_result.response,
-            parse_url=fetch_result.final_url,   # /extract만 최종 URL 기준
-            original_url=url,                   # 정규화된 요청 URL
-        )
-    except ValueError:
-        return _error("ARTICLE_NOT_FOUND", "기사 제목 또는 본문을 추출하지 못했습니다.", domain, started)
-    except Exception:
-        # 예외 문자열·스택·내부 경로는 응답에 담지 않는다.
-        return _error("EXTRACTOR_ERROR", "기사 파싱 중 오류가 발생했습니다.", domain, started)
+    fetch_result, article_data = outcome
 
     title = article_data.get("title") or ""
     content = article_data.get("content") or ""
